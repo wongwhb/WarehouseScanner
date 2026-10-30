@@ -1,0 +1,322 @@
+<!-- Views/Shared/_LayoutLanguage.cshtml -->
+@inject WarehouseScannerCore.Services.ILanguageService LanguageService
+@{
+    // 从Cookie中获取当前语言设置
+    var currentLanguage = Context.Request.Cookies["Language"] ?? "zh-CN";
+}
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - WarehouseScanner</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="~/css/bootstrap/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="~/css/fontawesome/all.min.css" asp-append-version="true">
+
+    <!-- 自定义样式 - 保持与MenuLayout一致的风格 -->
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        /* 卡片样式 - 与MenuLayout保持一致 */
+        .menu-card {
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            background-color: white;
+            overflow: hidden;
+        }
+
+        .menu-card-header {
+            background-color: #007bff;
+            color: white;
+            border-radius: 10px 10px 0 0 !important;
+            padding: 15px 20px;
+            font-weight: 500;
+            border: none;
+        }
+
+        .menu-card-body {
+            padding: 20px;
+        }
+
+        /* 表格样式 - 与MenuLayout保持一致 */
+        .menu-table {
+            width: 100%;
+            margin-bottom: 0;
+        }
+
+            .menu-table th {
+                background-color: #f1f5fd;
+                border-bottom: 2px solid #dee2e6;
+                padding: 12px 15px;
+                font-weight: 600;
+                color: #495057;
+            }
+
+            .menu-table td {
+                padding: 12px 15px;
+                border-bottom: 1px solid #eaeaea;
+                vertical-align: middle;
+            }
+
+            .menu-table tbody tr:hover {
+                background-color: #f8f9fa;
+            }
+
+        /* 按钮样式 */
+        .btn {
+            border-radius: 5px;
+            font-weight: 500;
+            padding: 8px 16px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+            .btn-primary:hover {
+                background-color: #0056b3;
+                border-color: #0056b3;
+            }
+
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+
+            .btn-success:hover {
+                background-color: #218838;
+                border-color: #1e7e34;
+            }
+
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+            .btn-danger:hover {
+                background-color: #c82333;
+                border-color: #bd2130;
+            }
+
+        /* 操作按钮组 */
+        .action-buttons .btn {
+            margin-right: 5px;
+        }
+
+            .action-buttons .btn:last-child {
+                margin-right: 0;
+            }
+
+        /* 标签样式 */
+        .language-badge {
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-size: 0.85rem;
+        }
+
+        .language-badge-success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .language-badge-warning {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        .language-key {
+            background-color: #f8f9fa;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: 'Consolas', monospace;
+            font-size: 0.9rem;
+            color: #e83e8c;
+            border: 1px solid #e9ecef;
+        }
+
+        /* 表单样式 */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #495057;
+        }
+
+        .form-control {
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+            padding: 10px 15px;
+            transition: all 0.3s ease;
+        }
+
+            .form-control:focus {
+                border-color: #007bff;
+                box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+            }
+
+        /* 搜索框容器 */
+        .search-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        /* 警告框样式 */
+        .alert {
+            border-radius: 5px;
+            border: none;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+
+        .alert-warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border-left: 4px solid #ffc107;
+        }
+
+        /* 响应式调整 */
+        @@media (max-width: 768px) {
+            .container-fluid {
+                padding-left: 15px;
+                padding-right: 15px;
+            }
+
+            .menu-table th,
+            .menu-table td {
+                padding: 10px 12px;
+                font-size: 0.9rem;
+            }
+
+            .btn {
+                padding: 6px 12px;
+                font-size: 0.9rem;
+            }
+
+            .action-buttons .btn {
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 - 与MenuLayout完全一致的风格 -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="@Url.Action("Index", "Language")">
+                <i class="fas fa-language me-2"></i>@LanguageService.GetString(currentLanguage, "LanguageIndex", "Title")
+            </a>
+
+            <div class="navbar-nav ms-auto">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a href="@Url.Action("Index", "Language")" class="nav-link @(ViewContext.RouteData.Values["Action"]!.ToString() == "Index" ? "active" : "")">
+                            <i class="fas fa-list me-1"></i>@LanguageService.GetString(currentLanguage, "LanguageIndex", "LanguageList")
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="@Url.Action("Create", "Language")" class="nav-link @(ViewContext.RouteData.Values["Action"]!.ToString() == "Create" ? "active" : "")">
+                            <i class="fas fa-plus me-1"></i>@LanguageService.GetString(currentLanguage, "LanguageIndex", "AddLanguageItem")
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/">
+                            <i class="fas fa-home me-1"></i>@LanguageService.GetString(currentLanguage, "FactoryManagement", "BackToHome")
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容区域 -->
+    <div class="container-fluid mt-3">
+        @RenderBody()
+    </div>
+
+    <!-- Bootstrap 5 JS Bundle with Popper -->
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- jQuery -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+    <!-- jQuery Validation -->
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/additional-methods.min.js"></script>
+
+    <!-- 通用脚本 -->
+    <script>
+        $(document).ready(function() {
+            // 自动关闭警告框（4秒后）
+            setTimeout(function() {
+                $('.alert:not(.alert-permanent)').fadeOut('slow', function() {
+                    $(this).alert('close');
+                });
+            }, 4000);
+
+            // 删除确认对话框
+            $('form.delete-form').on('submit', function(e) {
+                var message = '@(LanguageService.GetString(currentLanguage, "LanguageIndex", "ConfirmDelete"))';
+                if (!confirm(message)) {
+                    e.preventDefault();
+                    return false;
+                }
+                return true;
+            });
+
+            // 初始化工具提示
+            $('[data-bs-toggle="tooltip"]').tooltip();
+
+            // 表单验证
+            $('.language-form').validate({
+                errorClass: 'text-danger',
+                errorElement: 'small',
+                highlight: function(element) {
+                    $(element).addClass('is-invalid');
+                },
+                unhighlight: function(element) {
+                    $(element).removeClass('is-invalid');
+                }
+            });
+
+            // 搜索框焦点效果
+            $('.search-input').focus(function() {
+                $(this).closest('.input-group').css('box-shadow', '0 0 0 0.2rem rgba(0, 123, 255, 0.25)');
+            }).blur(function() {
+                $(this).closest('.input-group').css('box-shadow', 'none');
+            });
+        });
+    </script>
+
+    <!-- 页面特定脚本 -->
+    @RenderSection("scripts", required: false)
+</body>
+</html>

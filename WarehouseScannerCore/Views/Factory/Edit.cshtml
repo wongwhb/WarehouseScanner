@@ -1,0 +1,302 @@
+@model WarehouseScannerCore.Models.Factory
+
+@{
+    // 从ViewBag获取数据
+    var getText = ViewBag.GetText as Func<string, string, string>;
+    var currentCulture = ViewBag.CurrentCulture as string ?? "zh-CN";
+    var currentUICulture = ViewBag.CurrentUICulture as string ?? "zh-CN";
+
+    // 定义本地辅助函数
+    string GetText(string section, string key)
+    {
+        return getText?.Invoke(section, key) ?? $"[{section}.{key}]";
+    }
+
+    var originalCode = ViewData["OriginalCode"] as string;
+    ViewData["Title"] = GetText("FactoryManagement", "EditTitle");
+    Layout = "_FactoryLayout";
+}
+
+<!DOCTYPE html>
+<html lang="@currentCulture">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@GetText("FactoryManagement", "EditTitle") - @GetText("FactoryManagement", "AppName")</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="~/css/bootstrap/bootstrap.min.css" asp-append-version="true">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="~/css/fontawesome/all.min.css" asp-append-version="true">
+
+    <style>
+        .container {
+            margin-top: 2rem;
+        }
+
+        .card {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border: none;
+            border-radius: 8px;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 8px 8px 0 0 !important;
+            padding: 1.2rem 1.5rem;
+        }
+
+            .card-header h4 {
+                margin: 0;
+                font-weight: 600;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+                .card-header h4 i {
+                    font-size: 1.2em;
+                }
+
+        .card-body {
+            padding: 2rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            padding: 0.5rem 1.5rem;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+            .btn-primary:hover:not(:disabled) {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            }
+
+            .btn-primary:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+            }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+            border: none;
+            padding: 0.5rem 1.5rem;
+            font-weight: 600;
+        }
+
+        .form-check-input:checked {
+            background-color: #667eea;
+            border-color: #667eea;
+        }
+
+        .required::after {
+            content: " *";
+            color: #e74c3c;
+        }
+
+        .validation-summary-errors {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 0.75rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            border: 1px solid #f5c6cb;
+        }
+
+        .field-validation-error {
+            color: #e74c3c;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>
+                            <i class="fas fa-edit"></i> @GetText("FactoryManagement", "EditTitle") - @Model.Code
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <form asp-action="Edit" asp-route-originalCode="@originalCode" method="post" id="editForm">
+                            @Html.AntiForgeryToken()
+
+                            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label asp-for="Code" class="form-label required">@GetText("FactoryManagement", "Code")</label>
+                                    <input asp-for="Code" class="form-control" />
+                                    <span asp-validation-for="Code" class="text-danger"></span>
+                                    <small class="form-text text-muted">@GetText("FactoryManagement", "CodeHint")</small>
+                                </div>
+                                <div class="col-md-6">
+                                    <label asp-for="Name" class="form-label required">@GetText("FactoryManagement", "Name")</label>
+                                    <input asp-for="Name" class="form-control" />
+                                    <span asp-validation-for="Name" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <!-- 修复HTML结构，移除required类 -->
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <label asp-for="Description" class="form-label required">@GetText("FactoryManagement", "Description")</label>
+                                    <input asp-for="Description" class="form-control" />
+                                    <span asp-validation-for="Description" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-6">
+                                    <label asp-for="Company" class="form-label required">@GetText("FactoryManagement", "Company")</label>
+                                    <input asp-for="Company" class="form-control" />
+                                    <span asp-validation-for="Company" class="text-danger"></span>
+                                    <small class="form-text text-muted">@GetText("FactoryManagement", "CompanyHint")</small>
+                                </div>
+                                <div class="col-md-6">
+                                    <label asp-for="Plant" class="form-label required">@GetText("FactoryManagement", "Plant")</label>
+                                    <input asp-for="Plant" class="form-control" />
+                                    <span asp-validation-for="Plant" class="text-danger"></span>
+                                    <small class="form-text text-muted">@GetText("FactoryManagement", "PlantHint")</small>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-md-8">
+                                    <label asp-for="ApiUrl" class="form-label required">@GetText("FactoryManagement", "ApiUrl")</label>
+                                    <input asp-for="ApiUrl" class="form-control" />
+                                    <span asp-validation-for="ApiUrl" class="text-danger"></span>
+                                </div>
+                                <div class="col-md-4">
+                                    <label asp-for="ApiKey" class="form-label required">@GetText("FactoryManagement", "ApiKey")</label>
+                                    <input asp-for="ApiKey" class="form-control" placeholder="@GetText("FactoryManagement", "ApiKeyPlaceholderEdit")" />
+                                    <small class="form-text text-muted">@GetText("FactoryManagement", "ApiKeyHintEdit")</small>
+                                    <span asp-validation-for="ApiKey" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-4">
+                                <div class="col-md-12">
+                                    <div class="form-check form-switch">
+                                        <input asp-for="Enabled" class="form-check-input" type="checkbox" role="switch" id="enabledSwitch" />
+                                        <label asp-for="Enabled" class="form-check-label" for="enabledSwitch">
+                                            @GetText("FactoryManagement", "Enabled")
+                                        </label>
+                                    </div>
+                                    <span asp-validation-for="Enabled" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary me-2" id="saveBtn">
+                                    <i class="fas fa-save"></i> @GetText("FactoryManagement", "SaveButton")
+                                </button>
+                                <a asp-action="Index" class="btn btn-secondary">
+                                    <i class="fas fa-arrow-left"></i> @GetText("FactoryManagement", "BackButton")
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            // 修复点2：改进表单提交处理
+            let isSubmitting = false;
+
+            $('#editForm').on('submit', function(e) {
+                // 防止重复提交
+                if (isSubmitting) {
+                    e.preventDefault();
+                    return false;
+                }
+
+                // 使用jQuery Validate检查表单有效性
+                const $form = $(this);
+                if (!$form.valid()) {
+                    // 验证失败时，确保按钮状态正常
+                    resetSaveButton();
+                    return;
+                }
+
+                // 验证通过，开始提交
+                isSubmitting = true;
+
+                const saveBtn = $('#saveBtn');
+                saveBtn.prop('disabled', true);
+                saveBtn.html('<i class="fas fa-spinner fa-spin"></i> @GetText("FactoryManagement", "Saving")...');
+
+                // 如果表单提交后页面没有重定向（比如验证失败），需要重置按钮状态
+                // 我们会在页面加载完成后自动重置，但这里也添加一个超时保护
+                setTimeout(function() {
+                    if (isSubmitting) {
+                        resetSaveButton();
+                        isSubmitting = false;
+                    }
+                }, 5000);
+
+                // 允许表单正常提交
+                return true;
+            });
+
+            // 监听输入变化，如果有验证错误，重置按钮状态
+            $('#editForm input').on('input change', function() {
+                // 如果用户修改了有错误的字段，重置提交状态
+                if (isSubmitting) {
+                    const $input = $(this);
+                    const $errorSpan = $input.siblings('.text-danger').first();
+                    if ($errorSpan.text().trim() !== '') {
+                        resetSaveButton();
+                        isSubmitting = false;
+                    }
+                }
+            });
+
+            // 监听验证错误显示
+            $(document).on('DOMNodeInserted', '.field-validation-error', function() {
+                resetSaveButton();
+                isSubmitting = false;
+            });
+
+            // 添加重置按钮状态的函数
+            function resetSaveButton() {
+                $('#saveBtn').prop('disabled', false)
+                    .html('<i class="fas fa-save"></i> @GetText("FactoryManagement", "SaveButton")');
+            }
+
+            // 页面加载完成后重置按钮状态
+            $(window).on('load', function() {
+                resetSaveButton();
+                isSubmitting = false;
+            });
+        });
+    </script>
+</body>
+</html>

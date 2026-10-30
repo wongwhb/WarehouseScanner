@@ -1,0 +1,172 @@
+@model List<WarehouseScannerCore.Models.UserMenuPermission>
+@{
+    // 从ViewBag获取数据
+    var getText = ViewBag.GetText as Func<string, string, string>;
+    var currentCulture = ViewBag.CurrentCulture as string ?? "zh-CN";
+    var currentUICulture = ViewBag.CurrentUICulture as string ?? "zh-CN";
+
+    // 定义本地辅助函数
+    string GetText(string section, string key)
+    {
+        return getText?.Invoke(section, key) ?? $"[{section}.{key}]";
+    }
+
+    // 设置页面标题
+    ViewData["Title"] = GetText("UserMenuPermissionIndex", "Title");
+    Layout = "_MenuLayout";
+}
+
+<div class="container-fluid">
+    <!-- 页面标题 -->
+    <div class="row mb-3">
+        <div class="col-md-8">
+            <h2 class="text-primary">
+                <i class="fas fa-user-shield me-2"></i>@GetText("UserMenuPermissionIndex", "Title")
+            </h2>
+            @* 文案在加载期已做 HTML 编码（LanguageService.cs），此处用 Html.Raw 输出，避免 Razor 二次编码把撇号显示成 &#39; *@
+            <p class="text-muted">@Html.Raw(GetText("UserMenuPermissionIndex", "Subtitle"))</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a asp-action="Create" class="btn btn-success">
+                <i class="fas fa-plus me-1"></i>@GetText("UserMenuPermissionIndex", "AddPermission")
+            </a>
+        </div>
+    </div>
+
+    <!-- 搜索表单 -->
+    <div class="card menu-card mb-4">
+        <div class="card-header menu-card-header">
+            <h5 class="mb-0">
+                <i class="fas fa-search me-2"></i>@GetText("UserMenuPermissionIndex", "SearchPermission")
+            </h5>
+        </div>
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-10">
+                    <input type="text" name="searchTerm" class="form-control"
+                           placeholder="@GetText("UserMenuPermissionIndex", "SearchPlaceholder")"
+                           value="@ViewBag.SearchTerm">
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fas fa-search me-1"></i>@GetText("UserMenuPermissionIndex", "SearchPermission")
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 权限列表 -->
+    <div class="card menu-card">
+        <div class="card-header menu-card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+                <i class="fas fa-list me-2"></i>@GetText("UserMenuPermissionIndex", "PermissionList")
+            </h5>
+            <span class="badge bg-info">@string.Format(GetText("UserMenuPermissionIndex", "TotalRecords"), Model.Count)</span>
+        </div>
+        <div class="card-body">
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i>@TempData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            @if (Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover menu-table">
+                        <thead>
+                            <tr>
+                                <th>@GetText("UserMenuPermissionIndex", "SiteCode")</th>
+                                <th>@GetText("UserMenuPermissionIndex", "UserCode")</th>
+                                <th>@GetText("UserMenuPermissionIndex", "UserName")</th>
+                                <th>@GetText("UserMenuPermissionIndex", "UserGroup")</th>
+                                <th>@GetText("UserMenuPermissionIndex", "MenuName")</th>
+                                <th>@GetText("UserMenuPermissionIndex", "MenuPermission")</th>
+                                <th>@GetText("UserMenuPermissionIndex", "Remark")</th>
+                                <th>@GetText("UserMenuPermissionIndex", "Actions")</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @if (string.IsNullOrWhiteSpace(item.SiteCode))
+                                        {
+                                            <span class="badge bg-dark">@GetText("UserMenuPermissionIndex", "AllSites")</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-info">@item.SiteCode</span>
+                                        }
+                                    </td>
+                                    <td>@item.UserCode</td>
+                                    <td>@item.UserName</td>
+                                    <td>
+                                        <span class="badge bg-secondary">@item.UserGroup</span>
+                                    </td>
+                                    <td>@item.MenuName</td>
+                                    <td>
+                                        @if (item.Permission == 1)
+                                        {
+                                            <span class="badge bg-success">@GetText("UserMenuPermissionIndex", "AllowAccess")</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">@GetText("UserMenuPermissionIndex", "DenyAccess")</span>
+                                        }
+                                    </td>
+                                    <td>@item.Remark</td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <a asp-action="Edit"
+                                               asp-route-userCode="@item.UserCode"
+                                               asp-route-menuCode="@item.MenuCode"
+                                               asp-route-siteCode="@item.SiteCode"
+                                               class="btn btn-outline-primary"
+                                               title="@GetText("UserMenuPermissionIndex", "Edit")">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <form action="/UserMenuPermission/Delete" method="post" class="d-inline">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="userCode" value="@item.UserCode" />
+                                                <input type="hidden" name="menuCode" value="@item.MenuCode" />
+                                                <input type="hidden" name="siteCode" value="@item.SiteCode" />
+                                                <button type="submit" class="btn btn-outline-danger"
+                                                        onclick="return confirm('@GetText("UserMenuPermissionIndex", "ConfirmDelete")');"
+                                                        title="@GetText("UserMenuPermissionIndex", "Delete")">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                    <p class="text-muted">@GetText("UserMenuPermissionIndex", "NoPermissionRecords")</p>
+                    <a asp-action="Create" class="btn btn-primary">
+                        <i class="fas fa-plus me-1"></i>@GetText("UserMenuPermissionIndex", "CreateFirstPermission")
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+</div>

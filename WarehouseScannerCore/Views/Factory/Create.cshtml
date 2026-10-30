@@ -1,0 +1,290 @@
+@model WarehouseScannerCore.Models.Factory
+@{
+    Layout = "_FactoryLayout";
+
+    var getText = ViewBag.GetText as Func<string, string, string>;
+    var currentCulture = ViewBag.CurrentCulture as string ?? "zh-CN";
+
+    string GetText(string section, string key)
+    {
+        return getText?.Invoke(section, key) ?? $"[{section}.{key}]";
+    }
+
+    ViewData["Title"] = GetText("FactoryManagement", "CreateTitle");
+}
+
+<!-- 将样式直接放在head中 -->
+<style>
+    .required::after {
+        content: " *";
+        color: #e74c3c;
+    }
+
+    .form-control.is-invalid {
+        border-color: #e74c3c;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23e74c3c' viewBox='0 0 12 12'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23e74c3c' stroke='none'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right calc(0.375em + 0.1875rem) center;
+        background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+    }
+
+    .form-control.is-valid {
+        border-color: #28a745;
+    }
+
+    #submitBtn:disabled {
+        opacity: 0.65;
+        cursor: not-allowed;
+    }
+
+    .spinner-border {
+        margin-right: 5px;
+    }
+</style>
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header">
+                    <h4>
+                        <i class="fas fa-plus-circle"></i>
+                        @GetText("FactoryManagement", "CreateTitle")
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create" method="post" id="factoryForm">
+                        @Html.AntiForgeryToken()
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="Code" class="form-label required">@GetText("FactoryManagement", "Code")</label>
+                                <input asp-for="Code" class="form-control" />
+                                <span asp-validation-for="Code" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Name" class="form-label required">@GetText("FactoryManagement", "Name")</label>
+                                <input asp-for="Name" class="form-control" />
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label asp-for="Description" class="form-label required">@GetText("FactoryManagement", "Description")</label>
+                                <textarea asp-for="Description" class="form-control" rows="2"></textarea>
+                                <span asp-validation-for="Description" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="Company" class="form-label required">@GetText("FactoryManagement", "Company")</label>
+                                <input asp-for="Company" class="form-control" />
+                                <span asp-validation-for="Company" class="text-danger"></span>
+                                <small class="text-muted">@GetText("FactoryManagement", "CompanyHint")</small>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Plant" class="form-label required">@GetText("FactoryManagement", "Plant")</label>
+                                <input asp-for="Plant" class="form-control" />
+                                <span asp-validation-for="Plant" class="text-danger"></span>
+                                <small class="text-muted">@GetText("FactoryManagement", "PlantHint")</small>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="ApiUrl" class="form-label required">@GetText("FactoryManagement", "ApiUrl")</label>
+                                <input asp-for="ApiUrl" class="form-control" />
+                                <span asp-validation-for="ApiUrl" class="text-danger"></span>
+                                <small class="text-muted">@GetText("FactoryManagement", "ApiUrlHint")</small>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="ApiKey" class="form-label required">@GetText("FactoryManagement", "ApiKey")</label>
+                                <input asp-for="ApiKey" class="form-control" />
+                                <span asp-validation-for="ApiKey" class="text-danger"></span>
+                                <small class="text-muted">@GetText("FactoryManagement", "ApiKeyHint")</small>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <div class="form-check">
+                                    <input asp-for="Enabled" class="form-check-input" />
+                                    <label asp-for="Enabled" class="form-check-label">
+                                        @GetText("FactoryManagement", "Enabled")
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group mt-4">
+                            <button type="submit" class="btn btn-primary" id="submitBtn">
+                                <i class="fas fa-save"></i> @GetText("FactoryManagement", "CreateButton")
+                            </button>
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> @GetText("FactoryManagement", "BackButton")
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 在脚本之前先加载必要的库 -->
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+<!-- 将脚本直接放在页面底部 -->
+<script>
+    // 检查jQuery和jQuery Validation是否已加载
+    if (typeof $ === 'undefined') {
+        console.error('jQuery is not loaded');
+    }
+
+    if (typeof $.validator === 'undefined') {
+        console.error('jQuery Validation is not loaded');
+    }
+
+    // 等待DOM完全加载
+    $(document).ready(function() {
+        // 获取本地化消息 - 直接从C#变量获取
+        var requiredMessage = @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("FactoryManagement", "RequiredField")));
+        var invalidUrlMessage = @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("FactoryManagement", "InvalidUrl")));
+        var codeLabel = @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("FactoryManagement", "Code")));
+        var nameLabel = @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("FactoryManagement", "Name")));
+        var descriptionLabel = @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("FactoryManagement", "Description")));
+        var apiKeyLabel = @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("FactoryManagement", "ApiKey")));
+        var minLengthFmt = @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("FactoryCommon", "MinLength")));
+        var maxLengthFmt = @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("FactoryCommon", "MaxLength")));
+
+        // 自定义验证方法 - 验证URL格式
+        if (typeof $.validator !== 'undefined') {
+            $.validator.addMethod('validurl', function(value, element) {
+                if (value === '' || value === undefined) return true;
+
+                // 更简单的URL验证正则表达式
+                var pattern = /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/;
+                var isValid = pattern.test(value);
+
+                return isValid;
+            }, function() {
+                // 使用动态获取的消息
+                return invalidUrlMessage;
+            });
+        } else {
+            console.error('$.validator is not available');
+        }
+
+        // 配置jQuery Validation
+        $.validator.setDefaults({
+            errorClass: 'is-invalid',
+            validClass: 'is-valid',
+            errorElement: 'span',
+            errorPlacement: function(error, element) {
+                error.addClass('text-danger');
+                error.insertAfter(element);
+            },
+            highlight: function(element, errorClass, validClass) {
+                $(element).addClass(errorClass).removeClass(validClass);
+            },
+            unhighlight: function(element, errorClass, validClass) {
+                $(element).removeClass(errorClass).addClass(validClass);
+            }
+        });
+
+        // 初始化表单验证
+        $('#factoryForm').validate({
+            rules: {
+                Code: {
+                    required: true,
+                    minlength: 2,
+                    maxlength: 20
+                },
+                Name: {
+                    required: true,
+                    minlength: 2,
+                    maxlength: 100
+                },
+                Description: {
+                    required: true,
+                    minlength: 5,
+                    maxlength: 500
+                },
+                ApiUrl: {
+                    required: true,
+                    url: true  // 使用内置的url验证规则
+                },
+                ApiKey: {
+                    required: true,
+                    minlength: 8
+                }
+            },
+            messages: {
+                Code: {
+                    required: requiredMessage,
+                    minlength: codeLabel + ' ' + minLengthFmt.replace('{0}', '2'),
+                    maxlength: codeLabel + ' ' + maxLengthFmt.replace('{0}', '20')
+                },
+                Name: {
+                    required: requiredMessage,
+                    minlength: nameLabel + ' ' + minLengthFmt.replace('{0}', '2'),
+                    maxlength: nameLabel + ' ' + maxLengthFmt.replace('{0}', '100')
+                },
+                Description: {
+                    required: requiredMessage,
+                    minlength: descriptionLabel + ' ' + minLengthFmt.replace('{0}', '5'),
+                    maxlength: descriptionLabel + ' ' + maxLengthFmt.replace('{0}', '500')
+                },
+                ApiUrl: {
+                    required: requiredMessage,
+                    url: invalidUrlMessage
+                },
+                ApiKey: {
+                    required: requiredMessage,
+                    minlength: apiKeyLabel + ' ' + minLengthFmt.replace('{0}', '8')
+                }
+            },
+            submitHandler: function(form) {
+                // 验证通过时提交表单
+                var submitBtn = $('#submitBtn');
+                submitBtn.prop('disabled', true);
+                submitBtn.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> @GetText("FactoryManagement", "Creating")...');
+
+                // 提交表单
+                form.submit();
+            },
+            invalidHandler: function(event, validator) {
+                // 验证失败时重置按钮状态
+                $('#submitBtn').prop('disabled', false)
+                    .html('<i class="fas fa-save"></i> @GetText("FactoryManagement", "CreateButton")');
+            }
+        });
+
+        // 实时验证 - 只在字段失去焦点时验证
+        $('#factoryForm input, #factoryForm textarea').on('blur', function() {
+            $(this).valid();
+        });
+
+        // 表单提交按钮点击事件
+        $('#submitBtn').on('click', function(e) {
+            // 手动触发表单验证
+            var isValid = $('#factoryForm').valid();
+
+            if (!isValid) {
+                e.preventDefault();
+                return false;
+            }
+        });
+
+        // 页面加载时验证所有字段
+        $('#factoryForm input, #factoryForm textarea').each(function() {
+            var isValid = $(this).valid();
+        });
+    });
+</script>

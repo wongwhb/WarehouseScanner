@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageConfig>
+  <SupportedLanguages>
+    <Language>
+      <Code>zh-CN</Code>
+      <Name>简体中文</Name>
+      <NativeName>简体中文</NativeName>
+      <IsDefault>true</IsDefault>
+      <Icon>🇨🇳</Icon>
+    </Language>
+    <Language>
+      <Code>en-US</Code>
+      <Name>English</Name>
+      <NativeName>English</NativeName>
+      <IsDefault>false</IsDefault>
+      <Icon>🇺🇸</Icon>
+    </Language>
+  </SupportedLanguages>
+</LanguageConfig>

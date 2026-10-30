@@ -1,0 +1,435 @@
+@using System.Globalization
+@{
+    // 保持行为不变：从 ViewData 读取用户信息
+    var userId = ViewData["UserId"] as string;
+    var userRole = ViewData["UserRole"] as string;
+    var siteName = ViewData["SiteName"] as string;
+    var loginTime = ViewData["LoginTime"] as string;
+    var FullName = ViewData["UserFullName"] as string;
+
+    // 从 Cookie 获取语言并安全创建 CultureInfo（防止无效字符串抛异常）
+    var languageCookie = Context.Request.Cookies["Language"];
+    CultureInfo culture;
+    try
+    {
+        culture = !string.IsNullOrEmpty(languageCookie) ? new CultureInfo(languageCookie) : CultureInfo.CurrentUICulture;
+    }
+    catch
+    {
+        culture = CultureInfo.CurrentUICulture;
+    }
+
+    // 可能由控制器注入的资源（保持兼容）
+    var languageResources = ViewData["LanguageResources"] as Dictionary<string, Dictionary<string, string>>;
+
+    // 从ViewBag获取GetText委托（与其他页面保持一致）
+    var getText = ViewBag.GetText as Func<string, string, string>;
+    string GetText(string section, string key)
+    {
+        return getText?.Invoke(section, key) ?? $"[{section}.{key}]";
+    }
+
+    ViewData["Title"] = GetText("Home", "Title");
+
+    // 缓存常用文本，减少在视图中重复查找
+    string Local(string section, string key) => LocalizedHelper.GetText(languageResources, section, key, culture.Name);
+    var appTitle = Local("Home", "AppTitle");
+    var pageTitle = Local("Home", "Title");
+    ViewData["Title"] = pageTitle;
+}
+
+@functions {
+    // 将默认字典提升为静态只读以避免每次渲染分配大量对象
+    private static readonly Dictionary<string, Dictionary<string, string>> s_zhCnTexts = new()
+    {
+        ["Home"] = new()
+        {
+            ["Title"] = "首页",
+            ["AppTitle"] = "GCM仓库管理系统",
+            ["WelcomeBack"] = "欢迎回来",
+            ["CurrentStation"] = "当前站点",
+            ["SystemFunctions"] = "系统功能",
+            ["UserInformation"] = "用户信息",
+            ["UserId"] = "用户ID",
+            ["UserRole"] = "用户角色",
+            ["CurrentSite"] = "当前工厂",
+            ["LoginTime"] = "登录时间",
+            ["LogoutButton"] = "退出登录",
+            ["MaterialIssuanceScan"] = "发料扫码",
+            ["MaterialIssuanceDesc"] = "物料发放与扫码确认",
+            ["ReturnMaterialScan"] = "返回物料扫码",
+            ["ReturnMaterialDesc"] = "物料退回与登记确认",
+            ["OutboundScan"] = "客户出货扫码",
+            ["OutboundScanDesc"] = "挑选发货物料",
+            ["InboundScan"] = "入库扫码",
+            ["InboundScanDesc"] = "供应商收货扫码登记",
+            ["StockTransfer"] = "库存转移扫码",
+            ["StockTransferDesc"] = "库位调整与转移操作",
+            ["InventoryScan"] = "盘点扫码",
+            ["InventoryScanDesc"] = "盘点调整",
+            ["CycleCountQuery"] = "盘点查询",
+            ["CycleCountQueryDesc"] = "周期盘点维护查询",
+            ["LabelPrint"] = "标签打印",
+            ["LabelPrintDesc"] = "打印物料/库位标签",
+            ["SystemSettings"] = "系统设置",
+            ["SystemSettingsDesc"] = "参数配置与管理",
+            ["SessionExpiredTitle"] = "会话已过期",
+            ["SessionExpiredMessage"] = "由于长时间无操作或安全原因，您的会话已过期。",
+            ["SessionReloginMessage"] = "请重新登录以继续使用系统。",
+            ["ReloginButton"] = "重新登录",
+            ["AuthRequired"] = "请先登录或重新登录"
+        }
+    };
+
+    private static readonly Dictionary<string, Dictionary<string, string>> s_enUsTexts = new()
+    {
+        ["Home"] = new()
+        {
+            ["Title"] = "Home",
+            ["AppTitle"] = "GCM Warehouse Management System",
+            ["WelcomeBack"] = "Welcome back",
+            ["CurrentStation"] = "Current Site",
+            ["SystemFunctions"] = "System Functions",
+            ["UserInformation"] = "User Information",
+            ["UserId"] = "User ID",
+            ["UserRole"] = "User Role",
+            ["CurrentSite"] = "Current Factory",
+            ["LoginTime"] = "Login Time",
+            ["LogoutButton"] = "Logout",
+            ["MaterialIssuanceScan"] = "Material Issuance Scanning",
+            ["MaterialIssuanceDesc"] = "Material Issuance to Work Orders",
+            ["ReturnMaterialScan"] = "Return Material Scanning",
+            ["ReturnMaterialDesc"] = "Material Return and Registration",
+            ["OutboundScan"] = "Customer Shipment Scanning",
+            ["OutboundScanDesc"] = "Pick and Ship Materials",
+            ["InboundScan"] = "Inbound Scanning",
+            ["InboundScanDesc"] = "Supplier Receipt Scanning Registration",
+            ["StockTransfer"] = "Stock Transfer Scanning",
+            ["StockTransferDesc"] = "Location Adjustment and Transfer Operations",
+            ["InventoryScan"] = "Inventory Counting Scan",
+            ["InventoryScanDesc"] = "Inventory Adjustment",
+            ["CycleCountQuery"] = "Cycle Count Query",
+            ["CycleCountQueryDesc"] = "Cycle Count Query",
+            ["LabelPrint"] = "Label Printing",
+            ["LabelPrintDesc"] = "Print Material/Location Labels",
+            ["SystemSettings"] = "System Settings",
+            ["SystemSettingsDesc"] = "Parameter Configuration and Management",
+            ["SessionExpiredTitle"] = "Session Expired",
+            ["SessionExpiredMessage"] = "Your session has expired due to inactivity or security reasons.",
+            ["SessionReloginMessage"] = "Please log in again to continue using the system.",
+            ["ReloginButton"] = "Re-login",
+            ["AuthRequired"] = "Please login or re-login first"
+        }
+    };
+
+    // 集中处理资源优先级：外部注入资源 -> 默认字典 -> 占位
+    public static class LocalizedHelper
+    {
+        public static string GetText(Dictionary<string, Dictionary<string, string>>? injected, string section, string key, string cultureCode)
+        {
+            if (injected != null &&
+                injected.TryGetValue(section, out var sec) &&
+                sec.TryGetValue(key, out var val) &&
+                !string.IsNullOrEmpty(val))
+            {
+                return val;
+            }
+
+            if (!string.IsNullOrEmpty(cultureCode) && cultureCode.StartsWith("zh", System.StringComparison.OrdinalIgnoreCase))
+            {
+                if (s_zhCnTexts.TryGetValue(section, out var s) && s.TryGetValue(key, out var v)) return v;
+            }
+            else
+            {
+                if (s_enUsTexts.TryGetValue(section, out var s) && s.TryGetValue(key, out var v)) return v;
+            }
+
+            // 英文默认或占位
+            if (s_enUsTexts.TryGetValue(section, out var en) && en.TryGetValue(key, out var ev)) return ev;
+            return $"[{section}.{key}]";
+        }
+    }
+}
+
+<!DOCTYPE html>
+<html lang="@culture.Name">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <title>@pageTitle - @appTitle</title>
+
+    <!-- 缓存控制 -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta http-equiv="Vary" content="*">
+
+    <link rel="stylesheet" href="~/css/fontawesome/all.min.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/session-manager.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/home.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/sweetalert2.css" asp-append-version="true">
+
+    <style>
+        /* 为退料返回按钮添加橙色边框样式，保持与页面其他按钮风格统一 */
+        .func-btn.btn-Return {
+            border: 2px solid #ff6b35 !important;
+            background: linear-gradient(135deg, #fff8f5 0%, #ffffff 100%);
+            transition: all 0.3s ease;
+        }
+
+            .func-btn.btn-Return:hover {
+                border-color: #ff4500 !important;
+                background: linear-gradient(135deg, #fff0e8 0%, #fff5f0 100%);
+                transform: translateY(-3px);
+                box-shadow: 0 8px 20px rgba(255, 107, 53, 0.2);
+            }
+
+            .func-btn.btn-Return:active {
+                transform: translateY(0);
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            /* 移动端触摸反馈 */
+            .func-btn.btn-Return.touch-active {
+                background: linear-gradient(135deg, #ffe8e0 0%, #ffede5 100%);
+                border-color: #ff4500 !important;
+            }
+
+            /* 图标颜色适配 */
+            .func-btn.btn-Return .func-icon i {
+                color: #ff6b35;
+            }
+
+            .func-btn.btn-Return:hover .func-icon i {
+                color: #ff4500;
+                transform: scale(1.05);
+            }
+
+        /* 标签打印按钮专属样式 - 使用打印机和标签组合图标 */
+        .func-btn.btn-labelprint {
+            border: 2px solid #4a90e2 !important;
+            background: linear-gradient(135deg, #f0f7ff 0%, #ffffff 100%);
+            transition: all 0.3s ease;
+        }
+
+            .func-btn.btn-labelprint:hover {
+                border-color: #2c6cb0 !important;
+                background: linear-gradient(135deg, #e8f0fe 0%, #f5f9ff 100%);
+                transform: translateY(-3px);
+                box-shadow: 0 8px 20px rgba(74, 144, 226, 0.2);
+            }
+
+            .func-btn.btn-labelprint .func-icon {
+                position: relative;
+                display: inline-block;
+            }
+
+                /* 双图标效果：打印机 + 标签 */
+                .func-btn.btn-labelprint .func-icon i.fa-print {
+                    color: #4a90e2;
+                    font-size: 1.8rem;
+                }
+
+                .func-btn.btn-labelprint .func-icon i.fa-tag {
+                    position: absolute;
+                    bottom: -8px;
+                    right: -12px;
+                    font-size: 1rem;
+                    background: white;
+                    border-radius: 50%;
+                    padding: 2px;
+                    color: #2c6cb0;
+                    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                }
+
+            .func-btn.btn-labelprint:hover .func-icon i.fa-print {
+                color: #2c6cb0;
+                transform: scale(1.02);
+            }
+
+            .func-btn.btn-labelprint:hover .func-icon i.fa-tag {
+                color: #1a4a7a;
+                transform: scale(1.1);
+            }
+    </style>
+</head>
+<body>
+    <div id="authMessage" class="auth-message" aria-hidden="true">
+        <i class="fas fa-exclamation-triangle" aria-hidden="true"></i>
+        <span id="authMessageText" aria-live="polite"></span>
+    </div>
+
+    <div id="sessionExpiredModal" class="session-expired-modal" role="dialog" aria-hidden="true">
+        <div class="session-modal-content">
+            <h3><i class="fas fa-user-clock"></i> <span id="sessionExpiredTitle">@LocalizedHelper.GetText(languageResources, "Home", "SessionExpiredTitle", culture.Name)</span></h3>
+            <p id="sessionExpiredMessage">@LocalizedHelper.GetText(languageResources, "Home", "SessionExpiredMessage", culture.Name)</p>
+            <p id="sessionReloginMessage">@LocalizedHelper.GetText(languageResources, "Home", "SessionReloginMessage", culture.Name)</p>
+            <button id="reloginBtn">@LocalizedHelper.GetText(languageResources, "Home", "ReloginButton", culture.Name)</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <div class="header-left">
+                <h1><i class="fas fa-warehouse"></i> @appTitle</h1>
+                <strong>@LocalizedHelper.GetText(languageResources, "Home", "WelcomeBack", culture.Name), @FullName</strong>
+                <span>@LocalizedHelper.GetText(languageResources, "Home", "CurrentStation", culture.Name): @siteName</span>
+            </div>
+            <div class="header-right">
+                @Html.AntiForgeryToken()
+                <button id="logoutBtn" class="btn-logout">
+                    <i class="fas fa-sign-out-alt"></i> @LocalizedHelper.GetText(languageResources, "Home", "LogoutButton", culture.Name)
+                </button>
+            </div>
+        </div>
+
+        <div class="function-area">
+            <h2><i class="fas fa-th-large"></i> @LocalizedHelper.GetText(languageResources, "Home", "SystemFunctions", culture.Name)</h2>
+            <div class="button-grid" id="homeButtonGrid">
+                @{
+                    var buttonPermissions = ViewData["ButtonPermissions"] as Dictionary<string, bool> ?? new Dictionary<string, bool>();
+                }
+
+                @if (buttonPermissions.GetValueOrDefault("Issue"))
+                {
+                    <a href="/Issue/Index" class="func-btn btn-issue" id="btnIssue">
+                        <div class="func-icon"><i class="fas fa-box-open"></i></div>
+                        <div class="func-title">@LocalizedHelper.GetText(languageResources, "Home", "MaterialIssuanceScan", culture.Name)</div>
+                        <div class="func-desc">@LocalizedHelper.GetText(languageResources, "Home", "MaterialIssuanceDesc", culture.Name)</div>
+                    </a>
+                }
+
+                @if (buttonPermissions.GetValueOrDefault("ReturnMaterial"))
+                {
+                    <!-- 退料返回按钮 - 已添加橙色边框样式，与页面其他按钮风格统一 -->
+                    <a href="/Return/Index" class="func-btn btn-Return" id="btnReturn">
+                        <div class="func-icon"><i class="fas fa-undo-alt"></i></div>
+                        <div class="func-title">@LocalizedHelper.GetText(languageResources, "Home", "ReturnMaterialScan", culture.Name)</div>
+                        <div class="func-desc">@LocalizedHelper.GetText(languageResources, "Home", "ReturnMaterialDesc", culture.Name)</div>
+                    </a>
+                }
+
+
+                @if (buttonPermissions.GetValueOrDefault("Outbound"))
+                {
+                    <a href="/Outbound/Index" class="func-btn btn-outbound" id="btnOutbound">
+                        <div class="func-icon"><i class="fas fa-shipping-fast"></i></div>
+                        <div class="func-title">@LocalizedHelper.GetText(languageResources, "Home", "OutboundScan", culture.Name)</div>
+                        <div class="func-desc">@LocalizedHelper.GetText(languageResources, "Home", "OutboundScanDesc", culture.Name)</div>
+                    </a>
+                }
+
+
+
+                @if (buttonPermissions.GetValueOrDefault("Receivin"))
+                {
+                    <a href="/Receivin/Index" class="func-btn btn-Receipt" id="btnReceipt">
+                        <div class="func-icon"><i class="fas fa-truck-loading"></i></div>
+                        <div class="func-title">@LocalizedHelper.GetText(languageResources, "Home", "ReceiptScan", culture.Name)</div>
+                        <div class="func-desc">@LocalizedHelper.GetText(languageResources, "Home", "ReceiptScanDesc", culture.Name)</div>
+                    </a>
+                }
+
+                @if (buttonPermissions.GetValueOrDefault("Inbound"))
+                {
+                    <a href="/Receipt/Index" class="func-btn btn-inbound" id="btnInbound">
+                        <div class="func-icon"><i class="fas fa-dolly"></i></div>
+                        <div class="func-title">@LocalizedHelper.GetText(languageResources, "Home", "InboundScan", culture.Name)</div>
+                        <div class="func-desc">@LocalizedHelper.GetText(languageResources, "Home", "InboundScanDesc", culture.Name)</div>
+                    </a>
+                }
+                @if (buttonPermissions.GetValueOrDefault("Transfer"))
+                {
+                    <a href="/Transfer/Index" class="func-btn btn-transfer" id="btnTransfer">
+                        <div class="func-icon"><i class="fas fa-exchange-alt"></i></div>
+                        <div class="func-title">@LocalizedHelper.GetText(languageResources, "Home", "StockTransfer", culture.Name)</div>
+                        <div class="func-desc">@LocalizedHelper.GetText(languageResources, "Home", "StockTransferDesc", culture.Name)</div>
+                    </a>
+                }
+
+                @if (buttonPermissions.GetValueOrDefault("Inventory"))
+                {
+                    <a href="/CountTag/Index" class="func-btn btn-inventory" id="btnInventory">
+                        <div class="func-icon"><i class="fas fa-clipboard-check"></i></div>
+                        <div class="func-title">@LocalizedHelper.GetText(languageResources, "Home", "InventoryScan", culture.Name)</div>
+                        <div class="func-desc">@LocalizedHelper.GetText(languageResources, "Home", "InventoryScanDesc", culture.Name)</div>
+                    </a>
+                }
+                @if (buttonPermissions.GetValueOrDefault("Inventory"))
+                {
+                    <a href="/CountView/Index" class="func-btn btn-cyclecount" id="btnCycleCount" style="border-color: #6f42c1;">
+                        <div class="func-icon"><i class="fas fa-search"></i></div>
+                        <div class="func-title">@LocalizedHelper.GetText(languageResources, "Home", "CycleCountQuery", culture.Name)</div>
+                        <div class="func-desc">@LocalizedHelper.GetText(languageResources, "Home", "CycleCountQueryDesc", culture.Name)</div>
+                    </a>
+                }
+
+
+
+                @if (buttonPermissions.GetValueOrDefault("LabelPrint"))
+                {
+                    <!-- 标签打印按钮 - 使用打印机+标签组合图标，突出打印功能 -->
+                    <a href="/Barcode/Index" class="func-btn btn-labelprint" id="btnLabelPrint">
+                        <div class="func-icon">
+                            <i class="fas fa-print"></i>
+                            <i class="fas fa-tag"></i>
+                        </div>
+                        <div class="func-title">@LocalizedHelper.GetText(languageResources, "Home", "LabelPrint", culture.Name)</div>
+                        <div class="func-desc">@LocalizedHelper.GetText(languageResources, "Home", "LabelPrintDesc", culture.Name)</div>
+                    </a>
+                }
+                @if (buttonPermissions.GetValueOrDefault("Settings"))
+                {
+                    <a href="/Home/SystemSett" class="func-btn btn-settings" id="btnSettings">
+                        <div class="func-icon"><i class="fas fa-cog"></i></div>
+                        <div class="func-title">@LocalizedHelper.GetText(languageResources, "Home", "SystemSettings", culture.Name)</div>
+                        <div class="func-desc">@LocalizedHelper.GetText(languageResources, "Home", "SystemSettingsDesc", culture.Name)</div>
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+
+    <script nonce="@Context.Items["CspNonce"]">
+        // 本地化消息配置，供SessionManager使用（必须在session-manager.js之前定义）
+        window.sessionMessages = {
+            confirmLogout: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Home", "LogoutConfirm"))),
+            loggingOut: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Home", "LoggingOut"))),
+            confirmButton: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Common", "Confirm"))),
+            cancelButton: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Common", "Cancel")))
+        };
+    </script>
+    <script src="~/js/sweetalert.js" asp-append-version="true"></script>
+    <script src="~/js/session-manager.js" asp-append-version="true"></script>
+
+    <script nonce="@Context.Items["CspNonce"]">
+        document.addEventListener('DOMContentLoaded', function () {
+            // touch 视觉反馈（被动监听以免影响滚动）
+            document.querySelectorAll('.func-btn').forEach(btn => {
+                btn.addEventListener('touchstart', function () { this.classList.add('touch-active'); }, { passive: true });
+                btn.addEventListener('touchend', function () { this.classList.remove('touch-active'); }, { passive: true });
+                btn.addEventListener('touchcancel', function () { this.classList.remove('touch-active'); }, { passive: true });
+            });
+
+            // ESC 快捷键返回主页
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && window.location.pathname !== '/Home/Index') {
+                    e.preventDefault();
+                    window.location.href = '/Home/Index';
+                }
+            });
+
+            // 防止双击缩放
+            let lastTap = 0;
+            document.addEventListener('touchend', function (e) {
+                const tapLength = Date.now() - lastTap;
+                if (tapLength < 500 && tapLength > 0) e.preventDefault();
+                lastTap = Date.now();
+            }, false);
+        });
+    </script>
+</body>
+</html>

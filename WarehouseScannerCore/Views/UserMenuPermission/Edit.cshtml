@@ -1,0 +1,224 @@
+@model WarehouseScannerCore.Models.UserMenuPermission
+@{
+    // 从ViewBag获取数据
+    var getText = ViewBag.GetText as Func<string, string, string>;
+    var currentCulture = ViewBag.CurrentCulture as string ?? "zh-CN";
+    var currentUICulture = ViewBag.CurrentUICulture as string ?? "zh-CN";
+
+    // 从ViewBag获取用户组和原始值
+    var userGroups = ViewBag.UserGroups as List<string> ?? new List<string>();
+    var menuOptions = ViewBag.MenuOptions as List<SelectListItem> ?? new List<SelectListItem>();
+    var siteOptions = ViewBag.SiteOptions as List<SelectListItem> ?? new List<SelectListItem>();
+    var originalUserCode = ViewBag.OriginalUserCode as string;
+    var originalMenuCode = ViewBag.OriginalMenuCode as string;
+    var originalSiteCode = ViewBag.OriginalSiteCode as string ?? string.Empty;
+
+    // 定义本地辅助函数
+    string GetText(string section, string key)
+    {
+        return getText?.Invoke(section, key) ?? $"[{section}.{key}]";
+    }
+
+    // 设置页面标题
+    ViewData["Title"] = GetText("UserMenuPermissionCreate", "EditPermission");
+    Layout = "_MenuLayout";
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card menu-card">
+                <div class="card-header menu-card-header">
+                    <h4 class="mb-0">
+                        <i class="fas fa-edit me-2"></i>@GetText("UserMenuPermissionCreate", "EditPermission")
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <!-- 修改action为EditPost，并添加隐藏字段 -->
+                    <form action="/UserMenuPermission/EditPost" method="post">
+                        @Html.AntiForgeryToken()
+
+                        <!-- 隐藏字段保存原始值 -->
+                        <input type="hidden" name="originalUserCode" value="@originalUserCode" />
+                        <input type="hidden" name="originalMenuCode" value="@originalMenuCode" />
+                        <input type="hidden" name="originalSiteCode" value="@originalSiteCode" />
+
+                        @if (TempData["ErrorMessage"] != null)
+                        {
+                            <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+                                <i class="fas fa-exclamation-circle me-2"></i>@Html.Raw(TempData["ErrorMessage"])
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        }
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="SiteCode" class="form-label">@GetText("UserMenuPermissionCreate", "SiteCode")</label>
+                                <select id="SiteCode" name="SiteCode" class="form-select">
+                                    @foreach (var site in siteOptions)
+                                    {
+                                        <option value="@site.Value" selected="@(string.Equals(site.Value, Model.SiteCode, StringComparison.OrdinalIgnoreCase))">@site.Text</option>
+                                    }
+                                </select>
+                                <small class="form-text text-muted">
+                                    @GetText("UserMenuPermissionCreate", "SiteCodeHint")
+                                </small>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="UserCode" class="form-label">@GetText("UserMenuPermissionCreate", "UserCode") *</label>
+                                <input type="text" id="UserCode" name="UserCode"
+                                       class="form-control"
+                                       value="@Model.UserCode"
+                                       placeholder="@GetText("UserMenuPermissionCreate", "UserCodePlaceholder")"
+                                       required />
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="UserName" class="form-label">@GetText("UserMenuPermissionCreate", "UserName") *</label>
+                                <input type="text" id="UserName" name="UserName"
+                                       class="form-control"
+                                       value="@Model.UserName"
+                                       placeholder="@GetText("UserMenuPermissionCreate", "UserNamePlaceholder")"
+                                       required />
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="UserGroup" class="form-label">@GetText("UserMenuPermissionCreate", "UserGroup") *</label>
+                            <select id="UserGroup" name="UserGroup" class="form-select" required>
+                                <option value="">@GetText("UserMenuPermissionCreate", "SelectUserGroup")</option>
+                                @foreach (var group in userGroups)
+                                {
+                                    <option value="@group" selected="@(group == Model.UserGroup)">@group</option>
+                                }
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="MenuCode" class="form-label">@GetText("UserMenuPermissionCreate", "MenuSelection") *</label>
+                            <select id="MenuCode" name="MenuCode" class="form-select" required>
+                                <option value="">@GetText("UserMenuPermissionCreate", "SelectMenu")</option>
+                                @foreach (var menu in menuOptions)
+                                {
+                                    <option value="@menu.Value"
+                                            selected="@(menu.Value == Model.MenuCode)">
+                                        @menu.Text
+                                    </option>
+                                }
+                            </select>
+                            <small class="form-text text-muted">
+                                @GetText("UserMenuPermissionCreate", "AutoFillNote")
+                            </small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="MenuName" class="form-label">@GetText("UserMenuPermissionCreate", "MenuName") *</label>
+                            <input type="text" id="MenuName" name="MenuName"
+                                   class="form-control"
+                                   value="@Model.MenuName"
+                                   placeholder="@GetText("UserMenuPermissionCreate", "AutoFillNote")"
+                                   readonly
+                                   required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">@GetText("UserMenuPermissionCreate", "PermissionSetting") *</label>
+                            <div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio"
+                                           id="Permission1" name="Permission" value="1"
+                                           @(Model.Permission == 1 ? "checked" : "")>
+                                    <label class="form-check-label text-success" for="Permission1">
+                                        <i class="fas fa-check-circle me-1"></i>@GetText("UserMenuPermissionCreate", "AllowAccess")
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio"
+                                           id="Permission0" name="Permission" value="0"
+                                           @(Model.Permission == 0 ? "checked" : "")>
+                                    <label class="form-check-label text-danger" for="Permission0">
+                                        <i class="fas fa-times-circle me-1"></i>@GetText("UserMenuPermissionCreate", "DenyAccess")
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="Remark" class="form-label">@GetText("UserMenuPermissionCreate", "Remark")</label>
+                            <textarea id="Remark" name="Remark" class="form-control" rows="2"
+                                      placeholder="@GetText("UserMenuPermissionCreate", "RemarkPlaceholder")">@Model.Remark</textarea>
+                        </div>
+
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary" id="submitBtn">
+                                <i class="fas fa-save me-1"></i>@GetText("UserMenuPermissionCreate", "Save")
+                            </button>
+                            <a href="/UserMenuPermission/Index" class="btn btn-secondary ms-2">
+                                <i class="fas fa-arrow-left me-1"></i>@GetText("UserMenuPermissionCreate", "BackToList")
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/sweetalert.js"></script>
+    <script>
+        $(document).ready(function() {
+            // 预定义菜单映射
+            var menuMap = {
+                @foreach (var menu in menuOptions)
+                {
+                            var textParts = menu.Text.Split('-');
+                            var menuName = textParts.Length > 1 ? textParts[1].Trim() : "";
+                            @Html.Raw($"'{menu.Value}': '{menuName.Replace("'", "\\'")}',")
+                }
+            };
+
+            // 当菜单选择变化时，自动填充菜单名称
+            $('#MenuCode').change(function() {
+                var selectedCode = $(this).val();
+                var menuName = menuMap[selectedCode] || '';
+                $('#MenuName').val(menuName);
+            });
+
+            // 表单提交验证
+            $('form').submit(function(e) {
+                var isValid = true;
+                var errorFields = [];
+
+                // 检查必填字段
+                $('[required]').each(function() {
+                    if (!$(this).val().trim()) {
+                        $(this).addClass('is-invalid');
+                        var fieldName = $(this).prev('label').text().replace('*', '').trim();
+                        errorFields.push(fieldName);
+                        isValid = false;
+                    } else {
+                        $(this).removeClass('is-invalid');
+                    }
+                });
+
+                if (!isValid) {
+                    e.preventDefault();
+                    var validationMessage = @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("UserMenuPermissionCreate", "ValidationError")));
+                    Swal.fire({ icon: 'warning', text: validationMessage + '\n\n' + errorFields.join('、'), timer: 3000, timerProgressBar: true });
+                } else {
+                    // 显示加载状态
+                    $('#submitBtn').prop('disabled', true)
+                        .html('<i class="fas fa-spinner fa-spin me-1"></i>' + @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("UserMenuPermissionCreate", "Saving"))));
+                }
+            });
+
+            // 页面加载时，如果已有菜单代码，触发一次change事件
+            var currentMenuCode = $('#MenuCode').val();
+            if (currentMenuCode) {
+                $('#MenuCode').trigger('change');
+            }
+        });
+    </script>
+}

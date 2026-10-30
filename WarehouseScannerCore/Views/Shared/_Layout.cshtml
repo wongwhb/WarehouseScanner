@@ -1,0 +1,88 @@
+@inject WarehouseScannerCore.Services.ILanguageService LanguageService
+@{
+    var currentLanguage = Context.Request.Cookies["Language"] ?? "zh-CN";
+    var sessionExpiredText = LanguageService.GetString(currentLanguage, "Home", "SessionExpired");
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+</head>
+<body>
+   
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+
+ 
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        // ===== 全局用户可见文案（JS 本地化资源，Common 类别）=====
+        window.appTexts = {
+            switchingLanguage: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(LanguageService.GetString(currentLanguage, "Common", "SwitchingLanguage"))),
+            languageSwitchFailed: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(LanguageService.GetString(currentLanguage, "Common", "LanguageSwitchFailed"))),
+            networkErrorRetry: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(LanguageService.GetString(currentLanguage, "Common", "NetworkErrorRetry"))),
+            networkRestored: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(LanguageService.GetString(currentLanguage, "Common", "NetworkRestored"))),
+            networkOffline: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(LanguageService.GetString(currentLanguage, "Common", "NetworkOffline"))),
+            offlineDataSaved: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(LanguageService.GetString(currentLanguage, "Common", "OfflineDataSaved"))),
+            addToHomeScreen: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(LanguageService.GetString(currentLanguage, "Common", "AddToHomeScreen"))),
+            addedToHomeScreen: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(LanguageService.GetString(currentLanguage, "Common", "AddedToHomeScreen"))),
+            processing: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(LanguageService.GetString(currentLanguage, "Common", "Processing"))),
+            networkConnError: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(LanguageService.GetString(currentLanguage, "Common", "NetworkConnError"))),
+            sessionExpiredRelogin: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(LanguageService.GetString(currentLanguage, "Common", "SessionExpiredRelogin"))),
+            scannerReady: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(LanguageService.GetString(currentLanguage, "Common", "ScannerReady"))),
+            scanSuccess: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(LanguageService.GetString(currentLanguage, "Common", "ScanSuccess"))),
+            scanModeLabel: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(LanguageService.GetString(currentLanguage, "Common", "ScanModeLabel"))),
+            scannerModeGun: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(LanguageService.GetString(currentLanguage, "Common", "ScannerModeGun"))),
+            scannerModeCamera: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(LanguageService.GetString(currentLanguage, "Common", "ScannerModeCamera"))),
+            clickToSwitchScanMode: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(LanguageService.GetString(currentLanguage, "Common", "ClickToSwitchScanMode"))),
+            barcodeEmpty: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(LanguageService.GetString(currentLanguage, "Common", "BarcodeEmpty"))),
+            barcodeEmptyAfterClean: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(LanguageService.GetString(currentLanguage, "Common", "BarcodeEmptyAfterClean"))),
+            noValidFields: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(LanguageService.GetString(currentLanguage, "Common", "NoValidFields"))),
+            mockScanSuccess: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(LanguageService.GetString(currentLanguage, "Common", "MockScanSuccess"))),
+            parseFailed: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(LanguageService.GetString(currentLanguage, "Common", "ParseFailed")))
+        };
+    </script>
+    <script>
+        // ===== 全局 AJAX Session 过期拦截（覆盖所有页面）=====
+        (function() {
+            var __redirecting = false;
+            function redirectToLogin(msg) {
+                if (__redirecting) return;
+                __redirecting = true;
+                if (typeof Swal !== 'undefined' && Swal.isVisible()) Swal.close();
+                alert(msg || @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(sessionExpiredText)));
+                window.location.href = '/Account/Login';
+            }
+            // 1. 拦截 HTTP 401/302（session 完全失效，框架返回重定向）
+            $(document).ajaxError(function(event, xhr, settings, error) {
+                if (xhr && (xhr.status === 401 || xhr.status === 302)) {
+                    redirectToLogin();
+                }
+            });
+            // 2. 拦截 HTTP 200 但 body 包含 session 过期文案（后端 catch 返回 JSON）
+            $(document).ajaxSuccess(function(event, xhr, settings) {
+                try {
+                    var resp = xhr.responseJSON || JSON.parse(xhr.responseText);
+                    if (resp && resp.success === false && resp.message) {
+                        var msg = resp.message;
+                        if (msg.indexOf('会话已过期') >= 0 || msg.indexOf('登录已过期') >= 0 ||
+                            msg.indexOf('session expired') >= 0 || msg.indexOf('Session expired') >= 0 ||
+                            msg.indexOf('未登录') >= 0) {
+                            redirectToLogin(msg);
+                        }
+                    }
+                } catch (e) { /* 非 JSON 响应，忽略 */ }
+            });
+        })();
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

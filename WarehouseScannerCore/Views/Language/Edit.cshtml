@@ -1,0 +1,206 @@
+@{
+    Layout = "_MenuLayout";
+}
+@model WarehouseScannerCore.Models.LanguageItem
+@{
+    // 从ViewBag获取数据
+    var getText = ViewBag.GetText as Func<string, string, string>;
+    var currentCulture = ViewBag.CurrentCulture as string ?? "zh-CN";
+    var currentUICulture = ViewBag.CurrentUICulture as string ?? "zh-CN";
+
+    // 定义本地辅助函数
+    string GetText(string section, string key)
+    {
+        return getText?.Invoke(section, key) ?? $"[{section}.{key}]";
+    }
+
+    // 判断是创建还是编辑
+    bool isEdit = !string.IsNullOrEmpty(Model?.Page) && !string.IsNullOrEmpty(Model?.Key);
+
+    // 设置页面标题
+    ViewData["Title"] = isEdit ? GetText("LanguageEdit", "EditLanguageItem") : GetText("LanguageCreate", "CreateLanguageItem");
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card language-card">
+                <div class="card-header language-card-header">
+                    <h4 class="mb-0">
+                        <i class="fas fa-edit mr-2"></i>
+                        @(isEdit? GetText("LanguageEdit", "EditLanguageItem") : GetText("LanguageEdit", "CreateLanguageItem"))
+                    </h4>
+                </div>
+
+                <div class="card-body">
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            <i class="fas fa-check-circle mr-2"></i>@TempData["SuccessMessage"]
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    }
+
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <i class="fas fa-exclamation-circle mr-2"></i>@TempData["ErrorMessage"]
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    }
+
+                    @using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                        @Html.HiddenFor(model => model.Page)
+                        @Html.HiddenFor(model => model.Key)
+
+                        <div class="form-group row">
+                            <label class="col-md-3 col-form-label">@GetText("LanguageEdit", "Page")</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" value="@Model!.Page" readonly />
+                                <small class="form-text text-muted">
+                                    @Html.Raw(GetText("LanguageEdit", "PageReadonly") ?? "页面字段为只读，如需修改请删除后重新创建")
+                                </small>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-3 col-form-label">@GetText("LanguageEdit", "Key")</label>
+                            <div class="col-md-9">
+                                <input type="text" class="form-control" value="@Model.Key" readonly />
+                                <small class="form-text text-muted">
+                                    @Html.Raw(GetText("LanguageEdit", "KeyReadonly") ?? "键名字段为只读，如需修改请删除后重新创建")
+                                </small>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label class="col-md-3 col-form-label">@GetText("LanguageEdit", "ChineseValue")</label>
+                            <div class="col-md-9">
+                                @Html.TextBoxFor(model => model.ChineseValue, new {
+                                @class = "form-control",
+                                                        required = "required",
+                                                        placeholder = GetText("LanguageEdit", "ChinesePlaceholder") ?? "请输入中文值"
+                                                        })
+                            @Html.ValidationMessageFor(model => model.ChineseValue, "", new { @class = "text-danger" })
+                            <small class="form-text text-muted">
+                                @Html.Raw(GetText("LanguageEdit", "ChineseValueSaveNote") ?? "请输入中文翻译值，保存后立即生效")
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label class="col-md-3 col-form-label">@GetText("LanguageEdit", "EnglishValue")</label>
+                        <div class="col-md-9">
+                            @Html.TextBoxFor(model => model.EnglishValue, new {
+                                                        @class = "form-control",
+                                                        required = "required",
+                                                        placeholder = GetText("LanguageEdit", "EnglishPlaceholder") ?? "请输入英文值"
+                                                        })
+                            @Html.ValidationMessageFor(model => model.EnglishValue, "", new { @class = "text-danger" })
+                            <small class="form-text text-muted">
+                                @Html.Raw(GetText("LanguageEdit", "EnglishValueSaveNote") ?? "请输入英文翻译值，保存后立即生效")
+                            </small>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <div class="col-md-9 offset-md-3">
+                            <button type="submit" class="btn btn-primary" id="saveBtn">
+                                <i class="fas fa-save mr-2"></i>@GetText("LanguageEdit", "Save") 
+                            </button>
+                            <a href="@Url.Action("Index")" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left mr-2"></i>@GetText("LanguageEdit", "BackToList") 
+                            </a>
+                        </div>
+                    </div>
+                                        }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/sweetalert.js"></script>
+    <script>
+        $(document).ready(function () {
+            // 添加表单验证
+            $('form').submit(function (e) {
+                var chineseValue = $('#ChineseValue').val();
+                var englishValue = $('#EnglishValue').val();
+
+                if (!chineseValue || chineseValue.trim() === '') {
+                    Swal.fire({ icon: 'warning', text: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("LanguageEdit", "ChineseRequired") ?? "中文值不能为空")), timer: 3000, timerProgressBar: true });
+                    e.preventDefault();
+                    return false;
+                }
+
+                if (!englishValue || englishValue.trim() === '') {
+                    Swal.fire({ icon: 'warning', text: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("LanguageEdit", "EnglishRequired") ?? "英文值不能为空")), timer: 3000, timerProgressBar: true });
+                    e.preventDefault();
+                    return false;
+                }
+
+                // 禁用保存按钮防止重复提交
+                $('#saveBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin mr-2"></i>@GetText("LanguageEdit", "Saving")');
+                return true;
+            });
+
+            // 如果表单验证失败，重新启用保存按钮
+            $('form').on('invalid-form.validate', function() {
+                $('#saveBtn').prop('disabled', false)
+                    .html('<i class="fas fa-save mr-2"></i>@GetText("LanguageEdit", "Save") ?? "保存"');
+            });
+        });
+    </script>
+
+    <style>
+        .language-card {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: none;
+            border-radius: 8px;
+        }
+
+        .language-card-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 8px 8px 0 0 !important;
+            padding: 1.2rem 1.5rem;
+        }
+
+        .language-card-header h4 {
+            margin: 0;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            padding: 0.5rem 1.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.65;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+    </style>
+}

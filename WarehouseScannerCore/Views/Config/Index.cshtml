@@ -1,0 +1,264 @@
+@model WarehouseScannerCore.Models.DatabaseConfig
+@{
+    var getText = ViewBag.GetText as Func<string, string, string>;
+    var currentCulture = ViewBag.CurrentCulture as string ?? "zh-CN";
+
+    string GetText(string section, string key)
+    {
+        return getText?.Invoke(section, key) ?? $"[{section}.{key}]";
+    }
+}
+<!DOCTYPE html>
+<html lang="@currentCulture">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@GetText("DatabaseConfig", "Title")</title>
+
+    <link href="~/css/bootstrap/bootstrap.min.css" rel="stylesheet">
+    <link href="~/css/bootstrap/bootstrap-icons.css" rel="stylesheet">
+</head>
+<body>
+
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="card" id="configCard">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">@GetText("DatabaseConfig", "CardTitle")</h4>
+                    </div>
+                    <div class="card-body">
+                        <div id="messageContainer"></div>
+
+                        <form id="configForm">
+                            @Html.AntiForgeryToken()
+                            <h5 class="mb-4">@GetText("DatabaseConfig", "FormTitle")</h5>
+
+                            <div class="mb-3">
+                                <label for="ConnectionString" class="form-label fw-semibold">
+                                    @GetText("DatabaseConfig", "ConnectionString")
+                                </label>
+                                <textarea id="ConnectionString" name="ConnectionString"
+                                          class="form-control font-monospace"
+                                          rows="3"
+                                          placeholder="@GetText("DatabaseConfig", "ConnectionStringPlaceholder")"
+                                          required>@Model.ConnectionString</textarea>
+                                <div class="form-text text-muted">
+                                    <i class="bi bi-info-circle"></i>
+                                    @GetText("DatabaseConfig", "ConnectionStringHint")
+                                </div>
+                                <div class="form-text text-muted">
+                                    <i class="bi bi-shield-lock"></i>
+                                    @GetText("DatabaseConfig", "ConnectionStringMaskHint")
+                                </div>
+                                <div class="invalid-feedback">@GetText("DatabaseConfig", "ConnectionStringRequired")</div>
+                            </div>
+
+                            <div class="row mt-4">
+                                <div class="col">
+                                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                        <a href="/Home/Index" class="btn btn-outline-secondary me-md-2"
+                                           title="@GetText("DatabaseConfig", "BackToHomeTooltip")">
+                                            <i class="bi bi-house-door"></i>
+                                            @GetText("DatabaseConfig", "BackToHome")
+                                        </a>
+
+                                        <button type="button" id="testButton" class="btn btn-outline-primary me-md-2">
+                                            <i class="bi bi-plug"></i> @GetText("DatabaseConfig", "TestConnection")
+                                        </button>
+
+                                        <button type="button" id="saveButton" class="btn btn-save" disabled
+                                                title="@GetText("DatabaseConfig", "TestRequiredBeforeSave")">
+                                            <i class="bi bi-save"></i> @GetText("DatabaseConfig", "SaveConfiguration")
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+
+                        <div class="mt-4 pt-3 border-top">
+                            <h6 class="text-muted">@GetText("DatabaseConfig", "ConfigurationInfo")</h6>
+                            <div class="info-box">
+                                <p class="mb-1">
+                                    <i class="bi bi-folder"></i> @GetText("DatabaseConfig", "ConfigFilePath"): Config/database.config.json
+                                </p>
+                                <p class="mb-1">
+                                    <i class="bi bi-shield-lock"></i> @GetText("DatabaseConfig", "EncryptedConnectionString")
+                                </p>
+                                <p class="mb-0">
+                                    <i class="bi bi-info-circle"></i> @GetText("DatabaseConfig", "RestartRequired")
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        var localTexts = {
+            testing: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("DatabaseConfig", "Testing"))),
+            saving: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("DatabaseConfig", "Saving"))),
+            testError: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("DatabaseConfig", "TestError"))),
+            configSaveFailed: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("DatabaseConfig", "ConfigSaveFailed")))
+        };
+
+        let isTestPassed = false;
+
+        $(document).ready(function () {
+            $('#testButton').click(testConnection);
+            $('#saveButton').click(saveConfiguration);
+
+            $(document).keydown(function (e) {
+                if (e.altKey && e.key === 'h') {
+                    e.preventDefault();
+                    window.location.href = '/Home/Index';
+                }
+            });
+        });
+
+        function testConnection() {
+            if (!validateForm()) return;
+
+            const connectionString = $('#ConnectionString').val().trim();
+            const testButton = $('#testButton');
+            const originalHtml = testButton.html();
+            testButton.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> ' + localTexts.testing);
+            testButton.prop('disabled', true);
+
+            $.ajax({
+                url: '@Url.Action("Test", "Config")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ connectionString: connectionString }),
+                headers: { 'X-CSRF-TOKEN': $('input[name="__RequestVerificationToken"]').val() },
+                success: function (response) {
+                    if (response.success) {
+                        isTestPassed = true;
+                        showMessage('success', response.message);
+                        updateSaveButton(true);
+                        $('#configCard').addClass('test-success');
+                    } else {
+                        isTestPassed = false;
+                        showMessage('warning', response.message);
+                        updateSaveButton(false);
+                        $('#configCard').removeClass('test-success');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    isTestPassed = false;
+                    showMessage('danger', localTexts.testError + ': ' + error);
+                    updateSaveButton(false);
+                    $('#configCard').removeClass('test-success');
+                },
+                complete: function () {
+                    testButton.html(originalHtml);
+                    testButton.prop('disabled', false);
+                }
+            });
+        }
+
+        function saveConfiguration() {
+            if (!isTestPassed) {
+                showMessage('warning', '@GetText("DatabaseConfig", "TestRequiredBeforeSave")');
+                return;
+            }
+            if (!validateForm()) return;
+
+            const connectionString = $('#ConnectionString').val().trim();
+            const saveButton = $('#saveButton');
+            const originalHtml = saveButton.html();
+            saveButton.html('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> ' + localTexts.saving);
+            saveButton.prop('disabled', true);
+
+            $.ajax({
+                url: '@Url.Action("Save", "Config")',
+                type: 'POST',
+                contentType: 'application/x-www-form-urlencoded',
+                data: { ConnectionString: connectionString },
+                headers: { 'X-CSRF-TOKEN': $('input[name="__RequestVerificationToken"]').val() },
+                success: function (response) {
+                    if (response.success) {
+                        showMessage('success', response.message);
+                    } else {
+                        showMessage('danger', response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    showMessage('danger', localTexts.configSaveFailed + ': ' + error);
+                },
+                complete: function () {
+                    saveButton.html(originalHtml);
+                    saveButton.prop('disabled', false);
+                }
+            });
+        }
+
+        function validateForm() {
+            const $el = $('#ConnectionString');
+            const val = $el.val()?.trim() ?? '';
+
+            if (!val) {
+                $el.addClass('is-invalid');
+                return false;
+            }
+            $el.removeClass('is-invalid');
+            return true;
+        }
+
+        // HTML 转义：动态消息（服务端响应）插入 DOM 前统一转义，防止注入（与 CountView 同一实现）
+        function escapeHtml(str) {
+            if (str === null || str === undefined) return '';
+            return String(str).replace(/&/g, '&amp;')
+                              .replace(/</g, '&lt;')
+                              .replace(/>/g, '&gt;')
+                              .replace(/"/g, '&quot;')
+                              .replace(/'/g, '&#039;');
+        }
+
+        function showMessage(type, message) {
+            const alertClass = {
+                'success': 'alert-success',
+                'warning': 'alert-warning',
+                'danger': 'alert-danger',
+                'info': 'alert-info'
+            }[type] || 'alert-info';
+
+            const iconClass = {
+                'success': 'bi-check-circle-fill',
+                'warning': 'bi-exclamation-triangle-fill',
+                'danger': 'bi-x-circle-fill',
+                'info': 'bi-info-circle-fill'
+            }[type] || 'bi-info-circle-fill';
+
+            const messageHtml = `
+                <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+                    <i class="bi ${iconClass} me-2"></i>
+                    ${escapeHtml(message)}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            `;
+
+            $('#messageContainer').html(messageHtml);
+            setTimeout(() => $('.alert').alert('close'), 5000);
+        }
+
+        function updateSaveButton(enabled) {
+            const saveButton = $('#saveButton');
+            if (enabled) {
+                saveButton.removeClass('btn-save').addClass('btn-save-enabled');
+                saveButton.prop('disabled', false);
+                saveButton.attr('title', '');
+            } else {
+                saveButton.removeClass('btn-save-enabled').addClass('btn-save');
+                saveButton.prop('disabled', true);
+                saveButton.attr('title', '@GetText("DatabaseConfig", "TestRequiredBeforeSave")');
+            }
+        }
+    </script>
+</body>
+</html>

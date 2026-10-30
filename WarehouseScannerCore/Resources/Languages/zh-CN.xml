@@ -1,0 +1,1498 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageResources>
+  <Language>
+    <Code>zh-CN</Code>
+    <Name>简体中文</Name>
+    <NativeName>简体中文</NativeName>
+    <Resources>
+      <!-- 通用 -->
+      <Common>
+        <AppName>GCM仓库扫码</AppName>
+        <Loading>加载中...</Loading>
+        <Success>成功</Success>
+        <Error>错误</Error>
+        <Confirm>确定</Confirm>
+        <Cancel>取消</Cancel>
+        <!-- 这里修正了：原来是 </Confirm> -->
+        <Save>保存</Save>
+        <Delete>删除</Delete>
+        <Search>搜索</Search>
+        <Refresh>刷新</Refresh>
+        <Close>关闭</Close>
+        <Yes>是</Yes>
+        <No>否</No>
+        <OK>确定</OK>
+        <Unit>单位</Unit>
+        <RequiredField>此字段为必填项</RequiredField>
+        <UnknownError>未知错误</UnknownError>
+        <OperationFailedRetry>操作失败，请稍后重试</OperationFailedRetry>
+        <SwitchingLanguage>切换语言中...</SwitchingLanguage>
+        <LanguageSwitchFailed>语言切换失败</LanguageSwitchFailed>
+        <NetworkErrorRetry>网络错误，请重试</NetworkErrorRetry>
+        <NetworkRestored>网络已恢复</NetworkRestored>
+        <NetworkOffline>网络已断开，部分功能可能受限</NetworkOffline>
+        <OfflineDataSaved>当前处于离线状态，数据将保存在本地</OfflineDataSaved>
+        <AddToHomeScreen>添加到主屏幕</AddToHomeScreen>
+        <AddedToHomeScreen>已添加到主屏幕</AddedToHomeScreen>
+        <Processing>处理中...</Processing>
+        <NetworkConnError>网络连接异常，请检查后重试</NetworkConnError>
+        <SessionExpiredRelogin>会话已过期，请重新登录</SessionExpiredRelogin>
+        <ScannerReady>扫码枪就绪，请扫描...</ScannerReady>
+        <ScanSuccess>扫码枪扫描成功！</ScanSuccess>
+        <ScanModeLabel>扫描模式：</ScanModeLabel>
+        <ScannerModeGun>扫码枪模式</ScannerModeGun>
+        <ScannerModeCamera>摄像头模式</ScannerModeCamera>
+        <ClickToSwitchScanMode>点击切换扫描模式</ClickToSwitchScanMode>
+        <BarcodeEmpty>条码内容不能为空</BarcodeEmpty>
+        <BarcodeEmptyAfterClean>条码内容为空（清理后）</BarcodeEmptyAfterClean>
+        <NoValidFields>未识别到有效字段</NoValidFields>
+        <MockScanSuccess>模拟扫码成功: </MockScanSuccess>
+        <ParseFailed>解析失败：{0}</ParseFailed>
+        <IdempotentResultUnknown>该请求此前已提交，但结果未知（可能已过账），请先到 Epicor 核实再决定是否重做</IdempotentResultUnknown>
+        <InvalidRequest>请求参数无效，请刷新页面后重试</InvalidRequest>
+      </Common>
+      <!-- 登录页面 -->
+      <Login>
+        <Title>登录</Title>
+        <WelcomeText>欢迎登录</WelcomeText>
+        <Username>用户名</Username>
+        <Password>密码</Password>
+        <LoginButton>登录</LoginButton>
+        <SiteSelect>选择站点</SiteSelect>
+        <SelectPlaceholder>选择站点</SelectPlaceholder>
+        <UsernameRequired>请输入用户名</UsernameRequired>
+        <PasswordRequired>请输入密码</PasswordRequired>
+        <SiteRequired>请选择站点</SiteRequired>
+        <UsernameTooShort>用户名至少3个字符</UsernameTooShort>
+        <PasswordTooShort>密码至少6个字符</PasswordTooShort>
+        <LoggingIn>登录中...</LoggingIn>
+        <ShowPassword>显示密码</ShowPassword>
+        <HidePassword>隐藏密码</HidePassword>
+        <Chinese>中文</Chinese>
+        <English>英文</English>
+        <LoginSuccess>登录成功</LoginSuccess>
+        <LoginError>登录失败</LoginError>
+        <InvalidCredentials>用户名或密码错误</InvalidCredentials>
+        <LoginRequired>请输入用户名、密码和站点</LoginRequired>
+        <SiteInvalid>所选站点无效</SiteInvalid>
+        <SiteConfigIncomplete>站点配置不完整，请联系管理员</SiteConfigIncomplete>
+        <EpicorConnectionLimit>Epicor已达到最大连接限制，获取员工信息失败</EpicorConnectionLimit>
+        <SystemError>系统错误，请稍后再试</SystemError>
+        <NoEpicorPermission>你没有登录EPicor系统权限，请联系管理员</NoEpicorPermission>
+        <DebugCurrentLanguage>当前语言</DebugCurrentLanguage>
+        <DebugFactoryCount>工厂数量</DebugFactoryCount>
+        <DebugSavedSite>已保存的站点</DebugSavedSite>
+        <DebugClientIP>客户端IP</DebugClientIP>
+        <DebugDeviceName>设备名称</DebugDeviceName>
+        <DebugUserAgent>用户代理</DebugUserAgent>
+        <DebugNone>无</DebugNone>
+        <AuthCleared>认证已清除</AuthCleared>
+        <AuthClearFailed>清除认证失败，请稍后重试</AuthClearFailed>
+        <SiteOptionDG>DG工厂 (默认)</SiteOptionDG>
+        <DefaultSuffix> (默认)</DefaultSuffix>
+        <DeviceInfoFormat>检测到 {0}，IP: {1}</DeviceInfoFormat>
+        <DeviceWindowsPC>Windows 电脑</DeviceWindowsPC>
+        <DeviceWindows11>Windows 11</DeviceWindows11>
+        <DeviceWindows10>Windows 10</DeviceWindows10>
+        <DeviceWindows8>Windows 8</DeviceWindows8>
+        <DeviceWindows7>Windows 7</DeviceWindows7>
+        <DeviceMac>苹果电脑</DeviceMac>
+        <DeviceLinux>安卓设备</DeviceLinux>
+        <DeviceAndroid>安卓设备</DeviceAndroid>
+        <DeviceIOS>苹果设备</DeviceIOS>
+        <DeviceUnknown>未知设备</DeviceUnknown>
+        <DeviceDetectedPrefix>检测到</DeviceDetectedPrefix>
+      </Login>
+      <!-- 首页 -->
+      <Home>
+        <Title>首页</Title>
+        <Welcome>欢迎使用仓库扫码</Welcome>
+        <UserId>用户ID</UserId>
+        <UserRole>用户角色</UserRole>
+        <CurrentSite>当前工厂2</CurrentSite>
+        <LoginTime>登录时间</LoginTime>
+        <LogoutButton>返回主页</LogoutButton>
+        <LogoutConfirm>确定要退出登录吗？</LogoutConfirm>
+        <LoggingOut>正在退出系统...</LoggingOut>
+        <LogoutSuccess>您已成功退出系统</LogoutSuccess>
+        <SessionExpired>会话已过期，请重新登录</SessionExpired>
+        <!-- 新增Index页面特定内容 -->
+        <SystemFunctions>系统功能</SystemFunctions>
+        <UserInformation>用户信息</UserInformation>
+        <WelcomeBack>欢迎回来</WelcomeBack>
+        <CurrentStation>当前站点</CurrentStation>
+        <!-- 功能按钮 -->
+        <MaterialIssuanceScan>发料扫码</MaterialIssuanceScan>
+        <MaterialIssuanceDesc>向工单发放物料</MaterialIssuanceDesc>
+        <ReturnMaterialScan>返回物料</ReturnMaterialScan>
+        <ReturnMaterialDesc>返回工单物料</ReturnMaterialDesc>
+        <OutboundScan>客户出货扫码</OutboundScan>
+        <OutboundScanDesc>挑选发货物料</OutboundScanDesc>
+        <StockTransfer>库存转移扫码</StockTransfer>
+        <StockTransferDesc>库位调整与转移操作</StockTransferDesc>
+        <ReceiptScan>采购收货扫码</ReceiptScan>
+        <ReceiptScanDesc>采购收货扫码登记</ReceiptScanDesc>
+        <ReceivinScan>采购收货扫码</ReceivinScan>
+        <ReceivinScanDesc>采购订单收货扫码登记</ReceivinScanDesc>
+        <InboundScan>产品入库扫码</InboundScan>
+        <InboundScanDesc>产品入库扫码登记</InboundScanDesc>
+        <InventoryScan>盘点扫码</InventoryScan>
+        <InventoryScanDesc>盘点调整</InventoryScanDesc>
+        <LabelPrint>库存查询</LabelPrint>
+        <LabelPrintDesc>库存查询</LabelPrintDesc>
+        <SystemSettings>系统设置</SystemSettings>
+        <SystemSettingsDesc>参数配置与管理</SystemSettingsDesc>
+        <!-- 会话相关 -->
+        <SessionExpiredTitle>会话已过期</SessionExpiredTitle>
+        <SessionExpiredMessage>由于长时间无操作或安全原因，您的会话已过期。</SessionExpiredMessage>
+        <SessionReloginMessage>请重新登录以继续使用系统。</SessionReloginMessage>
+        <ReloginButton>重新登录</ReloginButton>
+        <!-- 认证消息 -->
+        <AuthRequired>请先登录或重新登录</AuthRequired>
+        <!-- 应用名称 -->
+        <AppTitle>GCM仓库管理系统</AppTitle>
+        <ConfigTitle>系统配置管理</ConfigTitle>
+        <ConfigFunctions>配置功能</ConfigFunctions>
+        <ConfigSiteManagement>站点管理</ConfigSiteManagement>
+        <ConfigSiteManagementDesc>管理系统中的各个站点信息</ConfigSiteManagementDesc>
+        <ConfigMenuPermission>菜单权限配置</ConfigMenuPermission>
+        <ConfigMenuPermissionDesc>配置用户菜单访问权限</ConfigMenuPermissionDesc>
+        <ConfigDatabaseConfig>数据库连接配置</ConfigDatabaseConfig>
+        <ConfigDatabaseConfigDesc>配置和管理数据库连接</ConfigDatabaseConfigDesc>
+        <ConfigBackToHome>返回主页</ConfigBackToHome>
+      </Home>
+      <!-- Material Issue -->
+      <MaterialIssue>
+        <Title>物料发料</Title>
+        <SubmitButton>提交发料</SubmitButton>
+        <ResetButton>重置</ResetButton>
+        <CancelButton>返回</CancelButton>
+        <WorkOrderNo>工单号</WorkOrderNo>
+        <AssemblySeq>装配序号</AssemblySeq>
+        <IssueQty>需求数量</IssueQty>
+        <IssuedQty>已发数量</IssuedQty>
+        <UnissuedQty>未发数量</UnissuedQty>
+        <AvailableQty>库存数量</AvailableQty>
+        <MaterialCode>物料编号</MaterialCode>
+        <Quantity>数量</Quantity>
+        <Unit>单位</Unit>
+        <WarehouseCode>仓库代码</WarehouseCode>
+        <Location>库位</Location>
+        <BatchNo>批次号</BatchNo>
+        <Operator>操作员</Operator>
+        <Remarks>备注</Remarks>
+        <WorkOrderPlaceholder>请扫描或输入工单条码</WorkOrderPlaceholder>
+        <AssemblySeqPlaceholder>请输入装配序号</AssemblySeqPlaceholder>
+        <MaterialPlaceholder>请扫描或输入物料条码</MaterialPlaceholder>
+        <QuantityPlaceholder>请输入发料数量</QuantityPlaceholder>
+        <LocationPlaceholder>请输入库位代码</LocationPlaceholder>
+        <BatchNoPlaceholder>请输入批次号</BatchNoPlaceholder>
+        <RemarksPlaceholder>请输入备注信息（可选）</RemarksPlaceholder>
+        <JobScanPromptMessage>扫描工单条码自动填入工单号和装配序号</JobScanPromptMessage>
+        <MatScanPromptMessage>扫描物料条码自动填入物料信息</MatScanPromptMessage>
+        <ScanPromptMessage>请输入条码</ScanPromptMessage>
+        <ScanBarcodePrompt>请输入条码内容：</ScanBarcodePrompt>
+        <WorkOrderRequired>请输入工单号</WorkOrderRequired>
+        <AssemblySeqRequired>请输入装配序号</AssemblySeqRequired>
+        <MaterialCodeRequired>请输入物料编号</MaterialCodeRequired>
+        <MaterialCodeRequiredMsg>物料编号不能为空</MaterialCodeRequiredMsg>
+        <FromWarehouseRequired>仓库不能为空</FromWarehouseRequired>
+        <QuantityRequired>请输入有效的发料数量</QuantityRequired>
+        <InvalidQuantity>发料数量无效</InvalidQuantity>
+        <JobAndAssemblyRequired>请先输入工单号和装配序号</JobAndAssemblyRequired>
+        <PleaseEnterAssemblySeq>请输入装配序号</PleaseEnterAssemblySeq>
+        <AssemblySeqMustBeNumber>装配序号必须为数字</AssemblySeqMustBeNumber>
+        <JobValidationPassed>工单验证通过</JobValidationPassed>
+        <JobValidationFailed>工单验证失败</JobValidationFailed>
+        <InventoryValidationPassed>库存验证通过</InventoryValidationPassed>
+        <InventoryValidationFailed>库存验证失败</InventoryValidationFailed>
+        <JobStatus>工单 {0} 装配序号 {1} 已关闭或未发放</JobStatus>
+        <JobNotFound>工单 {0} 装配序号 {1} 不存在</JobNotFound>
+        <MaterialNotFound>工单 {0} 中未找到物料 {1}</MaterialNotFound>
+        <MaterialFullyIssued>物料 {0} 已全部发放</MaterialFullyIssued>
+        <UnitMismatch>单位不匹配：输入 {0}，应为 {1}</UnitMismatch>
+        <NoAvailableInventory>库存不存在：仓库 {0}，库位 {1}，批次 {2}</NoAvailableInventory>
+        <InsufficientInventory>物料 {0} 库存不足</InsufficientInventory>
+        <QuantityExceedsInventory>发料数量 {0} 超过可用库存 {1}</QuantityExceedsInventory>
+        <InventoryInsufficient>发料数量超过可用库存</InventoryInsufficient>
+        <BarcodeParseSuccess>条码解析成功</BarcodeParseSuccess>
+        <BarcodeParseFailed>条码解析失败</BarcodeParseFailed>
+        <ParserReady>条码解析器已就绪</ParserReady>
+        <ParserInitFailed>条码解析器初始化失败</ParserInitFailed>
+        <JobBarcodeParseSuccess>工单条码解析成功，已自动填入工单号和装配序号</JobBarcodeParseSuccess>
+        <MaterialBarcodeParseSuccess>物料条码解析成功，已自动填入物料信息</MaterialBarcodeParseSuccess>
+        <LoadingOrder>正在加载工单信息...</LoadingOrder>
+        <LoadOrderSuccess>工单信息加载成功</LoadOrderSuccess>
+        <LoadOrderFailed>工单信息加载失败</LoadOrderFailed>
+        <Submitting>正在提交发料...</Submitting>
+        <SubmitSuccess>发料成功</SubmitSuccess>
+        <SubmitFailed>发料失败</SubmitFailed>
+        <NetworkError>网络错误，请检查连接</NetworkError>
+        <FormReset>表单已重置</FormReset>
+        <ProcessingPleaseWait>请稍候，正在处理中...</ProcessingPleaseWait>
+        <ConfirmCancel>确定要取消并返回首页吗？</ConfirmCancel>
+        <CommonSuccess>操作成功</CommonSuccess>
+        <CommonError>操作失败</CommonError>
+        <CommonWarning>请检查输入信息</CommonWarning>
+        <CommonInfo>提示信息</CommonInfo>
+        <RequiredField>此字段为必填项</RequiredField>
+        <PleaseWait>请稍候...</PleaseWait>
+        <EpicorApiFailed>Epicor API 调用失败：{0}</EpicorApiFailed>
+        <JobStatusAbnormal>工单 {0} 状态异常（已关闭、已完工或未发布）</JobStatusAbnormal>
+        <JobAssemblyNotFound>未找到工单 {0} 的物料装配信息</JobAssemblyNotFound>
+        <NoInventoryInWhseBinLot>在指定仓库/库位/批次下无库存</NoInventoryInWhseBinLot>
+        <QuantityAdjustedToSuggested>扫码数量 {0} 超过可用库存 {1}，已自动调整为 {2}</QuantityAdjustedToSuggested>
+        <QuantityExceedsUnissued>请求数量 {0} 超过未发数量 {1}</QuantityExceedsUnissued>
+        <RequestParamsEmpty>请求参数为空</RequestParamsEmpty>
+        <AssemblySeqInvalid>装配序号必须 ≥ 0</AssemblySeqInvalid>
+        <QuantityMustBePositive>数量必须大于 0</QuantityMustBePositive>
+        <RequestAlreadyProcessed>已处理</RequestAlreadyProcessed>
+        <SystemBusy>系统繁忙，请稍后重试</SystemBusy>
+        <OperationFailed>操作失败，请稍后重试</OperationFailed>
+        <IssueApiCallFailed>发料接口调用失败</IssueApiCallFailed>
+        <InvalidParams>参数无效</InvalidParams>
+        <InvalidParamsWithDetail>参数无效：{0}</InvalidParamsWithDetail>
+        <SessionExpired>会话已过期，请重新登录</SessionExpired>
+        <IssueMaterialFailed>执行发料失败</IssueMaterialFailed>
+        <QueryJobInfoFailed>查询工单信息失败</QueryJobInfoFailed>
+        <MaterialInventoryNotFound>未找到物料库存信息</MaterialInventoryNotFound>
+        <QueryMaterialInventoryFailed>查询物料库存信息失败</QueryMaterialInventoryFailed>
+      </MaterialIssue>
+      <Errors>
+        <UnauthorizedAccess>未授权访问</UnauthorizedAccess>
+        <PageNotFound>页面未找到</PageNotFound>
+        <InternalServerError>服务器内部错误</InternalServerError>
+        <SessionTimeout>会话超时</SessionTimeout>
+        <NetworkError>网络连接错误</NetworkError>
+        <DataNotFound>数据未找到</DataNotFound>
+        <ValidationFailed>验证失败</ValidationFailed>
+        <OperationFailed>操作失败</OperationFailed>
+        <GenericErrorTitle>系统提示</GenericErrorTitle>
+        <GenericErrorMessage>系统处理请求时出现异常，请稍后重试。若问题持续，请联系管理员。</GenericErrorMessage>
+        <BackToHome>返回首页</BackToHome>
+      </Errors>
+      <!-- 工厂相关 -->
+      <Factory>
+        <DG>GCM DG</DG>
+        <DG_Description>GCM DongGuan</DG_Description>
+        <US1>旧金山</US1>
+        <US1_Description>美国旧金山制造工厂</US1_Description>
+        <US2>芝加哥</US2>
+        <US2_Description>美国芝加哥制造工厂</US2_Description>
+      </Factory>
+      <!-- 站点管理页面 -->
+      <FactoryManagement>
+        <Title>站点管理</Title>
+        <Subtitle>管理站点信息</Subtitle>
+        <AppName>仓库扫描系统</AppName>
+        <ListTitle>站点列表</ListTitle>
+        <Code>站点代码</Code>
+        <Company>公司</Company>
+        <Plant>工厂(Plant)</Plant>
+        <CompanyHint>公司代码，留空则使用站点代码</CompanyHint>
+        <PlantHint>工厂代码，留空表示不限定工厂</PlantHint>
+        <DuplicateCompanyPlant>公司+工厂组合已被其他站点使用。</DuplicateCompanyPlant>
+        <Name>站点名称</Name>
+        <NameCN>中文名称</NameCN>
+        <Description>描述</Description>
+        <DescriptionCN>中文描述</DescriptionCN>
+        <Location>地点</Location>
+        <ApiUrl>API地址</ApiUrl>
+        <ApiKey>ApiKey</ApiKey>
+        <Icon>图标</Icon>
+        <Enabled>启用状态</Enabled>
+        <Actions>操作</Actions>
+        <Status>状态</Status>
+        <Active>启用</Active>
+        <Inactive>停用</Inactive>
+        <CreateButton>新增站点</CreateButton>
+        <EditButton>编辑</EditButton>
+        <DeleteButton>删除</DeleteButton>
+        <DetailsButton>详情</DetailsButton>
+        <SaveButton>保存</SaveButton>
+        <CancelButton>取消</CancelButton>
+        <BackButton>返回列表</BackButton>
+        <SubmitButton>提交</SubmitButton>
+        <ResetButton>重置</ResetButton>
+        <SearchPlaceholder>搜索站点代码、名称或位置...</SearchPlaceholder>
+        <NoData>暂无工厂数据</NoData>
+        <RecordsFound>共 {0} 条记录</RecordsFound>
+        <CreateTitle>新增站点</CreateTitle>
+        <EditTitle>编辑站点</EditTitle>
+        <DeleteTitle>删除站点</DeleteTitle>
+        <ConfirmDelete>确认删除</ConfirmDelete>
+        <DeleteWarning>您确定要删除这个站点吗？</DeleteWarning>
+        <DeleteConfirmText>此操作无法撤销！</DeleteConfirmText>
+        <DeleteSuccess>站点删除成功！</DeleteSuccess>
+        <SaveSuccess>站点保存成功！</SaveSuccess>
+        <UpdateSuccess>站点更新成功！</UpdateSuccess>
+        <CreateSuccess>站点创建成功！</CreateSuccess>
+        <ErrorOccurred>发生错误，请重试。</ErrorOccurred>
+        <RequiredField>此字段为必填项。</RequiredField>
+        <DuplicateCode>站点代码已存在。</DuplicateCode>
+        <InvalidUrl>请输入有效的URL地址。</InvalidUrl>
+        <FilterByStatus>按状态筛选</FilterByStatus>
+        <AllStatus>所有状态</AllStatus>
+        <IconExample>例如：fa-home, fa-building</IconExample>
+        <TimezoneExample>例如：中国标准时间, UTC</TimezoneExample>
+        <ApiExample>例如：https://api.factory.com/v1</ApiExample>
+        <FormValidation>请检查表单中的错误。</FormValidation>
+        <SiteManagement>站点管理</SiteManagement>
+        <BackToHome>返回主页</BackToHome>
+        <DescriptionHint>请输入站点描述信息</DescriptionHint>
+        <ApiUrlHint>请输入完整的API接口地址，如：https://api.example.com</ApiUrlHint>
+        <ApiKeyHint>用于身份验证的API密钥</ApiKeyHint>
+        <ApiKeyPlaceholderEdit>保持掩码（含 ***）或留空则不修改已有 ApiKey</ApiKeyPlaceholderEdit>
+        <ApiKeyHintEdit>出于安全考虑仅回显首尾少量字符。保持掩码不变或留空表示保留原 ApiKey 不变。</ApiKeyHintEdit>
+        <CodeHint>唯一的站点标识代码</CodeHint>
+        <Saving>保存中</Saving>
+        <Creating>创建中</Creating>
+        <ApiEndpointHint>站点API接口地址</ApiEndpointHint>
+        <NotFound>未找到指定的站点</NotFound>
+        <UpdateFailed>站点更新失败</UpdateFailed>
+        <DeleteFailed>站点删除失败</DeleteFailed>
+        <ApiEndpoint>API Endpoint</ApiEndpoint>
+        <Timezone>Timezone</Timezone>
+        <SystemBusy>有相同操作正在处理中，请稍后重试</SystemBusy>
+      </FactoryManagement>
+      <FactoryCommon>
+        <Yes>是</Yes>
+        <No>否</No>
+        <Confirm>确认</Confirm>
+        <Cancel>取消</Cancel>
+        <Close>关闭</Close>
+        <Loading>加载中...</Loading>
+        <Success>成功</Success>
+        <Error>错误</Error>
+        <Warning>警告</Warning>
+        <Info>信息</Info>
+        <Save>保存</Save>
+        <Delete>删除</Delete>
+        <Edit>编辑</Edit>
+        <Create>创建</Create>
+        <View>查看</View>
+        <Search>搜索</Search>
+        <Filter>筛选</Filter>
+        <Refresh>刷新</Refresh>
+        <Export>导出</Export>
+        <Import>导入</Import>
+        <Print>打印</Print>
+        <Download>下载</Download>
+        <Upload>上传</Upload>
+        <Processing>处理中...</Processing>
+        <InvalidEmail>请输入有效的邮箱地址。</InvalidEmail>
+        <InvalidDate>请输入有效的日期。</InvalidDate>
+        <InvalidNumber>请输入有效的数字。</InvalidNumber>
+        <DigitsOnly>请输入数字。</DigitsOnly>
+        <FieldMismatch>字段不匹配。</FieldMismatch>
+        <MaxLength>请输入不超过 {0} 个字符。</MaxLength>
+        <MinLength>请输入至少 {0} 个字符。</MinLength>
+        <RangeLength>请输入长度在 {0} 到 {1} 个字符之间的值。</RangeLength>
+        <Range>请输入介于 {0} 和 {1} 之间的值。</Range>
+        <MaxValue>请输入小于或等于 {0} 的值。</MaxValue>
+        <MinValue>请输入大于或等于 {0} 的值。</MinValue>
+      </FactoryCommon>
+      <!-- 新增用户菜单权限管理部分 -->
+      <UserMenuPermissionIndex>
+        <Title>用户菜单权限管理</Title>
+        <Subtitle>管理系统用户的菜单访问权限</Subtitle>
+        <SearchPermission>搜索权限</SearchPermission>
+        <SearchPlaceholder>输入用户代码、名称、用户组或菜单名称进行搜索...</SearchPlaceholder>
+        <AddPermission>新增权限</AddPermission>
+        <PermissionList>权限列表</PermissionList>
+        <TotalRecords>共 {0} 条记录</TotalRecords>
+        <SiteCode>站点</SiteCode>
+        <AllSites>全部站点</AllSites>
+        <UserCode>用户代码</UserCode>
+        <UserName>用户名称</UserName>
+        <UserGroup>所属用户组</UserGroup>
+        <MenuName>菜单名称</MenuName>
+        <MenuPermission>菜单权限</MenuPermission>
+        <Remark>备注</Remark>
+        <Actions>操作</Actions>
+        <AllowAccess>允许访问</AllowAccess>
+        <DenyAccess>禁止访问</DenyAccess>
+        <Edit>编辑</Edit>
+        <Delete>删除</Delete>
+        <ConfirmDelete>确定删除此权限？</ConfirmDelete>
+        <NoPermissionRecords>暂无权限记录</NoPermissionRecords>
+        <CreateFirstPermission>创建第一条权限</CreateFirstPermission>
+        <CreateSuccess>权限创建成功</CreateSuccess>
+        <CreateFailed>权限创建失败</CreateFailed>
+        <DuplicatePermission>该用户已拥有此菜单的权限，请勿重复添加</DuplicatePermission>
+        <EditSuccess>权限更新成功</EditSuccess>
+        <EditFailed>权限更新失败</EditFailed>
+        <DeleteSuccess>权限删除成功</DeleteSuccess>
+        <DeleteFailed>权限删除失败</DeleteFailed>
+        <Loading>加载中...</Loading>
+        <SystemBusy>有相同操作正在处理中，请稍后重试</SystemBusy>
+      </UserMenuPermissionIndex>
+      <!-- 用户菜单权限管理 - 创建/编辑页面 (create.cshtml, edit.cshtml) -->
+      <UserMenuPermissionCreate>
+        <CreatePermission>创建权限</CreatePermission>
+        <EditPermission>编辑权限</EditPermission>
+        <BackToList>返回列表</BackToList>
+        <Save>保存</Save>
+        <SiteCode>站点</SiteCode>
+        <SiteCodeHint>选择站点后，该权限仅对当前站点生效；选择"全部站点"则对所有站点生效</SiteCodeHint>
+        <AllSites>全部站点</AllSites>
+        <SiteInvalid>站点不存在或未启用，请重新选择</SiteInvalid>
+        <UserCode>用户代码</UserCode>
+        <UserName>用户名称</UserName>
+        <UserGroup>用户组</UserGroup>
+        <MenuSelection>菜单选择</MenuSelection>
+        <MenuName>菜单名称</MenuName>
+        <PermissionSetting>权限设置</PermissionSetting>
+        <AllowAccess>允许访问</AllowAccess>
+        <DenyAccess>禁止访问</DenyAccess>
+        <Remark>备注</Remark>
+        <SaveAndContinue>保存并继续添加</SaveAndContinue>
+        <SaveAndReturn>保存并返回列表</SaveAndReturn>
+        <!-- 验证消息 -->
+        <UserCodeRequired>用户代码不能为空</UserCodeRequired>
+        <UserNameRequired>用户名称不能为空</UserNameRequired>
+        <UserGroupRequired>用户组不能为空</UserGroupRequired>
+        <MenuCodeRequired>菜单代码不能为空</MenuCodeRequired>
+        <MenuNameRequired>菜单名称不能为空</MenuNameRequired>
+        <PermissionInvalid>权限设置无效，请重新选择</PermissionInvalid>
+        <!-- 占位符和提示 -->
+        <UserCodePlaceholder>请输入用户代码，如：user001</UserCodePlaceholder>
+        <UserNamePlaceholder>请输入用户名称</UserNamePlaceholder>
+        <SelectUserGroup>请选择用户组</SelectUserGroup>
+        <SelectMenu>请选择菜单</SelectMenu>
+        <AutoFillNote>选择菜单后，菜单名称会自动填充</AutoFillNote>
+        <RemarkPlaceholder>可输入备注信息</RemarkPlaceholder>
+        <!-- 操作消息 -->
+        <SaveSuccess>权限保存成功</SaveSuccess>
+        <SaveFailed>权限保存失败</SaveFailed>
+        <UpdateSuccess>权限更新成功</UpdateSuccess>
+        <UpdateFailed>权限更新失败</UpdateFailed>
+        <Saving>保存中...</Saving>
+        <ValidationError>请填写以下必填字段：</ValidationError>
+        <SystemBusy>有相同操作正在处理中，请稍后重试</SystemBusy>
+      </UserMenuPermissionCreate>
+      <!-- 数据库配置页面 -->
+      <DatabaseConfig>
+        <Title>数据库连接配置</Title>
+        <FormTitle>数据库连接设置</FormTitle>
+        <CardTitle>数据库连接配置</CardTitle>
+        <BackToHome>返回主页</BackToHome>
+        <BackToHomeTooltip>返回主页</BackToHomeTooltip>
+        <!-- 表单字段 -->
+        <ConnectionString>连接字符串</ConnectionString>
+        <ConnectionStringPlaceholder>例如: Server=.\SQLEXPRESS;Database=MyDatabase;Trusted_Connection=True;</ConnectionStringPlaceholder>
+        <!-- 按钮 -->
+        <TestConnection>测试连接</TestConnection>
+        <SaveConfiguration>保存配置</SaveConfiguration>
+        <TestRequiredBeforeSave>请先测试连接后再保存配置</TestRequiredBeforeSave>
+        <!-- 消息 -->
+        <TestSuccess>当前配置的连接字符串有效，可以正常连接数据库</TestSuccess>
+        <TestFailed>当前配置的连接字符串无效，无法连接数据库</TestFailed>
+        <TestError>连接测试过程中发生错误</TestError>
+        <ConfigSaved>配置保存成功</ConfigSaved>
+        <ConfigSaveFailed>配置保存失败</ConfigSaveFailed>
+        <ConnectionTestPassed>连接测试通过</ConnectionTestPassed>
+        <ConnectionTestFailed>连接测试失败</ConnectionTestFailed>
+        <ConnectionTestDataSourceMismatch>仅允许测试当前已配置的数据库服务器</ConnectionTestDataSourceMismatch>
+        <ConfigFilePath>配置文件路径</ConfigFilePath>
+        <EncryptedConnectionString>连接字符串: 加密存储</EncryptedConnectionString>
+        <RestartRequired>配置文件修改后需要重启应用才能生效</RestartRequired>
+        <ConfigurationInfo>配置文件信息</ConfigurationInfo>
+        <!-- 通用消息（合并到DatabaseConfig） -->
+        <Success>成功</Success>
+        <Error>错误</Error>
+        <Warning>警告</Warning>
+        <Info>信息</Info>
+        <Confirm>确认</Confirm>
+        <Cancel>取消</Cancel>
+        <Save>保存</Save>
+        <Test>测试</Test>
+        <Close>关闭</Close>
+        <SystemBusy>有相同操作正在处理中，请稍后重试</SystemBusy>
+        <ConnectionStringHint>支持 SQL Server 标准连接字符串格式，保存后加密存储</ConnectionStringHint>
+        <ConnectionStringMaskHint>出于安全考虑不回显明文。显示为 *** 或留空表示保留原连接字符串不变；填写新值才会覆盖。</ConnectionStringMaskHint>
+        <ConnectionStringRequired>请填写连接字符串</ConnectionStringRequired>
+        <Testing>测试中...</Testing>
+        <Saving>保存中...</Saving>
+        <ConnectionTestException>连接测试出现异常，请检查配置或联系管理员</ConnectionTestException>
+      </DatabaseConfig>
+      <Config>
+        <Title>系统配置管理</Title>
+        <Functions>配置功能</Functions>
+        <SiteManagement>站点管理</SiteManagement>
+        <SiteManagementDesc>管理系统中的各个站点信息</SiteManagementDesc>
+        <MenuPermission>菜单权限配置</MenuPermission>
+        <MenuPermissionDesc>配置用户菜单访问权限</MenuPermissionDesc>
+        <LanguageConfig>界面语言字典</LanguageConfig>
+        <LanguageConfigDesc>配置界面语言字典</LanguageConfigDesc>
+        <DatabaseConfig>数据库连接配置</DatabaseConfig>
+        <DatabaseConfigDesc>配置和管理数据库连接</DatabaseConfigDesc>
+        <BackToHome>返回</BackToHome>
+        <FeatureUnderDevelopment>该功能正在开发中...</FeatureUnderDevelopment>
+      </Config>
+      <!-- 语言管理页面 - 包含通用消息 -->
+      <LanguageIndex>
+        <!-- 通用消息 -->
+        <SaveSuccess>保存成功</SaveSuccess>
+        <SaveFailed>保存失败</SaveFailed>
+        <DeleteSuccess>删除成功</DeleteSuccess>
+        <DeleteFailed>删除失败</DeleteFailed>
+        <UpdateSuccess>更新成功</UpdateSuccess>
+        <UpdateFailed>更新失败</UpdateFailed>
+        <Loading>加载中...</Loading>
+        <Saving>保存中...</Saving>
+        <ConfirmDelete>确定要删除吗？此操作不可恢复！</ConfirmDelete>
+        <ValidationError>请填写所有必填字段</ValidationError>
+        <RequiredField>此字段为必填项</RequiredField>
+        <BackToList>返回列表</BackToList>
+        <Cancel>取消</Cancel>
+        <Submit>提交</Submit>
+        <Yes>是</Yes>
+        <No>否</No>
+        <Ok>确定</Ok>
+        <!-- 语言管理页面特定内容 -->
+        <Title>语言管理</Title>
+        <Subtitle>管理系统界面语言项</Subtitle>
+        <SearchLanguage>搜索语言项</SearchLanguage>
+        <SearchPlaceholder>输入页面、键名、中文值、英文值进行搜索...</SearchPlaceholder>
+        <AddLanguageItem>新增语言项</AddLanguageItem>
+        <LanguageList>语言项列表</LanguageList>
+        <TotalRecords>共 {0} 个语言项</TotalRecords>
+        <TotalRecordsFormat>共 {0}/{1} 个语言项</TotalRecordsFormat>
+        <Page>页面</Page>
+        <Key>键名</Key>
+        <ChineseValue>中文值</ChineseValue>
+        <EnglishValue>英文值</EnglishValue>
+        <Actions>操作</Actions>
+        <Edit>编辑</Edit>
+        <Delete>删除</Delete>
+        <ConfirmDelete>确定要删除这个语言项吗？此操作不可恢复！</ConfirmDelete>
+        <NoSearchResults>没有找到匹配的搜索结果，请尝试其他关键词</NoSearchResults>
+        <NoLanguageRecords>暂无语言数据</NoLanguageRecords>
+        <CreateFirstLanguageItem>创建第一条语言项</CreateFirstLanguageItem>
+        <AllFields>全部字段</AllFields>
+        <Clear>清除</Clear>
+        <SearchHint>提示：输入关键词后按回车或自动搜索</SearchHint>
+        <MatchedResults>个匹配结果</MatchedResults>
+        <!-- 添加分页相关文本 -->
+        <PreviousPage>上一页</PreviousPage>
+        <NextPage>下一页</NextPage>
+        <GoToFirstPage>第一页</GoToFirstPage>
+        <GoToLastPage>最后一页</GoToLastPage>
+        <PageSize>每页显示</PageSize>
+        <ItemsPerPage>每页显示</ItemsPerPage>
+        <ShowingResults>显示 {0}-{1} 条，共 {2} 条</ShowingResults>
+        <Of>共 {0} 页</Of>
+        <SystemBusy>有相同操作正在处理中，请稍后重试</SystemBusy>
+      </LanguageIndex>
+      <LanguageCreate>
+        <!-- 通用消息（继承自LanguageIndex） -->
+        <!-- 语言创建页面特定内容 -->
+        <CreateLanguageItem>创建语言项</CreateLanguageItem>
+        <EditLanguageItem>编辑语言项</EditLanguageItem>
+        <Save>保存</Save>
+        <Page>页面</Page>
+        <Key>键名</Key>
+        <ChineseValue>中文值</ChineseValue>
+        <EnglishValue>英文值</EnglishValue>
+        <SelectPage>选择页面</SelectPage>
+        <Required>必填</Required>
+        <PagePlaceholder>请输入页面名称，如：Home</PagePlaceholder>
+        <KeyPlaceholder>请输入键名，如：Title</KeyPlaceholder>
+        <ChinesePlaceholder>请输入中文文本</ChinesePlaceholder>
+        <EnglishPlaceholder>请输入英文文本</EnglishPlaceholder>
+        <PageRequired>页面不能为空</PageRequired>
+        <KeyRequired>键名不能为空</KeyRequired>
+        <ChineseRequired>中文值不能为空</ChineseRequired>
+        <EnglishRequired>英文值不能为空</EnglishRequired>
+        <DuplicateError>该页面和键名已存在，请修改</DuplicateError>
+        <SelectPage>选择页面</SelectPage>
+        <BackToList>返回列表</BackToList>
+        <EnterNewPage>新页面</EnterNewPage>
+      </LanguageCreate>
+      <!-- 语言Edit页面特定内容 -->
+      <LanguageEdit>
+        <EditLanguageItem>编辑语言项</EditLanguageItem>
+        <CreateLanguageItem>创建语言项</CreateLanguageItem>
+        <Page>页面</Page>
+        <PageReadonly>页面字段为只读，如需修改请删除后重新创建</PageReadonly>
+        <Key>键名</Key>
+        <KeyReadonly>键名字段为只读，如需修改请删除后重新创建</KeyReadonly>
+        <ChineseValue>中文值</ChineseValue>
+        <ChinesePlaceholder>请输入中文值</ChinesePlaceholder>
+        <ChineseValueSaveNote>请输入中文翻译值，保存后立即生效</ChineseValueSaveNote>
+        <EnglishValue>英文值</EnglishValue>
+        <EnglishPlaceholder>请输入英文值</EnglishPlaceholder>
+        <EnglishValueSaveNote>请输入英文翻译值，保存后立即生效</EnglishValueSaveNote>
+        <Save>保存</Save>
+        <BackToList>返回列表</BackToList>
+        <ChineseRequired>中文值不能为空</ChineseRequired>
+        <EnglishRequired>英文值不能为空</EnglishRequired>
+        <!-- 通用消息（继承自LanguageIndex） -->
+        <SaveSuccess>保存成功</SaveSuccess>
+        <SaveFailed>保存失败</SaveFailed>
+        <DeleteSuccess>删除成功</DeleteSuccess>
+        <DeleteFailed>删除失败</DeleteFailed>
+        <UpdateSuccess>更新成功</UpdateSuccess>
+        <UpdateFailed>更新失败</UpdateFailed>
+        <ConfirmDelete>确定要删除吗？此操作不可恢复！</ConfirmDelete>
+        <Back>返回</Back>
+        <Saving>保存中...</Saving>
+        <ValidationError>请检查表单，以下字段必填：</ValidationError>
+        <BackToList>返回列表</BackToList>
+        <Required>必填</Required>
+        <PagePlaceholder>请输入页面名称，如：Home</PagePlaceholder>
+        <KeyPlaceholder>请输入键名，如：Title</KeyPlaceholder>
+        <PageRequired>页面不能为空</PageRequired>
+        <KeyRequired>键名不能为空</KeyRequired>
+        <DuplicateError>该页面和键名已存在，请修改</DuplicateError>
+        <SelectPage>选择页面</SelectPage>
+        <EnterNewPage>输入新页面</EnterNewPage>
+        <AppName>GCM仓库管理系统</AppName>
+        <Subtitle>管理系统界面语言项</Subtitle>
+        <SystemBusy>有相同操作正在处理中，请稍后重试</SystemBusy>
+      </LanguageEdit>
+      <!-- 扫描出库页面 -->
+      <Outbound>
+        <!-- 页面标题 -->
+        <Title>销售发货</Title>
+        <Subtitle>扫描订单条码快速发货</Subtitle>
+        <!-- 按钮文本 -->
+        <SubmitButton>提交发货</SubmitButton>
+        <ResetButton>重置</ResetButton>
+        <CancelButton>返回</CancelButton>
+        <SearchButton>查询</SearchButton>
+        <!-- 表单字段标签 -->
+        <OrderInfo>销售订单信息</OrderInfo>
+        <SalesOrderNo>销售订单号</SalesOrderNo>
+        <SalesOrderLineNo>订单行号</SalesOrderLineNo>
+        <OrderRelNum>发货单行号</OrderRelNum>
+        <MaterialCode>物料编号</MaterialCode>
+        <Quantity>发货数量</Quantity>
+        <Unit>单位</Unit>
+        <WarehouseCode>仓库代码</WarehouseCode>
+        <Location>库位</Location>
+        <BatchNo>批次号</BatchNo>
+        <Operator>操作员</Operator>
+        <Remarks>备注</Remarks>
+        <!-- 表格列标题 -->
+        <Select>选择</Select>
+        <CustomerCode>客户代码</CustomerCode>
+        <CustomerName>客户名称</CustomerName>
+        <ReqDate>需求日期</ReqDate>
+        <PO>采购订单号</PO>
+        <Order>订单号</Order>
+        <Line>行号</Line>
+        <Release>释放号</Release>
+        <Part>物料编号</Part>
+        <PartDescription>物料描述</PartDescription>
+        <RequiredQty>需求数量</RequiredQty>
+        <OnHandQty>可用库存</OnHandQty>
+        <Comments>备注</Comments>
+        <OrderShipmentList>订单发货列表</OrderShipmentList>
+        <!-- 输入框占位符 -->
+        <SalesOrderPlaceholder>请扫描或输入销售订单条码</SalesOrderPlaceholder>
+        <MaterialPlaceholder>请扫描或输入物料条码</MaterialPlaceholder>
+        <QuantityPlaceholder>请输入发货数量</QuantityPlaceholder>
+        <PlanShipQtyLabel>计划出货</PlanShipQtyLabel>
+        <ShippedQtyLabel>已发货数量</ShippedQtyLabel>
+        <UnshippedQtyLabel>未出货</UnshippedQtyLabel>
+        <StockQtyLabel>库存数</StockQtyLabel>
+        <!-- 出货数量信息整行文案（红色单行显示）：{0}计划出货 {1}已发货数量 {2}未出货 {3}库存数 -->
+        <OrderQtyInfoFormat>计划出货: {0} 已发货数量: {1} 未出货: {2} 库存数: {3}</OrderQtyInfoFormat>
+        <QuantityExceedsUnshippedQty>扫码数量 {0} 超过未出货数量 {1}</QuantityExceedsUnshippedQty>
+        <CustomerSearchPlaceholder>请输入客户代码或名称</CustomerSearchPlaceholder>
+        <!-- 输入提示 -->
+        <OrderScanPromptMessage>扫描订单条码自动填入订单号和行号</OrderScanPromptMessage>
+        <MatScanPromptMessage>扫描物料条码自动填入物料信息</MatScanPromptMessage>
+        <ManualSelectOrder>手动选择订单</ManualSelectOrder>
+        <!-- 验证消息 -->
+        <SalesOrderRequired>请输入销售订单号</SalesOrderRequired>
+        <SalesOrderLineRequired>请输入订单行号</SalesOrderLineRequired>
+        <MaterialCodeRequired>请输入物料编号</MaterialCodeRequired>
+        <MaterialCodeRequiredMsg>物料编号不能为空</MaterialCodeRequiredMsg>
+        <QuantityRequired>请输入有效的发货数量</QuantityRequired>
+        <InvalidQuantity>发货数量无效</InvalidQuantity>
+        <OrderAndLineRequired>请先输入订单号和行号</OrderAndLineRequired>
+        <OrderAndLineRequiredForInventory>请先输入订单号和行号</OrderAndLineRequiredForInventory>
+        <PleaseEnterOrderLine>请输入订单行号</PleaseEnterOrderLine>
+        <PleaseEnterCustomerInfo>请输入客户代码或名称</PleaseEnterCustomerInfo>
+        <LotNumberRequired>请输入批次号</LotNumberRequired>
+        <!-- 验证结果消息 -->
+        <OrderValidationPassed>订单验证通过</OrderValidationPassed>
+        <OrderValidationFailed>订单验证失败</OrderValidationFailed>
+        <InventoryValidationPassed>库存验证通过</InventoryValidationPassed>
+        <InventoryValidationFailed>库存验证失败</InventoryValidationFailed>
+        <OrderNotFound>订单 {0} 行号 {1} 不存在</OrderNotFound>
+        <OrderLocked>订单未被确认，不能发货</OrderLocked>
+        <FirmRelease>订单状态不是发货状态，不能进行发货</FirmRelease>
+        <OrderStatus>订单状态已结，不能发货</OrderStatus>
+        <OrderFullyShipped>物料 {0} 已全部发货完成</OrderFullyShipped>
+        <MaterialMismatch>物料编号不匹配：输入 {0}，应为 {1}</MaterialMismatch>
+        <UnitMismatch>单位不匹配：输入 {0}，应为 {1}</UnitMismatch>
+        <NoAvailableInventory>在指定仓库/库位/批次下无库存</NoAvailableInventory>
+        <InsufficientInventory>可用库存不足</InsufficientInventory>
+        <QuantityExceedsInventory>包装数量 {0} 超过库存数量 {1}</QuantityExceedsInventory>
+        <!-- 条码解析消息 -->
+        <OrderBarcodeParseSuccess>订单条码解析成功，已自动填入订单号和行号</OrderBarcodeParseSuccess>
+        <MaterialBarcodeParseSuccess>物料条码解析成功，已自动填入物料信息</MaterialBarcodeParseSuccess>
+        <ParserReady>条码解析器已就绪</ParserReady>
+        <ParserInitFailed>条码解析器初始化失败</ParserInitFailed>
+        <!-- 查询消息 -->
+        <Searching>正在查询订单信息...</Searching>
+        <SearchSuccess>订单查询成功</SearchSuccess>
+        <SearchFailed>订单查询失败</SearchFailed>
+        <NoData>暂无数据</NoData>
+        <!-- 操作消息 -->
+        <Submitting>正在提交发货...</Submitting>
+        <SubmitSuccess>发货成功</SubmitSuccess>
+        <SubmitFailed>发货失败</SubmitFailed>
+        <NetworkError>网络错误，请检查连接</NetworkError>
+        <licensedError>已超最大许可用户数</licensedError>
+        <OrderRelNumRequired>发货批次号不能为空</OrderRelNumRequired>
+        <BatchNoRequired>批号不能为空</BatchNoRequired>
+        <PackIdRequired>Pack ID 不能为空</PackIdRequired>
+        <GeneratingPackId>正在生成 Pack ID...</GeneratingPackId>
+        <GeneratePackIdSuccess>Pack ID 生成成功</GeneratePackIdSuccess>
+        <GeneratePackIdFailed>Pack ID 生成失败</GeneratePackIdFailed>
+        <FormReset>表单已重置</FormReset>
+        <OperationSuccess>操作成功</OperationSuccess>
+        <SessionExpired>登录已过期，请重新登录</SessionExpired>
+        <SessionChanged>登录状态已变更，请重新登录</SessionChanged>
+        <!-- 确认对话框 -->
+        <ConfirmCancel>确定要取消并返回首页吗？</ConfirmCancel>
+        <!-- 通用消息 -->
+        <CommonSuccess>操作成功</CommonSuccess>
+        <CommonError>操作失败</CommonError>
+        <CommonWarning>请检查输入信息</CommonWarning>
+        <CommonInfo>提示信息</CommonInfo>
+        <RequiredField>此字段为必填项</RequiredField>
+        <PleaseWait>请稍候...</PleaseWait>
+        <!-- 明细库存列 -->
+        <DetailInventory>明细库存</DetailInventory>
+        <DetailInventoryAction>库存信息</DetailInventoryAction>
+        <InvLoading>加载中...</InvLoading>
+        <InvEmpty>无库存</InvEmpty>
+        <InvFailed>查询失败</InvFailed>
+        <InvWhse>仓库</InvWhse>
+        <InvBin>库位</InvBin>
+        <InvLot>批号</InvLot>
+        <InvQty>数量</InvQty>
+        <InvEmptyHint>点击右侧按钮查询库存</InvEmptyHint>
+        <PartNumRequired>物料代码不能为空</PartNumRequired>
+        <SessionExpired>会话已过期，请重新登录</SessionExpired>
+        <Retry>重试</Retry>
+        <Slot>条</Slot>
+        <ShippingScheduleNotFound>未找到工单 {0} 物料 {1} 对应的发货计划（最近7天）</ShippingScheduleNotFound>
+        <ShippingScheduleNotFoundPo>未找到 PONum={0}, OrderLine={1}, OrderRelNum={2} 对应的发货计划</ShippingScheduleNotFoundPo>
+        <WarehouseCodeRequired>仓库不能为空</WarehouseCodeRequired>
+        <LocationRequired>库位不能为空</LocationRequired>
+        <LotDateLabel>入库日期：</LotDateLabel>
+        <OrderNumRequired>订单号不能为空</OrderNumRequired>
+        <EpicorApiFailed>Epicor API 调用失败：{0}</EpicorApiFailed>
+        <OrderRelNotFound>未找到订单 {0} 的行 {1} 发货行 {2}</OrderRelNotFound>
+        <OrderFullyShippedDetail>订单 {0} 的物料 {1} 已完全发货</OrderFullyShippedDetail>
+        <RequestParamEmpty>请求参数为空</RequestParamEmpty>
+        <RequestAlreadyProcessed>已处理</RequestAlreadyProcessed>
+        <SystemBusy>系统繁忙，请稍后重试</SystemBusy>
+        <ShipmentApiFailed>发货接口调用失败</ShipmentApiFailed>
+        <LimitReasonStock>库存数量 {0}</LimitReasonStock>
+        <LimitReasonOrder>订单可发数量 {0}</LimitReasonOrder>
+        <ShipQtyAdjusted>发货数量 {0} 超过{1}，已自动调整为 {2}</ShipQtyAdjusted>
+        <ShipFailedRetry>发货失败，请稍后重试</ShipFailedRetry>
+        <OperationTooFrequent>操作过于频繁，请稍后重试</OperationTooFrequent>
+        <InitShipHeadFailed>初始化发货单头失败</InitShipHeadFailed>
+        <SaveShipHeadFailed>保存发货单头失败</SaveShipHeadFailed>
+        <GeneratePackIdInvalid>生成Pack ID失败：未获取到有效的装箱单号</GeneratePackIdInvalid>
+        <GeneratePackIdFailedRetry>生成Pack ID失败，请稍后重试</GeneratePackIdFailedRetry>
+        <InvalidQueryParams>查询参数不正确：请传入 PONum+OrderLine+OrderRelNum（PART+PO 条码）</InvalidQueryParams>
+        <NoStockForPart>该料号无库存，请先入库</NoStockForPart>
+        <QueryShippingScheduleFailed>查询发货计划失败</QueryShippingScheduleFailed>
+        <UnknownError>未知错误</UnknownError>
+        <PackNumNotObtained>未能获取到 PackNum</PackNumNotObtained>
+        <ShippingScheduleNotFoundSimple>未找到发货计划</ShippingScheduleNotFoundSimple>
+        <QueryingShippingSchedule>正在查询发货计划...</QueryingShippingSchedule>
+        <PoBarcodeFormatHint>PO 条码格式应为 PO:号-行-批（如 362823-3-1）</PoBarcodeFormatHint>
+      </Outbound>
+      <!-- 库存转移页面节点 -->
+      <Transfer>
+        <!-- 页面标题 -->
+        <Title>库存转移</Title>
+        <Subtitle>扫描物料条码快速转移库存</Subtitle>
+        <!-- 按钮文本 -->
+        <SubmitButton>提交转移</SubmitButton>
+        <ResetButton>重置</ResetButton>
+        <CancelButton>返回</CancelButton>
+        <!-- 表单字段标签 -->
+        <MaterialCode>物料编号</MaterialCode>
+        <Quantity>转移数量</Quantity>
+        <Unit>单位</Unit>
+        <Operator>操作员</Operator>
+        <Remark>备注</Remark>
+        <!-- 源位置区域 -->
+        <FromSectionTitle>源位置信息</FromSectionTitle>
+        <FromWarehouse>源仓库</FromWarehouse>
+        <FromLocation>源库位</FromLocation>
+        <FromBatch>源批次号</FromBatch>
+        <!-- 目标位置区域 -->
+        <ToSectionTitle>目标位置信息</ToSectionTitle>
+        <ToWarehouse>目标仓库</ToWarehouse>
+        <ToLocation>目标库位</ToLocation>
+        <ToBatch>目标批次号</ToBatch>
+        <!-- 输入框占位符 -->
+        <MaterialCodePlaceholder>请输入物料编号</MaterialCodePlaceholder>
+        <QuantityPlaceholder>请输入转移数量</QuantityPlaceholder>
+        <FromWarehousePlaceholder>请输入源仓库代码</FromWarehousePlaceholder>
+        <FromLocationPlaceholder>请输入源库位代码</FromLocationPlaceholder>
+        <FromBatchPlaceholder>请输入源批次号（可选）</FromBatchPlaceholder>
+        <ToWarehousePlaceholder>请输入目标仓库代码</ToWarehousePlaceholder>
+        <ToLocationPlaceholder>请输入目标库位代码</ToLocationPlaceholder>
+        <ToBatchPlaceholder>请输入目标批次号（可选）</ToBatchPlaceholder>
+        <RemarkPlaceholder>请输入备注信息（可选）</RemarkPlaceholder>
+        <!-- 输入提示 -->
+        <MatScanPromptMessage>扫描物料条码自动填入物料和源位置信息</MatScanPromptMessage>
+        <!-- 验证消息 -->
+        <MaterialCodeRequired>请输入物料编号</MaterialCodeRequired>
+        <QuantityRequired>请输入转移数量</QuantityRequired>
+        <QuantityPositiveRequired>转移数量必须大于0</QuantityPositiveRequired>
+        <FromWarehouseRequired>请输入源仓库代码</FromWarehouseRequired>
+        <FromLocationRequired>请输入源库位代码</FromLocationRequired>
+        <FromBatchRequired>批次号不能为空</FromBatchRequired>
+        <ToWarehouseRequired>请输入目标仓库代码</ToWarehouseRequired>
+        <ToLocationRequired>请输入目标库位代码</ToLocationRequired>
+        <FromAndToSame>源位置与目标位置相同，请检查输入</FromAndToSame>
+        <!-- 验证结果消息 -->
+        <NoAvailableInventory>源位置库存不存在或已分配完毕</NoAvailableInventory>
+        <InsufficientInventory>源位置库存不足</InsufficientInventory>
+        <QuantityExceedsInventory>物料 {0} 转移数量 {1} 超过可用库存 {2}</QuantityExceedsInventory>
+        <TargetLocationNotFound>目标库位不存在或无效</TargetLocationNotFound>
+        <!-- 条码解析消息 -->
+        <BarcodeParseSuccess>条码解析成功，已自动填入物料信息</BarcodeParseSuccess>
+        <ParseSuccess>条码解析成功</ParseSuccess>
+        <ParseFailed>条码解析失败</ParseFailed>
+        <ParseError>条码解析异常</ParseError>
+        <PleaseScanValidMaterial>请扫描有效的物料条码</PleaseScanValidMaterial>
+        <ParserReady>条码解析器已就绪</ParserReady>
+        <ParserInitFailed>条码解析器初始化失败</ParserInitFailed>
+        <!-- 操作消息 -->
+        <Submitting>正在提交库存转移...</Submitting>
+        <TransferSuccess>库存转移成功</TransferSuccess>
+        <TransferFailed>库存转移失败</TransferFailed>
+        <NetworkError>网络错误，请检查连接</NetworkError>
+        <FormReset>表单已重置</FormReset>
+        <OperationSuccess>操作成功</OperationSuccess>
+        <SessionExpired>登录已过期，请重新登录</SessionExpired>
+        <!-- 确认对话框 -->
+        <ConfirmCancel>确定要取消并返回首页吗？</ConfirmCancel>
+        <!-- 通用消息 -->
+        <CommonSuccess>操作成功</CommonSuccess>
+        <CommonError>操作失败</CommonError>
+        <CommonWarning>请检查输入信息</CommonWarning>
+        <CommonInfo>提示信息</CommonInfo>
+        <RequiredField>此字段为必填项</RequiredField>
+        <PleaseWait>请稍候...</PleaseWait>
+        <!-- 新增验证相关文本 -->
+        <ValidatingSource>正在验证源库存...</ValidatingSource>
+        <SourceInventoryValid>源库存验证成功</SourceInventoryValid>
+        <SourceInventoryInvalid>源库存验证失败</SourceInventoryInvalid>
+        <ValidatingTarget>正在验证目标库位...</ValidatingTarget>
+        <TargetLocationValid>目标库位验证成功</TargetLocationValid>
+        <TargetBatchExists>目标批次存在，将使用现有批次</TargetBatchExists>
+        <TargetBatchNotExists>目标批次不存在，将在转移时创建新批次</TargetBatchNotExists>
+        <MaterialCodeRequiredForInventory>请先填写物料代码</MaterialCodeRequiredForInventory>
+        <BatchOptional>批次号可选，可留空</BatchOptional>
+        <OperationSuccess>操作成功</OperationSuccess>
+        <SessionExpired>会话已过期，请重新登录</SessionExpired>
+        <QuantityExceedsInventory>物料的转移数量超过了可用库存</QuantityExceedsInventory>
+        <UnitMismatch>单位不匹配：输入 {0}，应为 {1}</UnitMismatch>
+        <RequestNull>请求参数为空</RequestNull>
+        <AlreadyProcessed>已处理</AlreadyProcessed>
+        <SystemBusy>系统繁忙，请稍后重试</SystemBusy>
+        <EpicorApiFailed>Epicor API 调用失败：{0}</EpicorApiFailed>
+        <QtyExceedsAvailable>库存不足：请求 {0}，可用 {1}</QtyExceedsAvailable>
+        <WarehouseOrBinNotFound>仓库或Bin位不存在：{0}</WarehouseOrBinNotFound>
+        <OperationFailedRetry>操作失败，请稍后重试</OperationFailedRetry>
+        <ValidateSourceError>验证源库存时发生错误</ValidateSourceError>
+        <ValidateBatchError>验证目标批次时发生错误</ValidateBatchError>
+        <QueryLocationError>查询库存位置时发生错误</QueryLocationError>
+        <AvailableQuantityLabel>可用数量：</AvailableQuantityLabel>
+        <BinOnHandFormat>{0}：库存：{1}</BinOnHandFormat>
+        <BinQtyExceeded>库位 {0} 库存 {1}，当前数量 {2} 超过该库位库存，请修改数量</BinQtyExceeded>
+      </Transfer>
+      <!-- 物料退回页面节点 -->
+      <MaterialReturn>
+        <Title>物料退回</Title>
+        <SubmitButton>提交退回</SubmitButton>
+        <ResetButton>重置</ResetButton>
+        <CancelButton>返回</CancelButton>
+        <WorkOrderNo>工单号</WorkOrderNo>
+        <WorkOrderPlaceholder>请扫描或输入工单条码</WorkOrderPlaceholder>
+        <AssemblySeq>装配序号</AssemblySeq>
+        <AssemblySeqPlaceholder>装配序号</AssemblySeqPlaceholder>
+        <MaterialCode>物料编号</MaterialCode>
+        <MaterialPlaceholder>请扫描或输入物料条码</MaterialPlaceholder>
+        <Quantity>退回数量</Quantity>
+        <QuantityPlaceholder>请输入退回数量</QuantityPlaceholder>
+        <AvailableQty>库存</AvailableQty>
+        <Unit>单位</Unit>
+        <WarehouseCode>仓库代码</WarehouseCode>
+        <Location>库位</Location>
+        <LocationPlaceholder>库位</LocationPlaceholder>
+        <BatchNo>批次号</BatchNo>
+        <BatchNoPlaceholder>批次号</BatchNoPlaceholder>
+        <Operator>操作员</Operator>
+        <Remarks>备注</Remarks>
+        <RemarksPlaceholder>请输入备注信息</RemarksPlaceholder>
+        <WorkOrderRequired>工单号不能为空</WorkOrderRequired>
+        <MaterialCodeRequired>物料代码不能为空</MaterialCodeRequired>
+        <QuantityRequired>退回数量必须大于0</QuantityRequired>
+        <AssemblySeqRequired>装配序号不能为空</AssemblySeqRequired>
+        <ConfirmCancel>确定要取消并返回首页吗？</ConfirmCancel>
+        <JobNotFound>工单 {0} 装配序号 {1} 不存在</JobNotFound>
+        <MaterialNotFound>工单 {0} 中未找到物料 {1}</MaterialNotFound>
+        <UnitMismatch>单位不匹配：输入 {0}，应为 {1}</UnitMismatch>
+        <NoMaterialIssued>物料 {0} 尚未发料，无法退回</NoMaterialIssued>
+        <QuantityExceedsIssued>退回数量 {0} 超过已发数量 {1}</QuantityExceedsIssued>
+        <JobValidationPassed>工单验证成功</JobValidationPassed>
+        <InventoryValidationPassed>物料退回验证成功</InventoryValidationPassed>
+        <SubmitSuccess>物料退回成功</SubmitSuccess>
+        <SubmitFailed>物料退回失败</SubmitFailed>
+        <NetworkError>网络错误，请稍后重试</NetworkError>
+        <FormReset>表单已重置</FormReset>
+        <ProcessingPleaseWait>处理中，请稍候...</ProcessingPleaseWait>
+        <JobScanPromptMessage>请扫描工单条码或手动输入后按回车</JobScanPromptMessage>
+        <MatScanPromptMessage>请扫描物料条码或手动输入后按回车</MatScanPromptMessage>
+        <Submitting>提交中...</Submitting>
+        <JobAndAssemblyRequired>请填写完整的工单号和装配序号</JobAndAssemblyRequired>
+        <NoAvailableInventory>库存不存在：仓库 {0}，库位 {1}，批次 {2}</NoAvailableInventory>
+        <JobBarcodeParseSuccess>工单条码解析成功</JobBarcodeParseSuccess>
+        <MaterialBarcodeParseSuccess>物料条码解析成功</MaterialBarcodeParseSuccess>
+        <PleaseEnterAssemblySeq>请输入装配序号</PleaseEnterAssemblySeq>
+        <JobValidationFailed>工单验证失败</JobValidationFailed>
+        <InventoryValidationFailed>库存验证失败</InventoryValidationFailed>
+        <MaterialCodeRequiredMsg>物料代码不能为空</MaterialCodeRequiredMsg>
+        <ParserReady>条码解析器已就绪</ParserReady>
+        <ParserInitFailed>条码解析器初始化失败</ParserInitFailed>
+        <ScanBarcodePrompt>请输入要解析的条码</ScanBarcodePrompt>
+        <ErrorTitle>错误</ErrorTitle>
+        <FailedTitle>失败</FailedTitle>
+        <ConfirmButton>确定</ConfirmButton>
+        <DialogCancelButton>取消</DialogCancelButton>
+        <ProcessingError>处理异常</ProcessingError>
+        <RequestNull>请求参数为空</RequestNull>
+        <AlreadyProcessed>已处理</AlreadyProcessed>
+        <SystemBusy>系统繁忙，请稍后重试</SystemBusy>
+        <EpicorApiFailed>Epicor API 调用失败：{0}</EpicorApiFailed>
+        <JobMaterialsNotFound>未找到工单 {0} 的物料信息</JobMaterialsNotFound>
+        <InvalidReturnQuantity>退回数量无效</InvalidReturnQuantity>
+        <WarehouseRequired>仓库代码不能为空</WarehouseRequired>
+        <WarehouseOrBinNotFound>仓库或Bin位不存在：{0}</WarehouseOrBinNotFound>
+        <BinNotFound>库位不存在：仓库 {0}，库位 {1}</BinNotFound>
+        <ReturnSuccess>退回成功</ReturnSuccess>
+        <OperationFailedRetry>操作失败，请稍后重试</OperationFailedRetry>
+        <SessionExpired>登录已过期，请重新登录</SessionExpired>
+        <ValidateJobError>验证工单时发生错误</ValidateJobError>
+        <AntiforgeryFailed>登录状态已变更，请刷新页面后重试</AntiforgeryFailed>
+        <InvalidParameters>参数无效</InvalidParameters>
+      </MaterialReturn>
+      <!--数量调-->
+      <Adjustment>
+        <!-- 页面标题与通用文本 -->
+        <Title>库存调整</Title>
+        <Subtitle>扫描物料条码快速完成库存调整</Subtitle>
+        <FormTitle>调整信息录入</FormTitle>
+        <ScanHint>输入完整条码后按Enter键自动解析填充</ScanHint>
+        <ShortcutHint>F1: 解析物料 | F2: 重置 | ESC: 取消</ShortcutHint>
+        <BarcodeExample>示例条码: 物料代码|数量|单位|源仓库|源库位|源批次|目标仓库|目标库位|目标批次|备注</BarcodeExample>
+        <!-- 表单字段标签 -->
+        <MaterialCode>物料代码</MaterialCode>
+        <Quantity>数量</Quantity>
+        <UOM>单位</UOM>
+        <Location>库位</Location>
+        <LocationPlaceholder>请输入库位代码</LocationPlaceholder>
+        <FromWarehouse>仓库</FromWarehouse>
+        <FromBatch>批次</FromBatch>
+        <FromLocation>库位</FromLocation>
+        <ToWarehouse>目标仓库</ToWarehouse>
+        <ToBatch>目标批次</ToBatch>
+        <ToLocation>目标库位</ToLocation>
+        <Remark>备注</Remark>
+        <!-- 区域标题 -->
+        <FromSectionTitle>源位置</FromSectionTitle>
+        <ToSectionTitle>目标位置</ToSectionTitle>
+        <!-- 按钮文本 -->
+        <SubmitButton>确认调整</SubmitButton>
+        <ResetButton>重置</ResetButton>
+        <CancelButton>取消</CancelButton>
+        <!-- 验证消息 -->
+        <MaterialCodeRequired>物料代码不能为空</MaterialCodeRequired>
+        <QuantityRequired>数量必须大于0</QuantityRequired>
+        <FromWarehouseRequired>仓库不能为空</FromWarehouseRequired>
+        <FromLocationRequired>库位不能为空</FromLocationRequired>
+        <FromBatchNoRequired>批次不能为空</FromBatchNoRequired>
+        <ToWarehouseRequired>目标仓库不能为空</ToWarehouseRequired>
+        <ToLocationRequired>目标库位不能为空</ToLocationRequired>
+        <!-- 通用提示消息 -->
+        <ConfirmCancel>确定要取消吗？</ConfirmCancel>
+        <Submitting>提交中...</Submitting>
+        <AdjustmentSuccess>调整成功</AdjustmentSuccess>
+        <AdjustmentFailed>调整失败</AdjustmentFailed>
+        <NetworkError>网络错误，请稍后重试</NetworkError>
+        <InvalidInput>输入数据无效，请检查后重试</InvalidInput>
+        <SessionExpired>登录已过期，请重新登录</SessionExpired>
+        <ParseSuccess>条码解析成功</ParseSuccess>
+        <ParseFailed>条码解析失败，请检查格式</ParseFailed>
+        <FormReset>表单已重置</FormReset>
+        <QuantityPositiveRequired>数量必须大于0</QuantityPositiveRequired>
+        <UOMRequired>单位不能为空</UOMRequired>
+        <Operator>操作员</Operator>
+        <BarcodeParseSuccess>条码解析成功</BarcodeParseSuccess>
+        <PleaseScanValidMaterial>请扫描有效的物料条码</PleaseScanValidMaterial>
+        <ParseError>条码解析异常</ParseError>
+        <ParserReady>条码解析器已就绪</ParserReady>
+        <ParserInitFailed>条码解析器初始化失败</ParserInitFailed>
+        <ValidatingSource>正在验证源库存...</ValidatingSource>
+        <SourceInventoryValid>源库存验证成功</SourceInventoryValid>
+        <SourceInventoryInvalid>源库存验证失败</SourceInventoryInvalid>
+        <MaterialCodeRequiredForInventory>请先填写物料代码</MaterialCodeRequiredForInventory>
+        <NoAvailableInventory>源位置库存不存在或已分配完毕</NoAvailableInventory>
+        <InsufficientInventory>源位置库存不足</InsufficientInventory>
+        <UnitMismatch>单位不匹配：输入 {0}，应为 {1}</UnitMismatch>
+        <QuantityExceedsInventory>物料 {0} 调整数量 {1} 超过可用库存 {2}</QuantityExceedsInventory>
+        <MatScanPromptMessage>扫描物料条码自动填入物料信息</MatScanPromptMessage>
+        <SystemBusy>有相同操作正在处理中，请稍后重试</SystemBusy>
+        <ValidateSourceError>验证源库存时发生错误</ValidateSourceError>
+        <EpicorApiCallFailed>Epicor API 调用失败：{0}</EpicorApiCallFailed>
+        <AvailableQuantityLabel>可用数量：</AvailableQuantityLabel>
+      </Adjustment>
+      <CountTag>
+        <Title>盘点标签</Title>
+        <Subtitle>扫描物料条码快速完成盘点标签</Subtitle>
+        <MaterialCode>物料代码</MaterialCode>
+        <MaterialCodePlaceholder>请输入物料代码</MaterialCodePlaceholder>
+        <Quantity>数量</Quantity>
+        <QuantityPlaceholder>请输入数量</QuantityPlaceholder>
+        <UOM>单位</UOM>
+        <UOMPlaceholder>请输入单位</UOMPlaceholder>
+        <FromWarehouse>仓库</FromWarehouse>
+        <FromWarehousePlaceholder>请输入仓库代码</FromWarehousePlaceholder>
+        <FromBatch>批次</FromBatch>
+        <FromBatchPlaceholder>请输入批次号</FromBatchPlaceholder>
+        <Location>库位</Location>
+        <LocationPlaceholder>请输入库位代码</LocationPlaceholder>
+        <Remark>备注</Remark>
+        <RemarkPlaceholder>请输入备注信息</RemarkPlaceholder>
+        <Operator>操作员</Operator>
+        <FromSectionTitle>位置</FromSectionTitle>
+        <SubmitButton>确认</SubmitButton>
+        <ResetButton>重置</ResetButton>
+        <CancelButton>返回</CancelButton>
+        <MatScanPromptMessage>扫码/输入后按Enter确认</MatScanPromptMessage>
+        <MaterialCodeRequired>物料代码不能为空</MaterialCodeRequired>
+        <QuantityRequired>数量不能为空</QuantityRequired>
+        <QuantityPositiveRequired>数量必须大于0</QuantityPositiveRequired>
+        <UOMRequired>单位不能为空</UOMRequired>
+        <FromWarehouseRequired>仓库不能为空</FromWarehouseRequired>
+        <FromLocationRequired>库位不能为空</FromLocationRequired>
+        <ConfirmCancel>确定要返回吗？</ConfirmCancel>
+        <Submitting>提交中...</Submitting>
+        <CountTagSuccess>成功</CountTagSuccess>
+        <CountTagFailed>失败</CountTagFailed>
+        <NetworkError>网络错误</NetworkError>
+        <ParseSuccess>解析成功</ParseSuccess>
+        <ParseFailed>解析失败</ParseFailed>
+        <FormReset>表单已重置</FormReset>
+        <BarcodeParseSuccess>条码解析成功</BarcodeParseSuccess>
+        <MaterialBarcodeParseSuccess>物料条码解析成功</MaterialBarcodeParseSuccess>
+        <PleaseScanValidMaterial>请扫描有效的物料条码</PleaseScanValidMaterial>
+        <ParseError>解析异常</ParseError>
+        <ParserReady>解析器就绪</ParserReady>
+        <ParserInitFailed>解析器初始化失败</ParserInitFailed>
+        <ValidatingCountTag>正在验证盘点标签...</ValidatingCountTag>
+        <CountTagValid>盘点标签验证通过</CountTagValid>
+        <CountTagNotFound>该物料没有在系统建立盘点标签</CountTagNotFound>
+        <CountTagWarehouseMismatch>仓库代码与盘点标签不一致（标签：{0}，输入：{1}）</CountTagWarehouseMismatch>
+        <CountTagBinMismatch>库位与盘点标签不一致（标签：{0}，输入：{1}）</CountTagBinMismatch>
+        <CountTagLotMismatch>批次与盘点标签不一致（标签：{0}，输入：{1}）</CountTagLotMismatch>
+        <CountTagValidationError>盘点标签验证错误</CountTagValidationError>
+        <CountTagNoMatchingTag>未找到与输入仓库/库位/批次匹配的盘点标签</CountTagNoMatchingTag>
+        <MaterialCodeRequiredForCountTag>请先输入物料代码</MaterialCodeRequiredForCountTag>
+        <SessionExpired>会话已过期，请重新登录</SessionExpired>
+        <Confirm>确定</Confirm>
+        <Cancel>取消</Cancel>
+        <OK>确定</OK>
+        <CommonError>操作失败</CommonError>
+        <CommonSuccess>操作成功</CommonSuccess>
+        <CommonWarning>请检查输入信息</CommonWarning>
+        <CommonInfo>提示信息</CommonInfo>
+        <RequiredField>此字段为必填项</RequiredField>
+        <PleaseWait>请稍候...</PleaseWait>
+        <CycleCountQuery>盘点查询</CycleCountQuery>
+        <!-- 库存数量显示 -->
+        <InventoryOnHandLabel>库存数量：{0}{1}</InventoryOnHandLabel>
+        <InventoryLoading>库存查询中...</InventoryLoading>
+        <InventoryQueryFailed>库存查询失败</InventoryQueryFailed>
+        <InventoryQueryError>库存查询异常</InventoryQueryError>
+        <InventoryNotFound>库存数量：0（未查询到库存记录）</InventoryNotFound>
+        <SystemBusy>有相同操作正在处理中，请稍后重试</SystemBusy>
+        <NoInventoryRecord>未查询到对应库存记录</NoInventoryRecord>
+      </CountTag>
+      <CycleCount>
+        <Title>周期盘点维护查询</Title>
+        <Subtitle>查询周期盘点头表与明细数据</Subtitle>
+        <CycleDate>周期日期</CycleDate>
+        <Warehouse>仓库</Warehouse>
+        <WarehousePlaceholder>请输入仓库代码</WarehousePlaceholder>
+        <Query>查询</Query>
+        <HeaderInfo>表头信息</HeaderInfo>
+        <DetailInfo>明细数据</DetailInfo>
+        <CycleStatusDesc>盘点状态</CycleStatusDesc>
+        <TagGenDate>标签生成日期</TagGenDate>
+        <TotalParts>物料总数</TotalParts>
+        <CycleSeq>盘点序号</CycleSeq>
+        <CCYear>年度</CCYear>
+        <PartNum>物料</PartNum>
+        <PartDescription>描述</PartDescription>
+        <QtyAdjustmentStatus>过账状态</QtyAdjustmentStatus>
+        <ABCCode>ABCCode</ABCCode>
+        <BaseUOM>基本单位</BaseUOM>
+        <FrozenQOH>冻结数量</FrozenQOH>
+        <CountQOH>盘点数量</CountQOH>
+        <QuerySuccess>查询成功</QuerySuccess>
+        <QueryFailed>查询失败</QueryFailed>
+        <NoData>未找到盘点数据</NoData>
+        <NoDetailData>无明细数据</NoDetailData>
+        <CycleDateRequired>请选择周期日期</CycleDateRequired>
+        <WarehouseRequired>请输入仓库代码</WarehouseRequired>
+        <User>用户</User>
+        <Site>站点</Site>
+        <!-- 明细库存列 -->
+        <DetailInventory>明细库存</DetailInventory>
+        <DetailInventoryLoading>加载中...</DetailInventoryLoading>
+        <DetailInventoryEmpty>无库存</DetailInventoryEmpty>
+        <DetailInvWhse>仓库</DetailInvWhse>
+        <DetailInvBin>Bin位</DetailInvBin>
+        <DetailInvLot>批号</DetailInvLot>
+        <DetailInvQty>数量</DetailInvQty>
+        <BackToHome>返回上一页</BackToHome>
+        <WarehouseCodeInvalid>仓库代码格式无效</WarehouseCodeInvalid>
+      </CycleCount>
+      <Receipt>
+        <Title>工单入库</Title>
+        <Subtitle>扫描工单条码和物料条码完成入库操作</Subtitle>
+        <WorkOrderNo>工单号</WorkOrderNo>
+        <WorkOrderPlaceholder>请输入工单号</WorkOrderPlaceholder>
+        <AssemblySeq>装配序号</AssemblySeq>
+        <AssemblySeqPlaceholder>请输入装配序号</AssemblySeqPlaceholder>
+        <MaterialCode>物料代码</MaterialCode>
+        <MaterialPlaceholder>请输入物料代码</MaterialPlaceholder>
+        <Quantity>数量</Quantity>
+        <QuantityPlaceholder>请输入数量</QuantityPlaceholder>
+        <AvailableQty>库存</AvailableQty>
+        <JobQtyInfoFormat>工单数量: {0} 已收货数量: {1} 未收货数量: {2} 库存数量: {3}</JobQtyInfoFormat>
+        <Unit>单位</Unit>
+        <WarehouseCode>仓库</WarehouseCode>
+        <Location>库位</Location>
+        <LocationPlaceholder>请输入库位</LocationPlaceholder>
+        <BatchNo>批次号</BatchNo>
+        <BatchNoPlaceholder>请输入批次号</BatchNoPlaceholder>
+        <Operator>操作员</Operator>
+        <Remarks>备注</Remarks>
+        <RemarksPlaceholder>请输入备注信息</RemarksPlaceholder>
+        <SubmitButton>确认入库</SubmitButton>
+        <ResetButton>重置</ResetButton>
+        <CancelButton>返回</CancelButton>
+        <WorkOrderRequired>工单号不能为空</WorkOrderRequired>
+        <AssemblySeqRequired>装配序号不能为空</AssemblySeqRequired>
+        <MaterialCodeRequired>物料代码不能为空</MaterialCodeRequired>
+        <QuantityRequired>数量不能为空且必须大于0</QuantityRequired>
+        <ConfirmCancel>确定要返回吗？</ConfirmCancel>
+        <Submitting>提交中...</Submitting>
+        <SubmitSuccess>入库成功</SubmitSuccess>
+        <SubmitFailed>入库失败</SubmitFailed>
+        <NetworkError>网络错误</NetworkError>
+        <BarcodeParseSuccess>条码解析成功</BarcodeParseSuccess>
+        <BarcodeParseFailed>条码解析失败</BarcodeParseFailed>
+        <ParserReady>条码解析器已就绪</ParserReady>
+        <ParserInitFailed>条码解析器初始化失败</ParserInitFailed>
+        <JobBarcodeParseSuccess>工单条码解析成功</JobBarcodeParseSuccess>
+        <MaterialBarcodeParseSuccess>物料条码解析成功</MaterialBarcodeParseSuccess>
+        <FormReset>表单已重置</FormReset>
+        <CommonError>操作失败</CommonError>
+        <JobScanPromptMessage>扫描工单条码自动填入工单信息</JobScanPromptMessage>
+        <MatScanPromptMessage>扫描物料条码自动填入物料信息</MatScanPromptMessage>
+        <JobValidated>工单验证通过</JobValidated>
+        <JobValidationFailed>工单验证失败</JobValidationFailed>
+        <MaterialValidated>物料验证通过</MaterialValidated>
+        <MaterialValidationFailed>物料验证失败</MaterialValidationFailed>
+        <AssemblySeqNotFound>未找到 JobNum={0}, PartNum={1} 对应的装配序号,工单关闭或未产生</AssemblySeqNotFound>
+        <ShippingScheduleNotFound>未找到 PONum={0}, OrderLine={1}, OrderRelNum={2} 对应的发货计划（最近7天）</ShippingScheduleNotFound>
+        <PartNotFound>系统中不存在此物料代码</PartNotFound>
+        <PartNotExists>物料代码：{0}在系统不存在，请检查后重新录入</PartNotExists>
+        <WarehouseCodeRequired>仓库不能为空</WarehouseCodeRequired>
+        <LocationRequired>库位不能为空</LocationRequired>
+        <BatchNoRequired>批次号不能为空</BatchNoRequired>
+        <SessionExpired>会话已过期，请重新登录</SessionExpired>
+        <QueryAssemblySeqFailed>查询装配序号失败</QueryAssemblySeqFailed>
+        <QueryShippingScheduleFailed>查询发货计划失败</QueryShippingScheduleFailed>
+        <SystemProcessingError>系统处理异常，请联系管理员</SystemProcessingError>
+        <JobNoRequired>工单号不能为空</JobNoRequired>
+        <EpicorApiFailed>Epicor API 调用失败：{0}</EpicorApiFailed>
+        <JobNotExists>工单 {0} 不存在</JobNotExists>
+        <JobClosed>工单 {0} 已关闭，无法入库</JobClosed>
+        <JobCompleted>工单 {0} 已完工，无法入库</JobCompleted>
+        <JobNotReleased>工单 {0} 未发布，无法入库</JobNotReleased>
+        <JobReceiptInfoNotFound>无法获取工单 {0} 的入库信息</JobReceiptInfoNotFound>
+        <JobQtyInvalid>工单数量无效，无法入库</JobQtyInvalid>
+        <WarehouseNotExists>仓库 {0} 不存在，无法入库</WarehouseNotExists>
+        <BinNotExists>库位 {0} 不存在，无法入库</BinNotExists>
+        <OverReceiptWarning>超收提示：本次数量 {0} + 已收 {1} 超过工单数量 {2}，仍允许入库</OverReceiptWarning>
+        <RequestParamEmpty>请求参数为空</RequestParamEmpty>
+        <QuantityMustBePositive>数量必须大于 0</QuantityMustBePositive>
+        <AlreadyProcessed>已处理</AlreadyProcessed>
+        <SystemBusy>系统繁忙，请稍后重试</SystemBusy>
+        <ReceiptApiFailed>入库接口调用失败</ReceiptApiFailed>
+        <InvalidParams>参数无效</InvalidParams>
+        <InvalidParamsWithDetail>参数无效：{0}</InvalidParamsWithDetail>
+        <JobNoAndPartRequired>工单号和物料号不能为空</JobNoAndPartRequired>
+        <PoParamsRequired>PONum、OrderLine、OrderRelNum 不能为空</PoParamsRequired>
+        <ShippingScheduleNotFoundSimple>未找到发货计划</ShippingScheduleNotFoundSimple>
+        <QueryingShippingSchedule>正在查询发货计划...</QueryingShippingSchedule>
+        <PoBarcodeFormatHint>PO 条码格式应为 PO:号-行-批（如 362823-3-1）</PoBarcodeFormatHint>
+        <QueryingAssemblySeq>正在查询装配序号...</QueryingAssemblySeq>
+        <AssemblySeqNotFoundSimple>未找到装配序号，请手动输入</AssemblySeqNotFoundSimple>
+        <ValidatingJob>验证工单中...</ValidatingJob>
+      </Receipt>
+      <!-- 采购收货 -->
+      <Receivin>
+        <Title>采购收货</Title>
+        <Subtitle>扫描采购订单条码和物料条码完成收货操作</Subtitle>
+        <PONo>采购订单号</PONo>
+        <PONoPlaceholder>请扫描或输入采购订单号</PONoPlaceholder>
+        <PONoRequired>采购订单号不能为空</PONoRequired>
+        <PackSlip>装箱单号</PackSlip>
+        <PackSlipPlaceholder>请扫描或输入装箱单号</PackSlipPlaceholder>
+        <PackSlipRequired>装箱单号不能为空</PackSlipRequired>
+        <PackSlipPrompt>扫描装箱条码自动填入装箱单号</PackSlipPrompt>
+        <POScanPrompt>扫描采购订单条码自动填入订单信息</POScanPrompt>
+        <MaterialCode>物料代码</MaterialCode>
+        <MaterialPlaceholder>请扫描或输入物料代码</MaterialPlaceholder>
+        <MaterialCodeRequired>物料代码不能为空</MaterialCodeRequired>
+        <MatScanPrompt>扫描物料条码自动填入物料信息</MatScanPrompt>
+        <Quantity>数量</Quantity>
+        <QuantityPlaceholder>请输入收货数量</QuantityPlaceholder>
+        <QuantityRequired>数量不能为空且必须大于0</QuantityRequired>
+        <Unit>单位</Unit>
+        <UnitRequired>单位不能为空</UnitRequired>
+        <UnitMismatch>单位不一致：扫码单位 {0}，采购订单单位 {1}</UnitMismatch>
+        <WarehouseCode>仓库</WarehouseCode>
+        <WarehousePlaceholder>请输入仓库代码</WarehousePlaceholder>
+        <Location>库位</Location>
+        <LocationPlaceholder>请输入库位</LocationPlaceholder>
+        <BatchNo>批次号</BatchNo>
+        <BatchNoPlaceholder>请输入批次号</BatchNoPlaceholder>
+        <Operator>操作员</Operator>
+        <Remarks>备注</Remarks>
+        <RemarksPlaceholder>请输入备注信息</RemarksPlaceholder>
+        <SubmitButton>确认收货</SubmitButton>
+        <ResetButton>重置</ResetButton>
+        <CancelButton>返回</CancelButton>
+        <Submitting>提交中...</Submitting>
+        <SubmitSuccess>收货成功</SubmitSuccess>
+        <SubmitFailed>收货失败</SubmitFailed>
+        <NetworkError>网络错误</NetworkError>
+        <FormReset>表单已重置</FormReset>
+        <CommonError>操作失败</CommonError>
+        <ConfirmCancel>确定要返回吗？</ConfirmCancel>
+        <POValidated>采购订单验证通过</POValidated>
+        <POValidationFailed>采购订单验证失败</POValidationFailed>
+        <ValidatingPO>验证采购订单中...</ValidatingPO>
+        <ScanParsed>扫描解析成功</ScanParsed>
+        <VendorName>供应商</VendorName>
+        <POType>订单类型</POType>
+        <CurrencyCode>币种</CurrencyCode>
+        <OrderQty>订单数量</OrderQty>
+        <ReceivedQty>已收货</ReceivedQty>
+        <RemainingQty>待收货</RemainingQty>
+        <UnreceivedQty>未收数量</UnreceivedQty>
+        <ItemSelected>已选择物料</ItemSelected>
+        <POLineNo>PO行号</POLineNo>
+        <POLineNoPlaceholder>请输入或扫描PO行号</POLineNoPlaceholder>
+        <POLineNoPrompt>输入采购订单行号，回车快速定位物料</POLineNoPrompt>
+        <POLineNoInvalid>无效的PO行号，请检查后重试</POLineNoInvalid>
+        <WarehouseCodeRequired>仓库不能为空</WarehouseCodeRequired>
+        <LocationRequired>库位不能为空</LocationRequired>
+        <BatchNoRequired>批次号不能为空</BatchNoRequired>
+        <WarehouseNotExist>仓库 {0} 不存在</WarehouseNotExist>
+        <LocationNotExist>库位 {0} 不存在</LocationNotExist>
+        <LocationNotInWarehouse>库位 {0} 不属于仓库 {1}</LocationNotInWarehouse>
+        <ConfirmButton>确定</ConfirmButton>
+        <CancelButtonText>取消</CancelButtonText>
+        <OKButton>确定</OKButton>
+        <InvalidParameters>参数无效：{0}</InvalidParameters>
+        <PONotFound>采购订单 {0} 不存在或无待收货的明细行</PONotFound>
+        <POQtyZero>采购订单 {0} 订单数量为0，无法收货</POQtyZero>
+        <OverReceiptWarning>收货数量 {0} + 已收数量 {1} = {2} 超过订单数量 {3}，剩余可收数量 {4}，Epicor 允许超收，请确认后继续收货</OverReceiptWarning>
+        <WarehouseNotExistCannotReceive>仓库 {0} 不存在，无法入库</WarehouseNotExistCannotReceive>
+        <WarehouseValidationFailed>仓库 {0} 验证失败，请稍后重试</WarehouseValidationFailed>
+        <BinNotExistCannotReceive>库位 {0} 不存在，无法入库</BinNotExistCannotReceive>
+        <BinValidationFailed>库位 {0} 验证失败，请稍后重试</BinValidationFailed>
+        <SessionExpired>会话已过期，请重新登录</SessionExpired>
+        <ValidatePOError>验证采购订单时发生错误</ValidatePOError>
+        <POLineMustBePositive>采购订单行号必须为正整数</POLineMustBePositive>
+        <QtyMustBePositive>收货数量必须大于 0</QtyMustBePositive>
+        <DeliveryNoteRequired>送货单号不能为空</DeliveryNoteRequired>
+        <ReceiptSuccessIdempotent>收货成功（该请求已处理，未重复提交）</ReceiptSuccessIdempotent>
+        <ReceiptInProgress>该采购订单行正在收货中，请稍后重试</ReceiptInProgress>
+        <POLineNotFound>采购订单 {0} 第 {1} 行不存在或无待收货的明细行</POLineNotFound>
+        <POLineQtyZero>采购订单 {0} 第 {1} 行订单数量为0，无法收货</POLineQtyZero>
+        <PORelNumUndetermined>无法确定采购订单 {0} 第 {1} 行的 Release 号，请联系管理员核对 BAQ 配置</PORelNumUndetermined>
+        <PartNumMismatch>扫码物料 {0} 与采购订单 {1} 第 {2} 行的物料 {3} 不一致，请核对</PartNumMismatch>
+        <VendorNumUndetermined>无法确定采购订单 {0} 的供应商编号，请联系管理员核对 BAQ 配置</VendorNumUndetermined>
+        <QueryReceiptHeadFailed>查询收货头信息失败（网络或服务异常），请稍后重试</QueryReceiptHeadFailed>
+        <InitReceiptHeadFailed>初始化收货头失败: {0}</InitReceiptHeadFailed>
+        <PONotReceivable>采购订单 {0} 不存在或不允许收货</PONotReceivable>
+        <POLineClosed>采购订单 {0} 第 {1} 行已结单，无法收货</POLineClosed>
+        <PONotApproved>采购订单 {0} 未审核，请先审核后再收货</PONotApproved>
+        <GetPOInfoFailed>获取PO信息失败: {0}</GetPOInfoFailed>
+        <GetVendorInfoFailed>获取供应商信息失败</GetVendorInfoFailed>
+        <CNPreUpdateFailed>CNPreUpdate 失败: {0}</CNPreUpdateFailed>
+        <UpdateMasterFailed>UpdateMaster 失败: {0}</UpdateMasterFailed>
+        <GetNewRcvDtlFailed>GetNewRcvDtl 失败: {0}</GetNewRcvDtlFailed>
+        <GetDtlPOLineInfoFailed>GetDtlPOLineInfo 失败: {0}</GetDtlPOLineInfoFailed>
+        <GetDtlQtyInfoFailed>GetDtlQtyInfo 失败: {0}</GetDtlQtyInfoFailed>
+        <CheckOnLeaveHeadFailed>CheckOnLeaveHead 失败: {0}</CheckOnLeaveHeadFailed>
+        <OnChangeDtlReceivedFailed>OnChangeDtlReceived 失败: {0}</OnChangeDtlReceivedFailed>
+        <CheckDtlLotInfoFailed>CheckDtlLotInfo 失败: {0}</CheckDtlLotInfoFailed>
+        <LotValidationFailed>批号验证失败: {0}</LotValidationFailed>
+        <GetDtlLotInfoFailed>GetDtlLotInfo 失败: {0}</GetDtlLotInfoFailed>
+        <LotInfoValidationFailed>批次信息验证失败: {0}</LotInfoValidationFailed>
+        <GetDtlQtyInfoValidationFailed>GetDtlQtyInfo 验证失败: {0}</GetDtlQtyInfoValidationFailed>
+        <PersistReceiptDetailFailed>持久化收货明细失败: {0}</PersistReceiptDetailFailed>
+        <SystemError>系统处理异常，请联系管理员</SystemError>
+        <EpicorApiFailed>调用 Epicor 接口失败（网络或服务异常）</EpicorApiFailed>
+        <GetPOInfoReturnedFalse>GetPOInfo 返回 false</GetPOInfoReturnedFalse>
+        <GetPOInfoNoRcvHead>GetPOInfo 未返回 RcvHead 数据</GetPOInfoNoRcvHead>
+        <InvalidResponseStructure>Epicor 返回的收货数据结构异常，已终止收货，请联系管理员</InvalidResponseStructure>
+      </Receivin>
+      <!-- 条码打印页面 -->
+      <BarcodePrint>
+        <Title>条码打印</Title>
+        <Subtitle>查询库存并批量打印条码标签</Subtitle>
+        <BatchPrintSelected>批量打印选中物料</BatchPrintSelected>
+        <Preview>预览</Preview>
+        <PrintSettings>条码打印设置</PrintSettings>
+        <!-- 库存查询 -->
+        <InventoryQuery>库存查询</InventoryQuery>
+        <MaterialCode>物料代码</MaterialCode>
+        <MaterialCodePlaceholder>请输入物料代码</MaterialCodePlaceholder>
+        <WarehouseCode>仓库代码(可选)</WarehouseCode>
+        <WarehouseCodePlaceholder>请输入仓库代码</WarehouseCodePlaceholder>
+        <BinNumLabel>库位(可选)</BinNumLabel>
+        <BinNumPlaceholder>请输入库位</BinNumPlaceholder>
+        <QueryInventory>查询库存</QueryInventory>
+        <!-- 打印范围 -->
+        <PrintRangeTitle>选择排序从</PrintRangeTitle>
+        <From>从</From>
+        <To>至</To>
+        <SelectRange>区间选择</SelectRange>
+        <SelectPrinter>选择打印机</SelectPrinter>
+        <SelectPrinterPlaceholder>-- 请选择打印机 --</SelectPrinterPlaceholder>
+        <!-- 表格列 -->
+        <Select>全选</Select>
+        <No>序号</No>
+        <MaterialCodeColumn>物料代码</MaterialCodeColumn>
+        <MaterialDescription>物料描述</MaterialDescription>
+        <Warehouse>仓库</Warehouse>
+        <BinNum>库位</BinNum>
+        <LotNum>批号</LotNum>
+        <OnhandQty>库存数量</OnhandQty>
+        <NoData>暂无数据</NoData>
+        <TotalRecords>共 {0} 条记录</TotalRecords>
+        <!-- 页面设置 -->
+        <PageSettingsToggle>页面设置</PageSettingsToggle>
+        <PageSettingsToggleHint>勾选显示标签尺寸、内边距等设置</PageSettingsToggleHint>
+        <ShowPageSettings>显示标签尺寸、内边距等页面设置信息</ShowPageSettings>
+        <HidePageSettings>将页面显示隐藏</HidePageSettings>
+        <!-- 标签尺寸 -->
+        <LabelSize>标签尺寸</LabelSize>
+        <LabelWidth>标签宽度(mm)</LabelWidth>
+        <LabelHeight>标签高度(mm)</LabelHeight>
+        <!-- 内边距 -->
+        <Padding>内边距</Padding>
+        <PaddingLeft>左边距(mm)</PaddingLeft>
+        <PaddingRight>右边距(mm)</PaddingRight>
+        <PaddingTop>上边距(mm)</PaddingTop>
+        <PaddingBottom>下边距(mm)</PaddingBottom>
+        <!-- 字体设置 -->
+        <FontSettings>字体设置</FontSettings>
+        <FontFamily>字体名称</FontFamily>
+        <FontSize>字体大小(pt)</FontSize>
+        <FontWeight>字体粗细</FontWeight>
+        <Bold>加粗</Bold>
+        <Normal>常规</Normal>
+        <!-- 条码设置 -->
+        <BarcodeSettings>条码设置</BarcodeSettings>
+        <BarcodeWidth>条码高度(px)</BarcodeWidth>
+        <BarcodeHeight>条码高度(px)</BarcodeHeight>
+        <BarcodeOffsetX>水平偏移(px)</BarcodeOffsetX>
+        <BarcodeOffsetY>垂直偏移(px)</BarcodeOffsetY>
+        <!-- 打印内容标签 -->
+        <MaterialCodeLabel>物料代码</MaterialCodeLabel>
+        <UnitLabel>单位</UnitLabel>
+        <QuantityLabel>数量</QuantityLabel>
+        <WarehouseLabel>仓库</WarehouseLabel>
+        <LocationLabel>库位</LocationLabel>
+        <BatchNoLabel>批号</BatchNoLabel>
+        <PrintCountLabel>打印数量</PrintCountLabel>
+        <StartNumberLabel>开始数量</StartNumberLabel>
+        <EndNumberLabel>结束数量</EndNumberLabel>
+        <PrintDateLabel>打印日期</PrintDateLabel>
+        <!-- 操作消息 -->
+        <QuerySuccess>查询成功</QuerySuccess>
+        <QueryFailed>查询失败</QueryFailed>
+        <NoInventory>未找到库存记录</NoInventory>
+        <SelectItemsFirst>请先选择要打印的物料</SelectItemsFirst>
+        <Printing>正在打印...</Printing>
+        <PrintSuccess>打印成功</PrintSuccess>
+        <PrintFailed>打印失败</PrintFailed>
+        <PreviewGenerating>正在生成预览...</PreviewGenerating>
+        <PreviewSuccess>预览生成成功</PreviewSuccess>
+        <PreviewFailed>预览生成失败</PreviewFailed>
+        <ConfigSaved>配置已保存</ConfigSaved>
+        <NetworkError>网络错误，请检查连接</NetworkError>
+        <!-- 预览页面 -->
+        <PreviewTitle>批量标签预览</PreviewTitle>
+        <PreviewTotalItems>共 {0} 个物料</PreviewTotalItems>
+        <Print>打印</Print>
+        <BackToHome>返回主页</BackToHome>
+        <PreviewError>预览失败，请稍后重试</PreviewError>
+        <InvalidRequest>请求参数无效</InvalidRequest>
+        <PrinterRequired>请选择打印机</PrinterRequired>
+        <PrintCountOutOfRange>打印份数必须在 1 到 100 之间</PrintCountOutOfRange>
+        <PrintLimitExceeded>打印数量超出上限：物料数不能超过 500，且物料数×份数不能超过 1000</PrintLimitExceeded>
+        <PrintJobSent>打印任务已发送</PrintJobSent>
+        <PrintJobSentToPrinter>打印任务已发送到打印机：</PrintJobSentToPrinter>
+        <PrintFailedCheckPrinter>打印失败，请检查打印机连接和设置</PrintFailedCheckPrinter>
+        <PrintError>打印异常，请稍后重试</PrintError>
+        <SessionExpired>登录已过期，请重新登录</SessionExpired>
+        <NoInventoryData>未查询到库存数据</NoInventoryData>
+        <ServiceError>服务异常，请稍后重试</ServiceError>
+        <FinishedProduct>成品</FinishedProduct>
+        <NoPrinterDetected>未检测到打印机</NoPrinterDetected>
+        <PrinterListLoadFailed>获取打印机列表失败</PrinterListLoadFailed>
+        <PrinterListUnavailable>无法获取打印机列表，请检查系统设置</PrinterListUnavailable>
+        <StartNoGreaterThanEnd>开始序号不能大于结束序号</StartNoGreaterThanEnd>
+        <RangeSelected>已选择序号 {0} 到 {1} 的物料</RangeSelected>
+        <QuantityMustBePositive>数量必须大于 0</QuantityMustBePositive>
+        <CannotExceedStock>不能超过库存：</CannotExceedStock>
+        <SelectPrinterFirst>请先选择打印机</SelectPrinterFirst>
+        <PrintRequestFailed>打印请求失败</PrintRequestFailed>
+        <MaterialQtyMustBePositive>物料【{0}】：数量必须大于0</MaterialQtyMustBePositive>
+        <MaterialCannotExceedStock>物料【{0}】：不能超过库存 {1}</MaterialCannotExceedStock>
+        <QueryFoundItems>查询到 {0} 条物料数据</QueryFoundItems>
+        <QueryFailedRetry>查询失败，请重试</QueryFailedRetry>
+      </BarcodePrint>
+    </Resources>
+  </Language>
+</LanguageResources>

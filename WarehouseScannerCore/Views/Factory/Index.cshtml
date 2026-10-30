@@ -1,0 +1,249 @@
+@model List<WarehouseScannerCore.Models.Factory>
+@{
+    Layout = "_FactoryLayout";
+
+    // 从ViewBag获取本地化函数
+    var getText = ViewBag.GetText as Func<string, string, string>;
+    var currentCulture = ViewBag.CurrentCulture as string ?? "zh-CN";
+    var currentUICulture = ViewBag.CurrentUICulture as string ?? "zh-CN";
+
+    // 定义本地辅助函数
+    string GetText(string section, string key)
+    {
+        return getText?.Invoke(section, key) ?? $"[{section}.{key}]";
+    }
+
+    ViewData["Title"] = GetText("FactoryManagement", "Title");
+}
+
+<div class="container-fluid">
+    <h1 class="mb-4">@GetText("FactoryManagement", "Title")</h1>
+    <p class="text-muted mb-4">@GetText("FactoryManagement", "Subtitle")</p>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- 搜索和筛选 -->
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <input type="text" class="form-control"
+                   placeholder="@GetText("FactoryManagement", "SearchPlaceholder")"
+                   id="searchInput">
+        </div>
+        <div class="col-md-2">
+            <select class="form-select" id="statusFilter">
+                <option value="">@GetText("FactoryManagement", "AllStatus")</option>
+                <option value="true">@GetText("FactoryManagement", "Active")</option>
+                <option value="false">@GetText("FactoryManagement", "Inactive")</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <div class="d-flex gap-2">
+                <button class="btn btn-primary w-50" id="searchBtn">
+                    <i class="fas fa-search"></i> @GetText("FactoryCommon", "Search")
+                </button>
+                <button class="btn btn-secondary w-50" id="refreshBtn">
+                    <i class="fas fa-sync-alt"></i> @GetText("FactoryCommon", "Refresh")
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 工厂列表 -->
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">@GetText("FactoryManagement", "ListTitle")</h5>
+            <a asp-action="Create" class="btn btn-success btn-sm">
+                <i class="fas fa-plus"></i> @GetText("FactoryManagement", "CreateButton")
+            </a>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover" id="factoryTable">
+                    <thead>
+                        <tr>
+                            <th>@GetText("FactoryManagement", "Code")</th>
+                            <th>@GetText("FactoryManagement", "Name")</th>
+                            <th>@GetText("FactoryManagement", "Description")</th>
+                            <th>@GetText("FactoryManagement", "Company")</th>
+                            <th>@GetText("FactoryManagement", "Plant")</th>
+                            <th>@GetText("FactoryManagement", "ApiUrl")</th>
+                            <th>@GetText("FactoryManagement", "ApiKey")</th>
+                            <th>@GetText("FactoryManagement", "Status")</th>
+                            <th>@GetText("FactoryManagement", "Actions")</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td><strong>@item.Code</strong></td>
+                                <td>@item.Name</td>
+                                <td>@item.Description</td>
+                                <td>
+                                    @* 生效公司：未配置时回退站点代码 *@
+                                    <span>@item.EffectiveCompany</span>
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.Plant))
+                                    {
+                                        <span>@item.Plant</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.ApiUrl))
+                                    {
+                                        <span class="badge bg-info">@item.ApiUrl</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
+
+
+                                <td>
+                                    @* ApiKey 绝不展示明文，仅显示是否已配置 *@
+                                    @if (!string.IsNullOrEmpty(item.ApiKey))
+                                    {
+                                        <span class="badge bg-secondary" title="@GetText("FactoryManagement", "ApiKey")">******</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">-</span>
+                                    }
+                                </td>
+                                <td>
+                                    @if (item.Enabled)
+                                    {
+                                        <span class="badge bg-success">@GetText("FactoryManagement", "Active")</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">@GetText("FactoryManagement", "Inactive")</span>
+                                    }
+                                </td>
+                                <td>
+                                    <a asp-action="Edit" asp-route-code="@item.Code"
+                                       class="btn btn-sm btn-primary" title="@GetText("FactoryManagement", "EditButton")">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-code="@item.Code"
+                                       class="btn btn-sm btn-danger" title="@GetText("FactoryManagement", "DeleteButton")">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+
+                        @if (!Model.Any())
+                        {
+                            <tr>
+                                <td colspan="9" class="text-center text-muted">
+                                    @GetText("FactoryManagement", "NoData")
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer text-muted">
+            @string.Format(GetText("FactoryManagement", "RecordsFound"), Model.Count)
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // 本地化文本配置
+        var localTexts = {
+            searchPlaceholder: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("FactoryManagement", "SearchPlaceholder"))),
+            allStatus: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("FactoryManagement", "AllStatus"))),
+            active: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("FactoryManagement", "Active"))),
+            inactive: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("FactoryManagement", "Inactive"))),
+            search: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("FactoryCommon", "Search"))),
+            refresh: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("FactoryCommon", "Refresh"))),
+            code: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("FactoryManagement", "Code"))),
+            name: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("FactoryManagement", "Name"))),
+            // nameCN: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("FactoryManagement", "NameCN"))),
+            // location: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("FactoryManagement", "Location"))),
+            apiEndpoint: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("FactoryManagement", "ApiUrl"))),
+            apiEndpoint: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("FactoryManagement", "ApiKey"))),
+            status: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("FactoryManagement", "Status"))),
+            actions: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("FactoryManagement", "Actions"))),
+            editButton: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("FactoryManagement", "EditButton"))),
+            deleteButton: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("FactoryManagement", "DeleteButton"))),
+            noData: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("FactoryManagement", "NoData"))),
+            recordsFound: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("FactoryManagement", "RecordsFound")))
+        };
+
+        $(document).ready(function() {
+            // 搜索功能
+            $('#searchBtn').on('click', function() {
+                performSearch();
+            });
+
+            $('#searchInput').on('keypress', function(e) {
+                if (e.which === 13) { // Enter键
+                    performSearch();
+                }
+            });
+
+            // 刷新功能
+            $('#refreshBtn').on('click', function() {
+                location.reload();
+            });
+
+            // 状态筛选
+            $('#statusFilter').on('change', function() {
+                performSearch();
+            });
+        });
+
+        function performSearch() {
+            var searchText = $('#searchInput').val().toLowerCase();
+            var statusFilter = $('#statusFilter').val();
+
+            $('#factoryTable tbody tr').each(function() {
+                var $row = $(this);
+                var rowText = $row.text().toLowerCase();
+                var status = $row.find('td').eq(5).find('.badge').hasClass('bg-success') ? 'true' : 'false';
+
+                var matchesSearch = searchText === '' || rowText.indexOf(searchText) >= 0;
+                var matchesStatus = statusFilter === '' || status === statusFilter;
+
+                if (matchesSearch && matchesStatus) {
+                    $row.show();
+                } else {
+                    $row.hide();
+                }
+            });
+
+            // 更新记录计数
+            var visibleCount = $('#factoryTable tbody tr:visible').length;
+            if ($('#factoryTable tbody tr:first').find('td').text().indexOf('@GetText("FactoryManagement", "NoData")') >= 0) {
+                visibleCount = 0;
+            }
+
+            $('.card-footer').text(localTexts.recordsFound.replace('{0}', visibleCount));
+        }
+    </script>
+}

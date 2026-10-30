@@ -1,0 +1,34 @@
+# Build output
+bin/
+obj/
+*.log
+build_output.txt
+
+# IDE
+.vs/
+.vscode/
+*.user
+
+# Temp / test files
+temp.html
+**/test-redirect.html
+
+# Sensitive configuration (never commit secrets)
+**/appsettings.Development.json
+**/appsettings.Production.json
+**/appsettings.Staging.json
+
+# Runtime site credentials (contain Epicor ApiKey / 数据库连接串)
+# 注意：仅添加忽略规则不能撤回已进入历史的提交，若曾经提交过必须轮换 Epicor ApiKey。
+**/config/factories.json
+**/config/database.config.json
+
+# Data Protection keys
+**/keys/
+
+# Logs
+**/logs/
+
+# OS
+Thumbs.db
+desktop.ini

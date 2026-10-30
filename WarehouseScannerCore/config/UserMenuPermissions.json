@@ -1,0 +1,344 @@
+{
+  "Permissions": [
+    {
+      "SiteCode": "GCMDG",
+      "UserCode": "644",
+      "UserName": "管理员",
+      "UserGroup": "AdminGroup",
+      "MenuCode": "Issue",
+      "MenuName": "发料扫码",
+      "Permission": 1,
+      "Remark": "系统管理员"
+    },
+    {
+      "SiteCode": "",
+      "UserCode": "644",
+      "UserName": "管理员",
+      "UserGroup": "AdminGroup",
+      "MenuCode": "ReturnMaterial",
+      "MenuName": "返回物料",
+      "Permission": 1,
+      "Remark": "系统管理员"
+    },
+    {
+      "SiteCode": "",
+      "UserCode": "644",
+      "UserName": "管理员",
+      "UserGroup": "管理员组",
+      "MenuCode": "Outbound",
+      "MenuName": "出库扫码",
+      "Permission": 1,
+      "Remark": "系统管理员"
+    },
+    {
+      "SiteCode": "",
+      "UserCode": "644",
+      "UserName": "管理员",
+      "UserGroup": "管理员组",
+      "MenuCode": "Transfer",
+      "MenuName": "库存转移",
+      "Permission": 1,
+      "Remark": "系统管理员"
+    },
+    {
+      "SiteCode": "",
+      "UserCode": "644",
+      "UserName": "管理员",
+      "UserGroup": "管理员组",
+      "MenuCode": "Settings",
+      "MenuName": "系统设置",
+      "Permission": 1,
+      "Remark": "系统管理员"
+    },
+    {
+      "SiteCode": "",
+      "UserCode": "644",
+      "UserName": "管理员",
+      "UserGroup": "管理员组",
+      "MenuCode": "Inbound",
+      "MenuName": "入库扫码",
+      "Permission": 1,
+      "Remark": ""
+    },
+    {
+      "SiteCode": "",
+      "UserCode": "644",
+      "UserName": "管理员",
+      "UserGroup": "管理员组",
+      "MenuCode": "Inventory",
+      "MenuName": "盘点扫码",
+      "Permission": 1,
+      "Remark": ""
+    },
+    {
+      "SiteCode": "",
+      "UserCode": "644",
+      "UserName": "管理员",
+      "UserGroup": "管理员组",
+      "MenuCode": "Receivin",
+      "MenuName": "材料入库",
+      "Permission": 1,
+      "Remark": ""
+    },
+    {
+      "SiteCode": "",
+      "UserCode": "084",
+      "UserName": "管理员",
+      "UserGroup": "AdminGroup",
+      "MenuCode": "Issue",
+      "MenuName": "发料扫码",
+      "Permission": 1,
+      "Remark": "系统管理员"
+    },
+    {
+      "SiteCode": "",
+      "UserCode": "084",
+      "UserName": "管理员",
+      "UserGroup": "AdminGroup",
+      "MenuCode": "ReturnMaterial",
+      "MenuName": "返回物料",
+      "Permission": 1,
+      "Remark": "系统管理员"
+    },
+    {
+      "SiteCode": "",
+      "UserCode": "084",
+      "UserName": "管理员",
+      "UserGroup": "管理员组",
+      "MenuCode": "Outbound",
+      "MenuName": "出库扫码",
+      "Permission": 1,
+      "Remark": "系统管理员"
+    },
+    {
+      "SiteCode": "",
+      "UserCode": "084",
+      "UserName": "管理员",
+      "UserGroup": "管理员组",
+      "MenuCode": "Transfer",
+      "MenuName": "库存转移",
+      "Permission": 1,
+      "Remark": "系统管理员"
+    },
+    {
+      "SiteCode": "",
+      "UserCode": "084",
+      "UserName": "管理员",
+      "UserGroup": "管理员组",
+      "MenuCode": "Settings",
+      "MenuName": "系统设置",
+      "Permission": 1,
+      "Remark": "系统管理员"
+    },
+    {
+      "SiteCode": "",
+      "UserCode": "084",
+      "UserName": "管理员",
+      "UserGroup": "管理员组",
+      "MenuCode": "Inbound",
+      "MenuName": "入库扫码",
+      "Permission": 1,
+      "Remark": ""
+    },
+    {
+      "SiteCode": "",
+      "UserCode": "084",
+      "UserName": "管理员",
+      "UserGroup": "管理员组",
+      "MenuCode": "Receivin",
+      "MenuName": "材料入库",
+      "Permission": 1,
+      "Remark": ""
+    },
+    {
+      "SiteCode": "",
+      "UserCode": "488",
+      "UserName": "管理员",
+      "UserGroup": "管理员组",
+      "MenuCode": "Inventory",
+      "MenuName": "盘点扫码",
+      "Permission": 1,
+      "Remark": ""
+    },
+    {
+      "SiteCode": "",
+      "UserCode": "488",
+      "UserName": "管理员",
+      "UserGroup": "AdminGroup",
+      "MenuCode": "Issue",
+      "MenuName": "发料扫码",
+      "Permission": 1,
+      "Remark": "系统管理员"
+    },
+    {
+      "SiteCode": "",
+      "UserCode": "488",
+      "UserName": "管理员",
+      "UserGroup": "AdminGroup",
+      "MenuCode": "ReturnMaterial",
+      "MenuName": "返回物料",
+      "Permission": 1,
+      "Remark": "系统管理员"
+    },
+    {
+      "SiteCode": "",
+      "UserCode": "488",
+      "UserName": "管理员",
+      "UserGroup": "管理员组",
+      "MenuCode": "Outbound",
+      "MenuName": "出库扫码",
+      "Permission": 1,
+      "Remark": "系统管理员"
+    },
+    {
+      "SiteCode": "",
+      "UserCode": "488",
+      "UserName": "管理员",
+      "UserGroup": "管理员组",
+      "MenuCode": "Transfer",
+      "MenuName": "库存转移",
+      "Permission": 1,
+      "Remark": "系统管理员"
+    },
+    {
+      "SiteCode": "",
+      "UserCode": "488",
+      "UserName": "管理员",
+      "UserGroup": "管理员组",
+      "MenuCode": "Inbound",
+      "MenuName": "入库扫码",
+      "Permission": 1,
+      "Remark": ""
+    },
+    {
+      "SiteCode": "",
+      "UserCode": "488",
+      "UserName": "管理员",
+      "UserGroup": "管理员组",
+      "MenuCode": "Inventory",
+      "MenuName": "盘点扫码",
+      "Permission": 1,
+      "Remark": ""
+    },
+    {
+      "SiteCode": "",
+      "UserCode": "488",
+      "UserName": "管理员",
+      "UserGroup": "管理员组",
+      "MenuCode": "Receivin",
+      "MenuName": "材料入库",
+      "Permission": 1,
+      "Remark": ""
+    },
+    {
+      "SiteCode": "",
+      "UserCode": "644",
+      "UserName": "管理员",
+      "UserGroup": "AdminGroup",
+      "MenuCode": "LabelPrint",
+      "MenuName": "库存查询",
+      "Permission": 1,
+      "Remark": ""
+    },
+    {
+      "SiteCode": "",
+      "UserCode": "084",
+      "UserName": "管理员",
+      "UserGroup": "AdminGroup",
+      "MenuCode": "Inventory",
+      "MenuName": "盘点扫码",
+      "Permission": 1,
+      "Remark": ""
+    },
+    {
+      "SiteCode": "",
+      "UserCode": "084",
+      "UserName": "管理员",
+      "UserGroup": "AdminGroup",
+      "MenuCode": "LabelPrint",
+      "MenuName": "库存查询",
+      "Permission": 1,
+      "Remark": ""
+    },
+    {
+      "SiteCode": "",
+      "UserCode": "488",
+      "UserName": "管理员",
+      "UserGroup": "AdminGroup",
+      "MenuCode": "LabelPrint",
+      "MenuName": "库存查询",
+      "Permission": 1,
+      "Remark": ""
+    },
+    {
+      "SiteCode": "",
+      "UserCode": "671",
+      "UserName": "671",
+      "UserGroup": "OperatorGroup",
+      "MenuCode": "Issue",
+      "MenuName": "发料扫码",
+      "Permission": 1,
+      "Remark": ""
+    },
+    {
+      "SiteCode": "",
+      "UserCode": "671",
+      "UserName": "671",
+      "UserGroup": "OperatorGroup",
+      "MenuCode": "Outbound",
+      "MenuName": "出库扫码",
+      "Permission": 1,
+      "Remark": ""
+    },
+    {
+      "SiteCode": "",
+      "UserCode": "671",
+      "UserName": "671",
+      "UserGroup": "OperatorGroup",
+      "MenuCode": "LabelPrint",
+      "MenuName": "标签打印",
+      "Permission": 1,
+      "Remark": ""
+    },
+    {
+      "SiteCode": "",
+      "UserCode": "671",
+      "UserName": "671",
+      "UserGroup": "OperatorGroup",
+      "MenuCode": "ReturnMaterial",
+      "MenuName": "返回物料",
+      "Permission": 1,
+      "Remark": ""
+    },
+    {
+      "SiteCode": "",
+      "UserCode": "671",
+      "UserName": "671",
+      "UserGroup": "OperatorGroup",
+      "MenuCode": "Inbound",
+      "MenuName": "产品入库扫码",
+      "Permission": 1,
+      "Remark": ""
+    },
+    {
+      "SiteCode": "",
+      "UserCode": "671",
+      "UserName": "671",
+      "UserGroup": "OperatorGroup",
+      "MenuCode": "Receipt",
+      "MenuName": "材料入库扫码",
+      "Permission": 1,
+      "Remark": ""
+    },
+    {
+      "SiteCode": "",
+      "UserCode": "671",
+      "UserName": "671",
+      "UserGroup": "OperatorGroup",
+      "MenuCode": "Inventory",
+      "MenuName": "盘点扫码",
+      "Permission": 1,
+      "Remark": ""
+    }
+  ]
+}

@@ -1,0 +1,1473 @@
+@model WarehouseScannerCore.Models.BarcodePrintModel
+
+@{
+    // 从ViewBag获取数据
+    var getText = ViewBag.GetText as Func<string, string, string>;
+    var currentCulture = ViewBag.CurrentCulture as string ?? "zh-CN";
+
+    // 定义本地辅助函数
+    string GetText(string section, string key)
+    {
+        return getText?.Invoke(section, key) ?? $"[{section}.{key}]";
+    }
+
+    ViewData["Title"] = GetText("BarcodePrint", "Title");
+}
+
+<style>
+    :root {
+        --primary-color: #4a6fa5;
+        --secondary-color: #6c757d;
+        --bg-light: #f8f9fa;
+        --bg-section: #ffffff;
+        --bg-input: #f1f4f8;
+        --border-color: #e1e5ea;
+        --text-color: #2c3e50;
+        --shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+
+    /* 全局盒模型 + 防止任何元素把屏幕横向顶出（手机尤其重要） */
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html, body {
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
+    body {
+        background-color: var(--bg-light);
+        color: var(--text-color);
+        padding: 1rem;
+        margin: 0;
+    }
+
+    h2 {
+        color: var(--primary-color);
+        font-weight: 400;
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 2px solid var(--border-color);
+    }
+
+    .preview-button-container {
+        background: linear-gradient(135deg, var(--primary-color), #c3d6e8);
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin-bottom: 2rem;
+        box-shadow: var(--shadow);
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .btn-preview {
+        background-color: white;
+        color: var(--primary-color);
+        border: none;
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+        font-weight: 500;
+        border-radius: 50px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+        .btn-preview:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            background-color: #f8f9fa;
+        }
+        
+        .btn-preview:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+    .form-container {
+        background: var(--bg-section);
+        border-radius: 8px;
+        padding: 2rem;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--border-color);
+        margin-bottom: 2rem;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .inventory-search-section {
+        background: var(--bg-section);
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--border-color);
+        margin-bottom: 2rem;
+    }
+
+    .inventory-search-row {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        align-items: flex-end;
+        margin-bottom: 1.5rem;
+    }
+
+    .inventory-search-item {
+        flex: 1;
+        min-width: 150px;
+    }
+
+        .inventory-search-item label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--secondary-color);
+            font-weight: 400;
+        }
+
+        .inventory-search-item input {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            padding: 0.7rem 1rem;
+            font-size: 0.95rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background-color: var(--bg-input);
+            box-sizing: border-box;
+        }
+
+    .btn-search {
+        padding: 0.7rem 1.5rem;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.95rem;
+        min-height: 42px;
+    }
+
+    .btn-select-range {
+        padding: 0.7rem 1.2rem;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.95rem;
+        min-height: 42px;
+    }
+
+    .inventory-table-container {
+        margin-top: 1rem;
+        overflow-x: auto;
+        max-height: 320px;
+        overflow-y: auto;
+    }
+
+    .inventory-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+    }
+
+        .inventory-table th {
+            background-color: #f5f5f5;
+            position: sticky;
+            top: 0;
+            font-weight: 500;
+            border: 1px solid var(--border-color);
+            padding: 8px 10px;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .inventory-table td {
+            border: 1px solid var(--border-color);
+            padding: 8px 10px;
+            text-align: left;
+            vertical-align: middle;
+            word-wrap: break-word;
+            white-space: normal;
+        }
+
+        .inventory-table tbody tr {
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+            .inventory-table tbody tr:hover {
+                background-color: #f0f7ff;
+            }
+
+        .inventory-table .selected-row {
+            background-color: #e3f2fd;
+        }
+
+        .inventory-table input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .inventory-table input.editable-qty {
+            width: 100%;
+            min-width: 70px;
+            padding: 4px 6px;
+            border: 1px solid var(--border-color);
+            border-radius: 3px;
+            font-size: 0.9rem;
+            text-align: right;
+            background-color: white;
+            transition: all 0.2s ease;
+        }
+
+            .inventory-table input.editable-qty:focus {
+                outline: none;
+                border-color: var(--primary-color);
+                box-shadow: 0 0 0 2px rgba(74, 111, 165, 0.1);
+            }
+
+            .inventory-table input.editable-qty:hover {
+                border-color: var(--primary-color);
+                background-color: #fef9e6;
+            }
+
+            .inventory-table input.editable-qty.input-error {
+                border-color: #dc3545 !important;
+                background-color: #fff5f5 !important;
+            }
+
+        .inventory-table th:nth-child(1),
+        .inventory-table td:nth-child(1) {
+            width: 1%;
+            white-space: nowrap;
+        }
+
+        .inventory-table th:nth-child(2),
+        .inventory-table td:nth-child(2) {
+            width: 1%;
+            white-space: nowrap;
+            text-align: center;
+        }
+
+        .inventory-table th:nth-child(3),       /* 第 3 列：物料代码 */
+        .inventory-table td:nth-child(3) {
+            width: 60px !important;
+            word-wrap: break-word;
+            word-break: break-all;
+        }
+
+        .inventory-table th:nth-child(4),
+        .inventory-table td:nth-child(4) {
+            width: 50px !important;
+            white-space: normal;
+            word-wrap: break-word;
+        }
+
+        .inventory-table th:nth-child(5),
+        .inventory-table td:nth-child(5),
+        .inventory-table th:nth-child(6),
+        .inventory-table td:nth-child(6),
+        .inventory-table th:nth-child(7),
+        .inventory-table td:nth-child(7),
+        .inventory-table th:nth-child(8),
+        .inventory-table td:nth-child(8) {
+            width: 1%;
+            white-space: nowrap;
+        }
+
+        .inventory-table th:nth-child(9),
+        .inventory-table td:nth-child(9) {
+            width: 100px;
+            text-align: right;
+        }
+
+    /* —— 排序区间 + 打印机工具条：桌面端 2 行，手机端单列堆叠 ——
+     *  桌面端：
+     *   Row 1: [选择排序从： ____ ] [至： ____ ] [区间选择] （三者同一行，按钮紧跟 To 文本框后面）
+     *   Row 2: [选择打印机： ___________________▼]        （label + 下拉框同行，独占一行避免溢出）
+     *  实现用 flex-wrap，靠 flex-basis 控制换行点；label 与控件始终在同一行。
+     */
+    .serial-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        row-gap: 0.9rem;
+        column-gap: 1rem;
+        margin-top: 1rem;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 6px;
+        border: 1px solid var(--border-color);
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .serial-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        /* From/To 两个短输入：flex-basis 适中，保证按钮能放在它们后面 */
+        flex: 1 1 160px;
+        min-width: 0;
+        min-height: 40px;
+    }
+
+    /* 「选择打印机」一行：基础换行点更大，强制它与 From/To 分成两行 */
+    .serial-item.serial-item-printer {
+        flex-basis: 100%;                /* 桌面端占满一整行，避免被挤到 From/To/Button 同一行导致溢出 */
+    }
+
+    .serial-item label {
+        margin: 0;
+        white-space: nowrap;            /* label 与 控件 同行： label 不换行 */
+        font-size: 0.9rem;
+        color: var(--secondary-color);
+        flex: 0 0 auto;                 /* label 固定占用最小宽度，剩余空间给 input/select */
+        min-width: 0;
+        max-width: 45%;                 /* 手机窄屏时防止 label 吃掉 50%+ 宽度，让控件至少还有 50% */
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* label 后紧跟的「：」分隔符：label 内含冒号即可，此处无需另处理 */
+
+    .serial-item input,
+    .serial-item select {
+        flex: 1 1 auto;                  /* 控件占据 label 之后的所有剩余空间 */
+        width: auto;
+        max-width: 100%;
+        min-width: 0;
+        padding: 0.55rem 0.75rem;
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        box-sizing: border-box;
+        font-size: 0.95rem;
+        line-height: 1.4;
+        background-color: #fff;
+        color: var(--text-color);
+        min-height: 40px;
+    }
+
+    .serial-item select {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236c757d' d='M6 8.5L1 3.5L2.5 2L6 5.5L9.5 2L11 3.5L6 8.5z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 12px;
+        padding-right: 2.25rem; /* 下拉箭头占位，避免文字覆盖图标 */
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* 区间选择按钮：不换行，独立占用 flex 项，放在 To 文本框后面 */
+    .serial-row .btn-select-range {
+        flex: 0 0 auto;            /* 不伸缩，按内容宽度，紧跟在 From/To 之后，同一行 */
+        white-space: nowrap;
+        margin: 0;
+    }
+
+    .loading-indicator {
+        text-align: center;
+        padding: 20px;
+        color: var(--secondary-color);
+    }
+
+    .print-content-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 1.8rem;
+        width: 100%;
+    }
+
+    .settings-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+        width: 100%;
+    }
+
+    .settings-card {
+        background: var(--bg-section);
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: var(--shadow);
+        border: 1px solid var(--border-color);
+        transition: box-shadow 0.3s ease;
+        width: 100%;
+        box-sizing: border-box;
+        overflow: hidden;
+    }
+
+    fieldset {
+        border: none;
+        padding: 0;
+        margin: 0 0 2rem 0;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    legend {
+        font-size: 1.1rem;
+        font-weight: 500;
+        color: var(--primary-color);
+        padding: 0;
+        margin-bottom: 1.2rem;
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 0.5rem;
+        width: 100%;
+    }
+
+    .settings-card legend {
+        font-size: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .form-group {
+        margin-bottom: 0;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .form-row {
+        display: flex;
+        flex-direction: column;
+        gap: 1.8rem;
+        margin-bottom: 0;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+        .form-row .col {
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+    .settings-card .form-row {
+        flex-direction: row;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    @@media (max-width: 768px) {
+        .settings-card .form-row {
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        /* —— 手机端：serial-row 所有元素改为整列 stacking，保证不横溢 ——
+         *  虽然要求 Range Select 按钮与 From/To 同行，但手机屏太窄（320~380px）
+         *  时三者同排必然会被挤压；折中方案：
+         *   - 每个 .serial-item 仍然是一行内的 label + 控件（满足 Printer label+select 同行要求）
+         *   - 三个"行" (From 行 / To + Button 行 / Printer 行) 纵向堆叠
+         *  To 和 Button 放同一行（通过设置按钮单独 flex 不换行），视觉上相当于按钮紧邻 To 输入框。
+         */
+        .serial-row {
+            padding: 0.85rem;
+            row-gap: 0.75rem;
+            column-gap: 0.6rem;
+        }
+        .serial-row .serial-item {
+            flex-basis: 100%;       /* From / To / Printer 每项独占一行宽度 */
+        }
+        /* 注意：按钮紧跟 To 之后，需要让 From 单独占一行，To + Button 两个占同一行剩余空间。
+           做法：让 selectStartNo 项 flex-basis:100%（换行），selectEndNo 项 flex-basis 改为 auto
+           与 Button 一组。但由于 HTML 结构上 From→To→Button→Printer 是连续的，我们可直接：
+           - 所有 .serial-item 在手机上 100% 基础换行点；
+           - 再让 #selectEndNo + .btn-select-range 组合成同一行：To 占 1fr，Button 占 auto。
+           实际在手机窄屏上把 To 与 Button 组合放一行会因为宽度不够很难看，
+           所以采用"每项一行"的安全方案，按钮独立一行，整行宽度便于手指点按。
+         */
+        .serial-row .btn-select-range {
+            flex: 1 1 100%;             /* 手机端按钮占满整行，点击命中率高 */
+            width: 100%;
+            min-height: 44px;
+            font-size: 1rem;
+        }
+        .serial-item label {
+            font-size: 0.88rem;
+            max-width: 40%;
+        }
+        .serial-item input,
+        .serial-item select {
+            font-size: 1rem;         /* >=16px 避免 iOS Safari 自动缩放 */
+            min-height: 42px;
+            padding: 0.6rem 0.75rem;
+        }
+        /* 查询库存区域：手机端全部改成 1 列堆叠 */
+        .inventory-search-row {
+            flex-direction: column;
+            align-items: stretch;
+            gap: 0.9rem;
+        }
+        .inventory-search-item { min-width: 0; width: 100%; }
+        .btn-search { width: 100%; }
+    }
+
+    /* —— 超小屏（<=380px）：padding 再收一档 —— */
+    @@media (max-width: 380px) {
+        .serial-row { padding: 0.75rem; row-gap: 0.65rem; column-gap: 0.5rem; }
+        .serial-item input,
+        .serial-item select { font-size: 0.95rem; }
+        .serial-item label { font-size: 0.85rem; }
+    }
+
+    label {
+        display: block;
+        margin-bottom: 0.6rem;
+        font-size: 0.9rem;
+        color: var(--secondary-color);
+        font-weight: 400;
+    }
+
+    .form-control-lg {
+        width: 100%;
+        padding: 0.8rem 1rem;
+        font-size: 0.95rem;
+        border: 1px solid var(--border-color);
+        border-radius: 4px;
+        background-color: var(--bg-input);
+        color: var(--text-color);
+        transition: all 0.2s ease;
+        height: auto !important;
+        box-sizing: border-box;
+        min-height: 48px;
+    }
+
+        .form-control-lg:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.1);
+        }
+
+    select.form-control-lg {
+        cursor: pointer;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236c757d' d='M6 8.5L1 3.5L2.5 2L6 5.5L9.5 2L11 3.5L6 8.5z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        appearance: none;
+    }
+
+    .text-danger {
+        color: #dc3545;
+        font-size: 0.85rem;
+        margin-bottom: 1.5rem;
+        width: 100%;
+    }
+
+    input[type=number] {
+        -moz-appearance: textfield;
+    }
+
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+    .form-container {
+        display: none !important;
+    }
+    
+    /* 通知提示样式 */
+    .notification-toast {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        border-radius: 8px;
+        color: white;
+        font-weight: 500;
+        z-index: 10000;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        animation: slideIn 0.3s ease-out;
+    }
+    
+    @@keyframes slideIn {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    
+    .notification-success {
+        background-color: #28a745;
+    }
+    
+    .notification-error {
+        background-color: #dc3545;
+    }
+    
+    .notification-info {
+        background-color: #17a2b8;
+    }
+
+    /* 返回主页按钮 */
+    .btn-back {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 20px;
+        background: linear-gradient(135deg, var(--primary-color, #4a6fa5) 0%, var(--secondary-color, #6c757d) 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 0.95rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 8px rgba(74, 111, 165, 0.3);
+        margin-bottom: 1rem;
+    }
+
+        .btn-back:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(74, 111, 165, 0.4);
+        }
+
+        .btn-back:active {
+            transform: translateY(1px);
+        }
+</style>
+
+<button type="button" id="backHomeBtn" class="btn-back">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle;">
+        <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z" />
+    </svg>
+    @GetText("BarcodePrint", "BackToHome")
+</button>
+
+<div class="preview-button-container">
+    <button type="button" id="batchPrintBtn" class="btn-preview">@GetText("BarcodePrint", "BatchPrintSelected")</button>
+
+  
+    <button type="button" id="previewBtn" class="btn-preview">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle; margin-right:6px;">
+            <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zM12 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z" />
+        </svg>
+        @GetText("BarcodePrint", "Preview")
+    </button>
+</div>
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="inventory-search-section">
+            <legend>@GetText("BarcodePrint", "InventoryQuery")</legend>
+            <div class="inventory-search-row">
+                <div class="inventory-search-item">
+                    <label>@GetText("BarcodePrint", "WarehouseCode")</label>
+                    <input type="text" id="searchWarehouse" class="form-control-lg" placeholder="@GetText("BarcodePrint", "WarehouseCodePlaceholder")" />
+                </div>
+                <div class="inventory-search-item">
+                    <label>@GetText("BarcodePrint", "BinNumLabel")</label>
+                    <input type="text" id="searchBinNum" class="form-control-lg" placeholder="@GetText("BarcodePrint", "BinNumPlaceholder")" />
+                </div>
+                <div class="inventory-search-item">
+                    <label>@GetText("BarcodePrint", "MaterialCode")</label>
+                    <input type="text" id="searchMaterialCode" class="form-control-lg" placeholder="@GetText("BarcodePrint", "MaterialCodePlaceholder")" />
+                </div>
+                <div class="inventory-search-item">
+                    <button type="button" id="searchInventoryBtn" class="btn-search">@GetText("BarcodePrint", "QueryInventory")</button>
+                </div>
+            </div>
+
+            <div class="serial-row">
+                <div class="serial-item">
+                    <label>@GetText("BarcodePrint", "PrintRangeTitle")：</label>
+                    <input type="number" id="selectStartNo" class="form-control" min="1" value="1">
+                </div>
+                <div class="serial-item">
+                    <label>@GetText("BarcodePrint", "To")：</label>
+                    <input type="number" id="selectEndNo" class="form-control" min="1" value="1">
+                </div>
+                <button type="button" id="selectRangeBtn" class="btn-select-range">@GetText("BarcodePrint", "SelectRange")</button>
+
+                <div class="serial-item serial-item-printer">
+                    <label>@GetText("BarcodePrint", "SelectPrinter")：</label>
+                    <select id="printerSelect" class="form-control"></select>
+                    <label style="white-space: nowrap; flex: 0 0 auto; display: flex; align-items: center; gap: 0.3rem; font-size: 0.9rem; color: var(--secondary-color); margin-left: 10px;">
+                        <input type="checkbox" id="isFinishedProduct" style="width: 18px; height: 18px; cursor: pointer;" />
+                        <span>@GetText("BarcodePrint", "FinishedProduct")</span>
+                    </label>
+                </div>
+                @* <div class="serial-item">
+                    <label>
+                        <input type="checkbox" id="isLandscape" /> 横向打印
+                    </label>
+                </div> *@
+            </div>
+
+            <div id="inventoryResult" class="inventory-table-container" style="display: none;">
+                <table class="inventory-table" id="inventoryTable">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" id="selectAll"> @GetText("BarcodePrint", "Select")</th>
+                            <th>@GetText("BarcodePrint", "No")</th>
+                            <th>@GetText("BarcodePrint", "MaterialCodeColumn")</th>
+                            <th>@GetText("BarcodePrint", "LotNum")</th>
+                            <th>@GetText("BarcodePrint", "OnhandQty")</th>
+                            <th>@GetText("Common", "Unit")</th>
+                            <th>@GetText("BarcodePrint", "BinNum")</th>
+                            <th>@GetText("BarcodePrint", "Warehouse")</th>
+                            <th>@GetText("BarcodePrint", "MaterialDescription")</th>
+                        </tr>
+                    </thead>
+                    <tbody id="inventoryTableBody"></tbody>
+                </table>
+            </div>
+            <div id="loadingIndicator" class="loading-indicator" style="display: none;">@GetText("Common", "Loading")...</div>
+        </div>
+
+        <div class="form-container">
+            <form asp-action="Preview" method="post" id="printForm" novalidate>
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="selectedItemsJson" name="selectedItemsJson" />
+                <input type="hidden" id="startSerialNoInput" name="StartNumber" />
+                <input type="hidden" id="endSerialNoInput" name="EndNumber" />
+                <input type="hidden" id="printerName" name="printerName" />
+                <input type="hidden" id="isFinishedProductInput" name="IsFinishedProduct" value="false" />
+
+                <div class="form-container">
+                    <fieldset>
+                        <legend>@GetText("BarcodePrint", "PrintSettings")</legend>
+                        <div class="print-content-grid">
+                            <div class="form-group">
+                                <label>@GetText("BarcodePrint", "MaterialCodeLabel")</label>
+                                <input asp-for="MaterialCode" id="MaterialCode" class="form-control form-control-lg" />
+                            </div>
+                            <div class="form-group">
+                                <label>@GetText("BarcodePrint", "UnitLabel")</label>
+                                <input asp-for="Unit" id="Unit" class="form-control form-control-lg" />
+                            </div>
+                            <div class="form-group">
+                                <label>@GetText("BarcodePrint", "QuantityLabel")</label>
+                                <input asp-for="Quantity" id="Quantity" class="form-control form-control-lg" type="number" step="any" />
+                            </div>
+                            <div class="form-group">
+                                <label>@GetText("BarcodePrint", "WarehouseLabel")</label>
+                                <input asp-for="Warehouse" id="Warehouse" class="form-control form-control-lg" />
+                            </div>
+                            <div class="form-group">
+                                <label>@GetText("BarcodePrint", "LocationLabel")</label>
+                                <input asp-for="Location" id="Location" class="form-control form-control-lg" />
+                            </div>
+                            <div class="form-group">
+                                <label>@GetText("BarcodePrint", "BatchNoLabel")</label>
+                                <input asp-for="BatchNo" id="BatchNo" class="form-control form-control-lg" />
+                            </div>
+                            <div class="form-group">
+                                <label>@GetText("BarcodePrint", "PrintCountLabel")</label>
+                                <input asp-for="PrintCount" id="PrintCount" class="form-control form-control-lg" type="number" min="1" value="1" />
+                            </div>
+                            <div class="form-group">
+                                <label>@GetText("BarcodePrint", "StartNumberLabel")</label>
+                                <input asp-for="StartNumber" id="StartNumber" class="form-control form-control-lg" type="number" />
+                            </div>
+                            <div class="form-group">
+                                <label>@GetText("BarcodePrint", "EndNumberLabel")</label>
+                                <input asp-for="EndNumber" id="EndNumber" class="form-control form-control-lg" type="number" />
+                            </div>
+                            <div class="form-group">
+                                <label>@GetText("BarcodePrint", "PrintDateLabel")</label>
+                                <input asp-for="PrintDate" id="PrintDate" class="form-control form-control-lg" type="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                            </div>
+                        </div>
+                    </fieldset>
+                </div>
+            </form>
+        </div>
+
+        <div class="page-settings-toggle" style="display: flex; align-items: center; gap: 8px; margin-bottom: 1rem; padding: 10px 15px; background: var(--bg-section); border: 1px solid var(--border-color); border-radius: 8px; box-shadow: var(--shadow);">
+            <input type="checkbox" id="showPageSettings" style="width: 18px; height: 18px; cursor: pointer;">
+            <label for="showPageSettings" style="margin: 0; font-size: 0.95rem; color: var(--text-color); font-weight: 500; cursor: pointer;">@GetText("BarcodePrint", "PageSettingsToggle")</label>
+            <span style="font-size: 0.85rem; color: var(--secondary-color); margin-left: auto;">@GetText("BarcodePrint", "PageSettingsToggleHint")</span>
+        </div>
+
+        <div id="pageSettingsContainer">
+        <div class="settings-grid">
+            <div class="settings-card">
+                <fieldset>
+                    <legend>@GetText("BarcodePrint", "LabelSize")</legend>
+                    <div class="form-row">
+                        <div class="col">
+                            <label>@GetText("BarcodePrint", "LabelWidth")</label>
+                            <input asp-for="LabelWidth" id="LabelWidth" form="printForm" class="form-control form-control-lg" type="number" step="0.1" />
+                        </div>
+                        <div class="col">
+                            <label>@GetText("BarcodePrint", "LabelHeight")</label>
+                            <input asp-for="LabelHeight" id="LabelHeight" form="printForm" class="form-control form-control-lg" type="number" step="0.1" />
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <div class="settings-card">
+                <fieldset>
+                    <legend>@GetText("BarcodePrint", "Padding")</legend>
+                    <div class="form-row">
+                        <div class="col">
+                            <label>@GetText("BarcodePrint", "PaddingLeft")</label>
+                            <input asp-for="PaddingLeft" id="PaddingLeft" form="printForm" class="form-control form-control-lg" type="number" step="0.1" />
+                        </div>
+                        <div class="col">
+                            <label>@GetText("BarcodePrint", "PaddingRight")</label>
+                            <input asp-for="PaddingRight" id="PaddingRight" form="printForm" class="form-control form-control-lg" type="number" step="0.1" />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col">
+                            <label>@GetText("BarcodePrint", "PaddingTop")</label>
+                            <input asp-for="PaddingTop" id="PaddingTop" form="printForm" class="form-control form-control-lg" type="number" step="0.1" />
+                        </div>
+                        <div class="col">
+                            <label>@GetText("BarcodePrint", "PaddingBottom")</label>
+                            <input asp-for="PaddingBottom" id="PaddingBottom" form="printForm" class="form-control form-control-lg" type="number" step="0.1" />
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <div class="settings-card">
+                <fieldset>
+                    <legend>@GetText("BarcodePrint", "FontSettings")</legend>
+                    <div class="form-row">
+                        <div class="col">
+                            <label>@GetText("BarcodePrint", "FontFamily")</label>
+                            <select asp-for="FontFamily" id="FontFamily" form="printForm" class="form-control form-control-lg">
+                                <option>Arial</option>
+                                <option>Verdana</option>
+                                <option>Helvetica</option>
+                                <option>Times New Roman</option>
+                                <option>Courier New</option>
+                            </select>
+                        </div>
+                        <div class="col">
+                            <label>@GetText("BarcodePrint", "FontSize")</label>
+                            <input asp-for="FontSize" id="FontSize" form="printForm" class="form-control form-control-lg" type="number" step="1" />
+                        </div>
+                        <div class="col">
+                            <label>@GetText("BarcodePrint", "FontWeight")</label>
+                            <select asp-for="FontWeight" id="FontWeight" form="printForm" class="form-control form-control-lg">
+                                <option value="normal">@GetText("BarcodePrint", "Normal")</option>
+                                <option value="bold">@GetText("BarcodePrint", "Bold")</option>
+                            </select>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+
+            <div class="settings-card">
+                <fieldset>
+                    <legend>@GetText("BarcodePrint", "BarcodeSettings")</legend>
+                    <div class="form-row">
+                        <div class="col">
+                            <label>@GetText("BarcodePrint", "BarcodeWidth")</label>
+                            <input asp-for="BarcodeWidth" id="BarcodeWidth" form="printForm" class="form-control form-control-lg" type="number" step="1" />
+                        </div>
+                        <div class="col">
+                            <label>@GetText("BarcodePrint", "BarcodeHeight")</label>
+                            <input asp-for="BarcodeHeight" id="BarcodeHeight" form="printForm" class="form-control form-control-lg" type="number" step="1" />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col">
+                            <label>@GetText("BarcodePrint", "BarcodeOffsetX")</label>
+                            <input asp-for="BarcodeOffsetX" id="BarcodeOffsetX" form="printForm" class="form-control form-control-lg" type="number" step="1" />
+                        </div>
+                        <div class="col">
+                            <label>@GetText("BarcodePrint", "BarcodeOffsetY")</label>
+                            <input asp-for="BarcodeOffsetY" id="BarcodeOffsetY" form="printForm" class="form-control form-control-lg" type="number" step="1" />
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+        var localTexts = {
+            selectPrinterPlaceholder: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("BarcodePrint", "SelectPrinterPlaceholder"))),
+            noPrinterDetected: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("BarcodePrint", "NoPrinterDetected"))),
+            printerListLoadFailed: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("BarcodePrint", "PrinterListLoadFailed"))),
+            printerListUnavailable: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("BarcodePrint", "PrinterListUnavailable"))),
+            startNoGreaterThanEnd: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("BarcodePrint", "StartNoGreaterThanEnd"))),
+            rangeSelected: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("BarcodePrint", "RangeSelected"))),
+            quantityMustBePositive: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("BarcodePrint", "QuantityMustBePositive"))),
+            cannotExceedStock: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("BarcodePrint", "CannotExceedStock"))),
+            selectPrinterFirst: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("BarcodePrint", "SelectPrinterFirst"))),
+            printing: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("BarcodePrint", "Printing"))),
+            printJobSent: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("BarcodePrint", "PrintJobSentToPrinter"))),
+            printFailed: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("BarcodePrint", "PrintFailed"))),
+            printRequestFailed: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("BarcodePrint", "PrintRequestFailed"))),
+            materialQtyMustBePositive: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("BarcodePrint", "MaterialQtyMustBePositive"))),
+            materialCannotExceedStock: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("BarcodePrint", "MaterialCannotExceedStock"))),
+            selectItemsFirst: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("BarcodePrint", "SelectItemsFirst"))),
+            queryFoundItems: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("BarcodePrint", "QueryFoundItems"))),
+            noData: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("BarcodePrint", "NoData"))),
+            noInventory: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("BarcodePrint", "NoInventory"))),
+            queryFailed: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("BarcodePrint", "QueryFailed"))),
+            queryFailedRetry: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("BarcodePrint", "QueryFailedRetry"))),
+            unknownError: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Common", "UnknownError")))
+        };
+
+        $(document).ready(function () {
+            $('#printForm').validate = function () { return true; };
+            $('#printForm').data('validator', null);
+
+            // 返回主页按钮
+            $('#backHomeBtn').on('click', function () {
+                window.location.href = '/Home/Index';
+            });            
+            // 存储从后端加载的配置打印机名称
+            var savedPrinterName = null;
+
+            // —— 库存查询 AJAX 并发保护：
+            // 用户快速点击/扫码触发多次查询时，先取消上次未完成的请求，并做 250ms 防抖合并，
+            // 避免相同条件重复调用后端 GetInventoryList（后端本身也有 30s 缓存，这里再防一层前端抖动）。
+            var __invSearchXhr = null;
+            var __invSearchDebounceTimer = null;
+
+            // 先加载配置，再加载打印机列表，最后应用打印机选择
+            loadSavedConfig();
+
+            // 页面设置复选框控制
+            function initPageSettingsToggle() {
+                var $checkbox = $('#showPageSettings');
+                var $container = $('#pageSettingsContainer');
+
+                // 从 localStorage 读取用户偏好，默认选中
+                var saved = localStorage.getItem('showPageSettings');
+                var isChecked = saved === null ? true : saved === 'true';
+                $checkbox.prop('checked', isChecked);
+                $container.toggle(isChecked);
+
+                $checkbox.on('change', function () {
+                    var checked = $(this).is(':checked');
+                    $container.toggle(checked);
+                    localStorage.setItem('showPageSettings', checked ? 'true' : 'false');
+                });
+            }
+            initPageSettingsToggle();
+
+            // HTML 转义：动态消息（服务端响应/解析结果）插入 DOM 前统一转义，防止注入（与 CountView 同一实现）
+            function escapeHtml(str) {
+                if (str === null || str === undefined) return '';
+                return String(str).replace(/&/g, '&amp;')
+                                  .replace(/</g, '&lt;')
+                                  .replace(/>/g, '&gt;')
+                                  .replace(/"/g, '&quot;')
+                                  .replace(/'/g, '&#039;');
+            }
+
+            // 显示通知提示
+            function showNotification(message, type = 'info') {
+                const notification = $(`<div class="notification-toast notification-${type}">${escapeHtml(message)}</div>`);
+                $('body').append(notification);
+                setTimeout(() => {
+                    notification.fadeOut(300, function() { $(this).remove(); });
+                }, 3000);
+            }
+
+            // 通过后端API加载电脑所有打印机
+            function loadSystemPrinters(callback) {
+                $.ajax({
+                    url: '@Url.Action("GetSystemPrinters")',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (printers) {
+                        var $printerSelect = $('#printerSelect');
+                        $printerSelect.empty();
+                        
+                        if (printers && printers.length > 0) {
+                            $printerSelect.append('<option value="">' + localTexts.selectPrinterPlaceholder + '</option>');
+                            $.each(printers, function (index, printerName) {
+                                $printerSelect.append('<option value="' + escapeHtml(printerName) + '">' + escapeHtml(printerName) + '</option>');
+                            });
+                            
+                            // 如果有保存的打印机名称，尝试选中
+                            if (savedPrinterName) {
+                                var optionExists = false;
+                                $printerSelect.find('option').each(function() {
+                                    if ($(this).val() === savedPrinterName) {
+                                        optionExists = true;
+                                        return false;
+                                    }
+                                });
+                                if (optionExists) {
+                                    $printerSelect.val(savedPrinterName);
+                                } else {
+                                    console.warn('保存的打印机 "' + savedPrinterName + '" 不在可用打印机列表中');
+                                }
+                            }
+                        } else {
+                            $printerSelect.append('<option value="">' + localTexts.noPrinterDetected + '</option>');
+                        }
+                        
+                        if (callback && typeof callback === 'function') {
+                            callback();
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('获取打印机列表失败:', error);
+                        $('#printerSelect').empty();
+                        $('#printerSelect').append('<option value="">' + localTexts.printerListLoadFailed + '</option>');
+                        showNotification(localTexts.printerListUnavailable, 'error');
+                        
+                        if (callback && typeof callback === 'function') {
+                            callback();
+                        }
+                    }
+                });
+            }
+
+            function loadSavedConfig() {
+                $.get('@Url.Action("LoadConfig")', function (data) {
+                    if (data) {
+                        $('#LabelWidth').val(data.labelWidth);
+                        $('#LabelHeight').val(data.labelHeight);
+                        $('#PaddingLeft').val(data.paddingLeft);
+                        $('#PaddingRight').val(data.paddingRight);
+                        $('#PaddingTop').val(data.paddingTop);
+                        $('#PaddingBottom').val(data.paddingBottom);
+                        $('#FontFamily').val(data.fontFamily);
+                        $('#FontSize').val(data.fontSize);
+                        $('#FontWeight').val(data.fontWeight);
+                        $('#BarcodeWidth').val(data.barcodeWidth);
+                        $('#BarcodeHeight').val(data.barcodeHeight);
+                        $('#BarcodeOffsetX').val(data.barcodeOffsetX);
+                        $('#BarcodeOffsetY').val(data.barcodeOffsetY);
+                        $('#isLandscape').prop('checked', data.isLandscape || false);
+                
+                        // 保存打印机名称，稍后在打印机列表加载完成后设置
+                        if (data.printName) {
+                            savedPrinterName = data.printName;
+                        }
+                        
+                        // 配置加载完成后，再加载打印机列表（会自动应用 savedPrinterName）
+                        loadSystemPrinters();
+                    } else {
+                        // 即使配置为空，也要加载打印机列表
+                        loadSystemPrinters();
+                    }
+                }).fail(function() {
+                    // 配置加载失败时，仍然加载打印机列表
+                    loadSystemPrinters();
+                });
+            }
+
+            // 仓库代码 Enter 事件 - 支持扫码解析 Washouse:XX; BinNum:YY; / WarehouseDesc:XX; BinNum:YY; 格式，解析后自动按 仓库+库位 查询
+            $('#searchWarehouse').on('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    var raw = $(this).val().trim();
+                    var lower = raw.toLowerCase();
+                    if (lower.indexOf('warehousedesc:') >= 0 || lower.indexOf('washouse:') >= 0 || lower.indexOf('warehousecode:') >= 0 || lower.indexOf('warehouse:') >= 0 || lower.indexOf('binnum:') >= 0) {
+                        e.preventDefault();
+                        var wh = '', bin = '';
+                        var pairs = raw.split(';');
+                        for (var i = 0; i < pairs.length; i++) {
+                            var pair = pairs[i].trim();
+                            var ci = pair.indexOf(':');
+                            if (ci < 0) continue;
+                            var key = pair.substring(0, ci).trim().toLowerCase();
+                            var val = pair.substring(ci + 1).trim();
+                            if (key === 'warehousedesc' || key === 'warehouse' || key === 'warehousecode' || key === 'wh' || key === 'washouse') {
+                                wh = val;
+                            } else if (key === 'binnum' || key === 'bin' || key === 'binno' || key === 'location' || key === 'locationcode') {
+                                bin = val;
+                            }
+                        }
+                        if (wh) { $('#searchWarehouse').val(wh); } else { $('#searchWarehouse').val(''); }
+                        if (bin) $('#searchBinNum').val(bin);
+                        // 解析后自动按 仓库代码+库位 查询
+                        $('#searchInventoryBtn').click();
+                        return;
+                    }
+                    // 普通输入：Enter 由 keypress 处理触发查询
+                }
+            });
+
+            // 物料代码 Enter 事件 - 支持扫码解析以下三种格式：
+            // 1) PartNum:XXX;Qty:4;UOM:PCS;WarehouseDesc:01;BinNum:C9-786;LotNum:117031
+            // 2) PartNum:XXX;Qty:4;UOM:PCS;LotNum:117031
+            // 3) JOB:1194328;Part:MCS013168;Qty:32
+            // 解析出物料代码（及仓库/库位，如有），自动触发库存查询
+            $('#searchMaterialCode').on('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    var raw = $(this).val().trim();
+                    var lower = raw.toLowerCase();
+                    if (lower.indexOf('partnum:') >= 0 || lower.indexOf('part:') >= 0 || lower.indexOf('job:') >= 0) {
+                        e.preventDefault();
+                        var mat = '', wh = '', bin = '';
+                        var pairs = raw.split(';');
+                        for (var i = 0; i < pairs.length; i++) {
+                            var pair = pairs[i].trim();
+                            var ci = pair.indexOf(':');
+                            if (ci < 0) continue;
+                            var key = pair.substring(0, ci).trim().toLowerCase();
+                            var val = pair.substring(ci + 1).trim();
+                            if (key === 'partnum' || key === 'part') {
+                                mat = val;
+                            } else if (key === 'warehousedesc' || key === 'warehouse' || key === 'warehousecode' || key === 'wh' || key === 'washouse') {
+                                wh = val;
+                            } else if (key === 'binnum' || key === 'bin' || key === 'binno' || key === 'location' || key === 'locationcode') {
+                                bin = val;
+                            }
+                        }
+                        if (mat) $('#searchMaterialCode').val(mat);
+                        if (wh) { $('#searchWarehouse').val(wh); } else { $('#searchWarehouse').val(''); }
+                        if (bin) { $('#searchBinNum').val(bin); } else { $('#searchBinNum').val(''); }
+                        // 解析后自动按物料代码（+仓库+库位）查询
+                        $('#searchInventoryBtn').click();
+                        return;
+                    }
+                    // 普通输入：Enter 由 keypress 处理触发查询
+                }
+            });
+
+            $('#searchInventoryBtn').click(function () {
+                const mat = $('#searchMaterialCode').val().trim();
+                const wh = $('#searchWarehouse').val().trim();
+                const bin = $('#searchBinNum').val().trim();
+                searchInventory(mat, wh, bin);
+            });
+
+            $('#searchMaterialCode, #searchWarehouse, #searchBinNum').keypress(e => {
+                if (e.which === 13) $('#searchInventoryBtn').click();
+            });
+
+            $('#selectRangeBtn').click(function () {
+                let start = parseInt($('#selectStartNo').val()) || 1;
+                let end = parseInt($('#selectEndNo').val()) || 1;
+
+                if (start < 1) start = 1;
+                if (start > end) {
+                    showNotification(localTexts.startNoGreaterThanEnd, "error");
+                    return;
+                }
+
+                $('.inventory-select').prop('checked', false);
+
+                $('#inventoryTableBody tr').each(function () {
+                    let noText = $(this).find('td:eq(1)').text().trim();
+                    let no = parseInt(noText);
+                    if (!isNaN(no) && no >= start && no <= end) {
+                        $(this).find('.inventory-select').prop('checked', true);
+                    }
+                });
+                showNotification(localTexts.rangeSelected.replace('{0}', start).replace('{1}', end), "info");
+            });
+
+            // =====================================================
+            // 事件委托（document 层一次性绑定，不随 renderTable 重建）
+            // 1) 行点击 → 勾选/取消勾选
+            // 2) 数量输入框 change / keypress(Enter) → 校验
+            // 3) 表头全选
+            // 4) 物料行选中的范围选择仍然用 selectRangeBtn（上面）
+            // =====================================================
+            $(document)
+                .on('click', '.inventory-row', function (e) {
+                    if (e.target.type === 'checkbox' || $(e.target).hasClass('editable-qty')) return;
+                    const cb = $(this).find('.inventory-select');
+                    cb.prop('checked', !cb.is(':checked'));
+                })
+                .on('change keypress', '.editable-qty', function (e) {
+                    // keypress 只处理 Enter，触发一次 change
+                    if (e.type === 'keypress') {
+                        if (e.which !== 13) return;
+                        e.preventDefault();
+                        $(this).trigger('change');
+                        return;
+                    }
+                    // change 分支：执行数量校验
+                    const $input = $(this);
+                    let val = parseFloat($input.val());
+                    let stock = parseFloat($input.attr('data-stock')) || 0;
+                    $input.removeClass('input-error');
+
+                    if (isNaN(val) || val <= 0) {
+                        $input.addClass('input-error');
+                        showNotification(localTexts.quantityMustBePositive, 'error');
+                        $input.val(stock);
+                        return;
+                    }
+                    if (val > stock) {
+                        $input.addClass('input-error');
+                        showNotification(localTexts.cannotExceedStock + stock, 'error');
+                        $input.val(stock);
+                    }
+                })
+                .on('change', '#selectAll', function () {
+                    $('.inventory-select').prop('checked', $(this).is(':checked'));
+                });
+
+            // 预览
+            $('#previewBtn').click(function () {
+                doPreview();
+            });
+
+            // 批量打印（使用选中的打印机）- 使用 Ajax 直接打印
+            $('#batchPrintBtn').click(function () {
+                doDirectPrint();
+            });
+
+            // 预览功能
+            function doPreview() {
+                const list = getSelectedItems();
+                if (!list) return;
+
+                $('#selectedItemsJson').val(JSON.stringify(list));
+                $('#startSerialNoInput').val($('#StartNumber').val() || 1);
+                $('#endSerialNoInput').val($('#EndNumber').val() || 1);
+                $('#printerName').val($('#printerSelect').val());
+                $('#isFinishedProductInput').val($('#isFinishedProduct').is(':checked'));
+
+                $('#printForm').attr('action', '@Url.Action("Preview")');
+                $('#printForm').submit();
+            }
+
+            // 直接打印功能
+            function doDirectPrint() {
+                const list = getSelectedItems();
+                if (!list) return;
+
+                const printerName = $('#printerSelect').val();
+                if (!printerName) {
+                    showNotification(localTexts.selectPrinterFirst, 'error');
+                    return;
+                }
+
+                // 收集表单配置数据 - 确保偏移量正确获取
+                const configData = {
+                    LabelWidth: parseFloat($('#LabelWidth').val()) || 60,
+                    LabelHeight: parseFloat($('#LabelHeight').val()) || 40,
+                    PaddingLeft: parseFloat($('#PaddingLeft').val()) || 2,
+                    PaddingRight: parseFloat($('#PaddingRight').val()) || 2,
+                    PaddingTop: parseFloat($('#PaddingTop').val()) || 2,
+                    PaddingBottom: parseFloat($('#PaddingBottom').val()) || 2,
+                    FontFamily: $('#FontFamily').val() || 'Arial',
+                    FontSize: parseInt($('#FontSize').val()) || 12,
+                    FontWeight: $('#FontWeight').val() || 'normal',
+                    BarcodeWidth: parseInt($('#BarcodeWidth').val()) || 100,
+                    BarcodeHeight: parseInt($('#BarcodeHeight').val()) || 100,
+                    BarcodeOffsetX: parseFloat($('#BarcodeOffsetX').val()) || 0,
+                    BarcodeOffsetY: parseFloat($('#BarcodeOffsetY').val()) || 0,
+                    PrintCount: parseInt($('#PrintCount').val()) || 1,
+                    PrintDate: $('#PrintDate').val(),
+                    StartNumber: parseInt($('#StartNumber').val()) || 1,
+                    EndNumber: parseInt($('#EndNumber').val()) || 1,
+                    IsLandscape: $('#isLandscape').is(':checked'),
+                    IsFinishedProduct: $('#isFinishedProduct').is(':checked')
+                };
+
+                // 显示加载提示
+                const $btn = $('#batchPrintBtn');
+                const originalText = $btn.html();
+                $btn.html(localTexts.printing).prop('disabled', true);
+
+                // 构建请求数据
+                const requestData = {
+                    selectedItemsJson: JSON.stringify(list),
+                    printerName: printerName,
+                    ...configData
+                };
+
+                $.ajax({
+                    url: '@Url.Action("PrintDirect")',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(requestData),
+                    headers: { 'X-CSRF-TOKEN': $('input[name="__RequestVerificationToken"]').val() },
+                    success: function (response) {
+                        if (response.success) {
+                            showNotification(localTexts.printJobSent + ' ' + printerName, 'success');
+                        } else {
+                            showNotification(localTexts.printFailed + ': ' + (response.message || localTexts.unknownError), 'error');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        let errorMsg = localTexts.printRequestFailed;
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMsg = xhr.responseJSON.message;
+                        } else if (error) {
+                            errorMsg = error;
+                        }
+                        showNotification(errorMsg, 'error');
+                    },
+                    complete: function () {
+                        $btn.html(originalText).prop('disabled', false);
+                    }
+                });
+            }
+            
+            // 获取选中的物料列表
+            function getSelectedItems() {
+                const list = [];
+                let hasInvalidQty = false;
+                let errorMsg = "";
+
+                $('.inventory-select:checked').each(function () {
+                    const $tr = $(this).closest('tr');
+                    let qtyInput = $tr.find('td:eq(4) input.editable-qty');
+                    let qtyValue = 0;
+                    let stockQty = parseFloat(qtyInput.attr('data-stock')) || 0;
+                    let partNum = $tr.find('td:eq(2)').text().trim();
+
+                    if (qtyInput.length > 0) {
+                        qtyValue = parseFloat(qtyInput.val());
+                        if (isNaN(qtyValue) || qtyValue <= 0) {
+                            hasInvalidQty = true;
+                            errorMsg = localTexts.materialQtyMustBePositive.replace('{0}', partNum);
+                            qtyInput.addClass('input-error');
+                            return false;
+                        }
+                        if (qtyValue > stockQty) {
+                            hasInvalidQty = true;
+                            errorMsg = localTexts.materialCannotExceedStock.replace('{0}', partNum).replace('{1}', stockQty);
+                            qtyInput.addClass('input-error');
+                            return false;
+                        }
+                        qtyInput.removeClass('input-error');
+                    } else {
+                        qtyValue = parseFloat($tr.find('td:eq(4)').text().trim()) || 0;
+                    }
+
+                    list.push({
+                        PartNum: $tr.find('td:eq(2)').text().trim(),
+                        PartDescription: $tr.find('td:eq(8)').text().trim(),
+                        WarehouseCode: $tr.find('td:eq(7)').text().trim(),
+                        BinNum: $tr.find('td:eq(6)').text().trim(),
+                        LotNum: $tr.find('td:eq(3)').text().trim(),
+                        IUM: $tr.find('td:eq(5)').text().trim(),
+                        OnhandQty: qtyValue
+                    });
+                });
+
+                if (hasInvalidQty) {
+                    showNotification(errorMsg, 'error');
+                    return null;
+                }
+
+                if (list.length === 0) {
+                    showNotification(localTexts.selectItemsFirst, 'error');
+                    return null;
+                }
+
+                return list;
+            }
+
+            /**
+             * 库存查询入口（带防抖 + 取消上次请求）
+             * 业务逻辑保持不变：最终只展示最新一次有效查询结果。
+             */
+            function searchInventory(materialCode, warehouse, binNum) {
+                // 物料代码模糊查询：非空且用户未自带 % 时，自动包装为 %物料代码%
+                if (materialCode && materialCode.indexOf('%') < 0) {
+                    
+                     materialCode =  materialCode + '%';
+                }
+                // 取消上一次未完成的查询（包括正在等待的防抖定时器）
+                if (__invSearchDebounceTimer) { clearTimeout(__invSearchDebounceTimer); __invSearchDebounceTimer = null; }
+
+                __invSearchDebounceTimer = setTimeout(function () {
+                    if (__invSearchXhr) {
+                        try { __invSearchXhr.abort(); } catch (e) { /* ignore */ }
+                        __invSearchXhr = null;
+                    }
+
+                    $('#loadingIndicator').show();
+                    $('#inventoryResult').hide();
+
+                    __invSearchXhr = $.ajax({
+                        url: '@Url.Action("GetInventoryList")',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({ materialCode: materialCode, warehouse: warehouse, binNum: binNum }),
+                        headers: { 'X-CSRF-TOKEN': $('input[name="__RequestVerificationToken"]').val() },
+                        success: function (res) {
+                            __invSearchXhr = null;
+                            $('#loadingIndicator').hide();
+                            if (res.success && res.data && res.data.length) {
+                                renderTable(res.data);
+                                $('#inventoryResult').show();
+                                showNotification(localTexts.queryFoundItems.replace('{0}', res.data.length), 'success');
+                            } else {
+                                $('#inventoryTableBody').html('<tr><td colspan="9" align="center">' + localTexts.noData + '</td></tr>');
+                                $('#inventoryResult').show();
+                                showNotification(res.message || localTexts.noInventory, 'info');
+                            }
+                        },
+                        error: function (xhr, status) {
+                            __invSearchXhr = null;
+                            $('#loadingIndicator').hide();
+                            if (status === 'abort') return; // 主动取消：不提示错误
+                            $('#inventoryTableBody').html('<tr><td colspan="9" align="center">' + localTexts.queryFailed + '</td></tr>');
+                            $('#inventoryResult').show();
+                            showNotification(localTexts.queryFailedRetry, 'error');
+                        }
+                    });
+                }, 250);
+            }
+
+            function renderTable(data) {
+                // ========== 字符串拼接 + 一次性 innerHTML ==========
+                // 性能要点：循环内逐行 tbody.append(tr) 每行触发一次 DOM 插入/重排，
+                // 应 Array 收集 HTML 片段后 join 一次性写入（500 行渲染从数百 ms 降到几十 ms）；
+                // 事件用 document 层委托而非"每一行/每一个输入 on(change)"，
+                // 重新渲染后无需再 off/on，内存占用更低。
+                const html = [];
+                const len = data.length;
+                for (let i = 0; i < len; i++) {
+                    const item = data[i];
+                    const originalQty = item.onhandQty || 0;
+                    html.push(
+                        '<tr class="inventory-row">',
+                            '<td><input type="checkbox" class="inventory-select"></td>',
+                            '<td>', (i + 1), '</td>',
+                            '<td>', escapeHtml(item.partNum || ''), '</td>',
+                            '<td>', escapeHtml(item.lotNum || ''), '</td>',
+                            '<td>',
+                                '<input type="number" class="editable-qty"',
+                                    ' value="', originalQty, '"',
+                                    ' step="any"',
+                                    ' data-stock="', originalQty, '"',
+                                    ' style="text-align:right;" />',
+                            '</td>',
+                            '<td>', escapeHtml(item.ium || ''), '</td>',
+                            '<td>', escapeHtml(item.binNum || ''), '</td>',
+                            '<td>', escapeHtml(item.warehouseCode || ''), '</td>',
+                            '<td>', escapeHtml(item.partDescription || ''), '</td>',
+                        '</tr>'
+                    );
+                }
+                $('#inventoryTableBody').html(html.join(''));
+            }
+
+            function escapeHtml(str) {
+                if (!str) return '';
+                return str.replace(/[&<>]/g, m => m === '&' ? '&amp;' : m === '<' ? '&lt;' : m === '>' ? '&gt;' : m);
+            }
+        });
+    </script>
+}

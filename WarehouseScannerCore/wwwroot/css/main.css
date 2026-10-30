@@ -1,0 +1,390 @@
+﻿/* 添加到现有的main.css文件末尾 */
+
+/* 用户信息样式 */
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: white;
+    font-size: 0.9rem;
+}
+
+.user-name {
+    font-weight: 500;
+}
+
+.user-role {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+}
+
+/* 系统状态 */
+.system-status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.status-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+    .status-indicator.active {
+        background: #48bb78;
+        box-shadow: 0 0 10px rgba(72, 187, 120, 0.5);
+    }
+
+.status-text {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* 欢迎卡片 */
+.welcome-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+    .welcome-card h1,
+    .welcome-card p {
+        color: white !important;
+    }
+
+    .welcome-card .fa-user-circle {
+        color: white !important;
+    }
+
+/* 统计卡片图标样式 */
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px auto;
+}
+
+.stat-trend {
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+/* 两列网格 */
+.two-column-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+@media (min-width: 992px) {
+    .two-column-grid {
+        grid-template-columns: 2fr 1fr;
+    }
+}
+
+/* 卡片操作按钮 */
+.card-actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* 扫码列表 */
+.scan-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.scan-item {
+    padding: 12px;
+    border-bottom: 1px solid var(--border-color);
+    transition: background-color 0.3s;
+}
+
+    .scan-item:last-child {
+        border-bottom: none;
+    }
+
+    .scan-item:hover {
+        background-color: var(--light-color);
+    }
+
+.scan-info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.scan-barcode {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: monospace;
+    font-weight: bold;
+}
+
+.scan-product {
+    font-weight: 500;
+    color: var(--dark-color);
+}
+
+.scan-meta {
+    display: flex;
+    gap: 15px;
+    font-size: 0.85rem;
+    color: var(--gray-color);
+}
+
+    .scan-meta span {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+/* 状态徽章 */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 15px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.status-completed {
+    background: #c6f6d5;
+    color: #22543d;
+}
+
+.status-processing {
+    background: #fed7d7;
+    color: #742a2a;
+}
+
+.status-cancelled {
+    background: #e2e8f0;
+    color: #4a5568;
+}
+
+/* 操作按钮组 */
+.action-buttons-small {
+    display: flex;
+    gap: 5px;
+}
+
+/* 空状态 */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--gray-color);
+}
+
+    .empty-state i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+    }
+
+    .empty-state p {
+        font-size: 1.1rem;
+        margin-bottom: 1.5rem;
+    }
+
+/* 徽章 */
+.badge {
+    display: inline-block;
+    padding: 3px 8px;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+/* 通知 */
+.notification-count {
+    background: var(--danger-color);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.notifications {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.notification-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 8px;
+    background: var(--light-color);
+    border-left: 4px solid transparent;
+}
+
+    .notification-item.info {
+        border-left-color: var(--info-color);
+    }
+
+    .notification-item.warning {
+        border-left-color: var(--warning-color);
+    }
+
+    .notification-item.success {
+        border-left-color: var(--success-color);
+    }
+
+    .notification-item i {
+        font-size: 1.2rem;
+        margin-top: 2px;
+    }
+
+    .notification-item.info i {
+        color: var(--info-color);
+    }
+
+    .notification-item.warning i {
+        color: var(--warning-color);
+    }
+
+    .notification-item.success i {
+        color: var(--success-color);
+    }
+
+.notification-content {
+    flex: 1;
+}
+
+    .notification-content strong {
+        display: block;
+        margin-bottom: 4px;
+    }
+
+    .notification-content p {
+        margin: 0;
+        font-size: 0.9rem;
+        color: #666;
+    }
+
+.notification-time {
+    font-size: 0.8rem;
+    color: var(--gray-color);
+    white-space: nowrap;
+}
+
+/* Toast消息样式 */
+.toast {
+    position: fixed;
+    top: 90px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 1rem 1.5rem;
+    border-radius: 10px;
+    background: white;
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    z-index: 9999;
+    animation: slideDown 0.3s ease;
+    min-width: 300px;
+    max-width: 500px;
+}
+
+    .toast.success {
+        border-left: 4px solid var(--success-color);
+    }
+
+    .toast.error {
+        border-left: 4px solid var(--danger-color);
+    }
+
+    .toast i {
+        font-size: 1.2rem;
+    }
+
+    .toast.success i {
+        color: var(--success-color);
+    }
+
+    .toast.error i {
+        color: var(--danger-color);
+    }
+
+    .toast span {
+        flex: 1;
+    }
+
+/* 动画 */
+@@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+    }
+}
+
+@@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+
+    40% {
+        transform: translateY(-10px);
+    }
+
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+/* 旋转动画 */
+.fa-spin {
+    animation: spin 1s linear infinite;
+}
+
+/* 响应式调整 */
+@@media (max-width: 768px) {
+    .header-actions {
+        gap: 8px;
+    }
+
+    .user-info {
+        display: none;
+    }
+
+    .two-column-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .toast {
+        min-width: 250px;
+        max-width: 90%;
+    }
+}

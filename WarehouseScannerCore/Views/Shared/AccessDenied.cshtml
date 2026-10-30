@@ -1,0 +1,27 @@
+@model WarehouseScannerCore.ViewModels.IssueIndexViewModel
+@{
+    Layout = null;
+    ViewData["Title"] = "访问被拒绝";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>访问被拒绝</title>
+    <style>
+        body { font-family: "Microsoft YaHei", Arial, sans-serif; margin: 0; padding: 40px; background: #f5f5f5; }
+        .container { max-width: 600px; margin: 0 auto; background: #fff; padding: 40px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #d9534f; margin-top: 0; }
+        p { color: #555; line-height: 1.6; }
+        a.btn { display: inline-block; padding: 8px 20px; background: #337ab7; color: #fff; text-decoration: none; border-radius: 4px; margin-top: 20px; }
+        a.btn:hover { background: #286090; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>403 - 访问被拒绝</h1>
+        <p>您没有权限访问此页面，请联系管理员授予相应的角色权限。</p>
+        <a class="btn" href="/Account/Logout">返回登录</a>
+    </div>
+</body>
+</html>

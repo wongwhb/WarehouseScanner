@@ -1,0 +1,535 @@
+/* wwwroot/css/home.css */
+/* 首页样式 */
+
+/* 变量定义 */
+:root {
+    --primary-color: #667eea;
+    --secondary-color: #764ba2;
+    --success-color: #4CAF50;
+    --warning-color: #FF9800;
+    --info-color: #2196F3;
+    --purple-color: #9C27B0;
+    --gray-color: #607D8B;
+    --teal-color: #009688;
+    --orange-color: #FF5722;
+}
+
+/* 基础样式 */
+* {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 16px;
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+    background: transparent;
+    min-height: 100vh;
+    padding: 15px;
+    margin: 0;
+    overflow-x: hidden;
+    touch-action: manipulation; /* 改善触摸响应 */
+}
+
+/* 容器 */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 10px;
+}
+
+/* 头部 */
+.header {
+    background: rgba(255, 255, 255, 0.98);
+    color: #333;
+    padding: 20px 25px;
+    margin-bottom: 25px;
+    border-radius: 16px;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: nowrap; /* PAD上不换行 */
+    gap: 20px;
+    min-height: 80px;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex: 1;
+    min-width: 0; /* 允许缩小 */
+}
+
+.header-left h1 {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.5rem;
+    color: #2c3e50;
+    white-space: nowrap;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-shrink: 0;
+}
+
+.welcome-info {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 12px;
+    font-size: 0.95rem;
+    min-width: 280px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.welcome-info strong {
+    display: block;
+    font-size: 1.1rem;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
+
+.welcome-info span {
+    opacity: 0.9;
+    font-size: 0.9rem;
+}
+
+/* 功能区域 */
+.function-area {
+    background: rgba(255, 255, 255, 0.98);
+    padding: 30px;
+    border-radius: 16px;
+    margin-bottom: 25px;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+}
+
+.function-area h2 {
+    color: #2c3e50;
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 18px;
+    border-bottom: 3px solid #f0f0f0;
+    font-size: 1.4rem;
+}
+
+/* PAD网格布局 */
+.button-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr));
+    gap: 20px;
+    justify-items: center;
+}
+
+/* 触摸友好的功能按钮 */
+.func-btn {
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 14px;
+    padding: 25px 20px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: #333;
+    text-decoration: none;
+    width: 100%;
+    max-width: 240px;
+    min-height: 180px;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+    position: relative;
+    overflow: hidden;
+}
+
+/* 按钮点击效果 */
+.func-btn:active {
+    transform: translateY(2px) scale(0.98);
+    transition: transform 0.1s;
+}
+
+.func-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.2);
+    border-color: var(--primary-color);
+    background: linear-gradient(135deg, #f8f9ff 0%, #f5f7ff 100%);
+}
+
+/* 触摸设备 */
+@media (hover: none) {
+    .func-btn:hover {
+        transform: none;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+    }
+}
+
+.func-icon {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    transition: transform 0.3s ease;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.func-btn:hover .func-icon {
+    transform: scale(1.15);
+}
+
+.func-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #2c3e50;
+    line-height: 1.3;
+}
+
+.func-desc {
+    font-size: 0.85rem;
+    color: #666;
+    line-height: 1.4;
+    opacity: 0.85;
+    max-width: 90%;
+}
+
+/* 按钮颜色系统 */
+.btn-issue {
+    border-color: var(--success-color);
+}
+
+.btn-issue .func-icon {
+    color: var(--success-color);
+}
+
+.btn-outbound {
+    border-color: var(--warning-color);
+}
+
+.btn-outbound .func-icon {
+    color: var(--warning-color);
+}
+
+.btn-inbound {
+    border-color: var(--info-color);
+}
+
+.btn-inbound .func-icon {
+    color: var(--info-color);
+}
+
+.btn-transfer {
+    border-color: var(--purple-color);
+}
+
+.btn-transfer .func-icon {
+    color: var(--purple-color);
+}
+
+.btn-inventory {
+    border-color: var(--teal-color);
+}
+
+.btn-inventory .func-icon {
+    color: var(--teal-color);
+}
+
+.btn-settings {
+    border-color: var(--gray-color);
+}
+
+.btn-settings .func-icon {
+    color: var(--gray-color);
+}
+
+/* 用户信息区域 */
+.user-info {
+    background: rgba(255, 255, 255, 0.98);
+    padding: 30px;
+    border-radius: 16px;
+    margin-bottom: 25px;
+    box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+}
+
+.user-info h2 {
+    color: #2c3e50;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.4rem;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr));
+    gap: 20px;
+    margin: 25px 0;
+}
+
+.info-card {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    padding: 20px;
+    border-radius: 12px;
+    border-left: 5px solid var(--primary-color);
+    transition: transform 0.2s ease;
+    min-height: 80px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.info-card:hover {
+    transform: translateY(-3px);
+}
+
+.info-card strong {
+    display: block;
+    color: #333;
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.info-card span {
+    color: #555;
+    font-size: 1rem;
+    font-weight: 500;
+    word-break: break-word;
+}
+
+.login-time {
+    font-family: 'Courier New', monospace;
+    background: #2c3e50;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: inline-block;
+}
+
+/* 安全提示 */
+.security-notice {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    border: 1px solid #ffd166;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 25px 0;
+    font-size: 0.95rem;
+    color: #856404;
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.security-notice i {
+    color: #ff9800;
+    font-size: 1.2rem;
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+/* 登出按钮 */
+.btn-logout {
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+    min-width: 120px;
+    justify-content: center;
+}
+
+.btn-logout:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+}
+
+.btn-logout:active {
+    transform: translateY(1px);
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+    /* PAD横屏 */
+    .button-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .func-btn {
+        max-width: 100%;
+    }
+
+    .header {
+        flex-wrap: wrap;
+    }
+
+    .welcome-info {
+        min-width: 200px;
+    }
+}
+
+@media (max-width: 768px) {
+    /* PAD竖屏 */
+    .button-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .header {
+        flex-direction: column;
+        text-align: center;
+        padding: 20px;
+    }
+
+    .header-left, .header-right {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .welcome-info {
+        min-width: 100%;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .security-notice {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+}
+
+@media (max-width: 480px) {
+    /* 手机 */
+    .button-grid {
+        grid-template-columns: 1fr;
+    }
+
+    body {
+        padding: 10px;
+    }
+
+    .container {
+        padding: 0 5px;
+    }
+
+    .function-area, .user-info {
+        padding: 20px;
+    }
+}
+
+/* 横向模式 */
+@media (orientation: landscape) and (max-height: 600px) {
+    .header {
+        padding: 15px 20px;
+        min-height: 70px;
+    }
+
+    .button-grid {
+        gap: 15px;
+    }
+
+    .func-btn {
+        padding: 20px 15px;
+        min-height: 160px;
+    }
+
+    .func-icon {
+        font-size: 2rem;
+        margin-bottom: 15px;
+        height: 50px;
+    }
+}
+
+/* 高分辨率屏幕 */
+@media (min-resolution: 2dppx) {
+    .func-btn {
+        border-width: 1.5px;
+    }
+
+    .info-card {
+        border-left-width: 3px;
+    }
+}
+
+/* 黑暗模式支持 */
+@media (prefers-color-scheme: dark) {
+    .function-area,
+    .user-info,
+    .header {
+        background: rgba(30, 30, 40, 0.95);
+        color: #f0f0f0;
+    }
+
+    .function-area h2,
+    .user-info h2,
+    .header-left h1,
+    .func-title {
+        color: #f0f0f0;
+    }
+
+    .func-desc {
+        color: #b0b0b0;
+    }
+
+    .info-card {
+        background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+    }
+
+    .info-card strong {
+        color: #f0f0f0;
+    }
+
+    .info-card span {
+        color: #d0d0d0;
+    }
+}
+
+/* 打印样式 */
+@media print {
+    body {
+        background: white;
+    }
+
+    .func-btn {
+        border: 1px solid #ccc;
+        break-inside: avoid;
+    }
+}
+
+/* 触摸激活状态 */
+.touch-active {
+    transform: translateY(2px) scale(0.98);
+    transition: transform 0.1s;
+}

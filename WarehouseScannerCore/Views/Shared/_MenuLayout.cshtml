@@ -1,0 +1,91 @@
+<!-- Views/Shared/_MenuLayout.cshtml -->
+@inject WarehouseScannerCore.Services.ILanguageService LanguageService
+@{
+
+    // 从Cookie中获取当前语言设置
+    var currentLanguage = Context.Request.Cookies["Language"] ?? "zh-CN";
+
+}
+
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - WarehouseScanner</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="~/css/bootstrap/bootstrap.min.css"  rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="~/css/fontawesome/all.min.css" asp-append-version="true">
+    
+    <!-- 自定义样式 -->
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .menu-card {
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .menu-card-header {
+            background-color: #007bff;
+            color: white;
+            border-radius: 10px 10px 0 0 !important;
+        }
+        .menu-table th {
+            background-color: #f1f5fd;
+            border-bottom: 2px solid #dee2e6;
+        }
+        .permission-badge {
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .permission-allow {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .permission-deny {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">
+                <i class="fas fa-warehouse me-2"></i> @LanguageService.GetString(currentLanguage, "FactoryManagement", "AppName")
+            </a>
+            <div class="navbar-nav ms-auto">
+
+
+                <div class="navbar-nav ms-auto">
+                    <a class="nav-link active" href="/Account/Login">
+                        <i class="fas fa-user-shield me-1"></i>@LanguageService.GetString(currentLanguage, "FactoryManagement", "BackToHome")
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容 -->
+    <div class="container-fluid mt-3">
+        @RenderBody()
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- jQuery -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    
+    <!-- 页面特定脚本 -->
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

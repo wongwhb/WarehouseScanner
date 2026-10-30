@@ -1,0 +1,794 @@
+@model WarehouseScannerCore.Models.MaterialReturnModel
+@{
+    var getText = ViewBag.GetText as Func<string, string, string>;
+    var currentCulture = ViewBag.CurrentCulture as string ?? "zh-CN";
+    var userId = ViewBag.UserId as string;
+
+    string GetText(string section, string key)
+    {
+        return getText?.Invoke(section, key) ?? $"[{section}.{key}]";
+    }
+}
+
+<!DOCTYPE html>
+<html lang="@currentCulture">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>@GetText("MaterialReturn", "Title")</title>
+
+    <link rel="stylesheet" href="~/css/fontawesome/all.min.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/shared-scanner.css" asp-append-version="true">
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="~/css/sweetalert2.css">
+
+    <style>
+        @@media (max-width: 768px) {
+            .page-header {
+                display: none !important;
+            }
+        }
+
+        @@media (min-width: 769px) {
+            .page-header {
+                display: block !important;
+            }
+        }
+
+        /* ========== 底部Toast提示样式 ========== */
+        .status-toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.85);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 40px;
+            font-size: 15px;
+            z-index: 10000;
+            max-width: 90%;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            animation: fadeInUp 0.3s ease;
+            font-weight: 500;
+        }
+
+            .status-toast.success {
+                background: #28a745;
+            }
+
+            .status-toast.warning {
+                background: #ffc107;
+                color: #333;
+            }
+
+            .status-toast.info {
+                background: #17a2b8;
+            }
+
+        @@keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        /* 重置原生状态消息 */
+        .status-message {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">
+                <i class="fas fa-undo-alt"></i> @GetText("MaterialReturn", "Title")
+            </h1>
+        </div>
+
+        <div id="statusMessage" class="status-message"></div>
+
+        <div class="form-container">
+            <form id="returnForm" method="post" asp-action="ReturnMaterial">
+                @Html.AntiForgeryToken()
+
+                <div class="button-group">
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        <i class="fas fa-paper-plane"></i> @GetText("MaterialReturn", "SubmitButton")
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="resetBtn">
+                        <i class="fas fa-redo"></i> @GetText("MaterialReturn", "ResetButton")
+                    </button>
+                    <button type="button" class="btn btn-danger" id="cancelBtn">
+                        <i class="fas fa-times-circle"></i> @GetText("MaterialReturn", "CancelButton")
+                    </button>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-item">
+                        <label>@GetText("MaterialReturn", "WorkOrderNo") <span class="required">*</span></label>
+                        <div class="input-group">
+                            <input type="text"
+                                   class="input-field scan-input"
+                                   id="workOrderNo"
+                                   name="WorkOrderNo"
+                                   placeholder="@GetText("MaterialReturn", "WorkOrderPlaceholder")"
+                                   autocomplete="off"
+                                   autocorrect="off"
+                                   autocapitalize="none"
+                                   inputmode="text"
+                                   autofocus>
+                        </div>
+                        <div class="input-hint">
+                            <i class="fas fa-keyboard"></i> @GetText("MaterialReturn", "JobScanPromptMessage")
+                        </div>
+                        <div class="parse-status" id="parseStatus"></div>
+                        <div class="error-message" id="workOrderError"></div>
+                    </div>
+
+                    <div class="form-item">
+                        <label>@GetText("MaterialReturn", "AssemblySeq")<span class="required">*</span></label>
+                        <input type="text"
+                               class="input-field"
+                               id="assemblySeq"
+                               name="AssemblySeq"
+                               placeholder="@GetText("MaterialReturn", "AssemblySeqPlaceholder")"
+                               autocomplete="off">
+                        <div class="error-message" id="assemblySeqError"></div>
+                    </div>
+
+                    <div class="form-item">
+                        <label>@GetText("MaterialReturn", "MaterialCode") <span class="required">*</span></label>
+                        <div class="input-group">
+                            <input type="text"
+                                   class="input-field scan-input"
+                                   id="materialCode"
+                                   name="MaterialCode"
+                                   placeholder="@GetText("MaterialReturn", "MaterialPlaceholder")"
+                                   autocomplete="off">
+                        </div>
+                        <div class="input-hint">
+                            <i class="fas fa-keyboard"></i> @GetText("MaterialReturn", "MatScanPromptMessage")
+                        </div>
+                        <div class="error-message" id="materialCodeError"></div>
+                    </div>
+
+                    <div class="form-item">
+                        <label>@GetText("MaterialReturn", "Quantity") <span class="required">*</span></label>
+                        <input type="number"
+                               class="input-field"
+                               id="quantity"
+                               name="Quantity"
+                               min="0.000001"
+                               step="0.000001"
+                               placeholder="@GetText("MaterialReturn", "QuantityPlaceholder")"
+                               autocomplete="off"
+                               inputmode="numeric">
+                        <div id="availableQtyDisplay" style="margin-top: 5px; font-size: 14px; display: none;">
+                            @GetText("MaterialReturn", "AvailableQty"): <span id="availableQtyValue" style="color: blue; font-weight: bold;">0</span>
+                        </div>
+                        <div class="error-message" id="quantityError"></div>
+                    </div>
+
+                    <div class="form-item">
+                        <label>@GetText("MaterialReturn", "Unit")</label>
+                        <input type="text"
+                               class="input-field"
+                               id="Unit"
+                               name="Unit"
+                               autocomplete="off">
+                    </div>
+
+                    <div class="form-item">
+                        <label>@GetText("MaterialReturn", "WarehouseCode")</label>
+                        <input type="text"
+                               class="input-field"
+                               id="warehouseCode"
+                               name="FromWarehouse"
+                               autocomplete="off">
+                    </div>
+
+                    <div class="form-item">
+                        <label>@GetText("MaterialReturn", "Location")</label>
+                        <input type="text"
+                               class="input-field"
+                               id="location"
+                               name="Location"
+                               placeholder="@GetText("MaterialReturn", "LocationPlaceholder")"
+                               autocomplete="off">
+                    </div>
+
+                    <div class="form-item">
+                        <label>@GetText("MaterialReturn", "BatchNo")</label>
+                        <input type="text"
+                               class="input-field"
+                               id="batchNo"
+                               name="BatchNo"
+                               placeholder="@GetText("MaterialReturn", "BatchNoPlaceholder")"
+                               autocomplete="off">
+                    </div>
+
+                    <div class="form-item" style="display:none;">
+                        <label>@GetText("MaterialReturn", "Operator")</label>
+                        <input type="text"
+                               class="input-field readonly"
+                               id="operator"
+                               value="@userId"
+                               readonly>
+                    </div>
+                </div>
+
+                <div class="form-item full-width">
+                    <label>@GetText("MaterialReturn", "Remarks")</label>
+                    <textarea class="input-field"
+                              id="remarks"
+                              name="Remarks"
+                              rows="2"
+                              placeholder="@GetText("MaterialReturn", "RemarksPlaceholder")"
+                              autocomplete="off"></textarea>
+                </div>
+
+            </form>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/Scancode-parser.js" asp-append-version="true"></script>
+    <!-- SweetAlert2 JS -->
+    <script src="~/js/sweetalert.js"></script>
+
+    <script>
+        var localTexts = {
+            workOrderRequired: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("MaterialReturn", "WorkOrderRequired"))),
+            materialCodeRequired: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("MaterialReturn", "MaterialCodeRequired"))),
+            quantityRequired: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("MaterialReturn", "QuantityRequired"))),
+            confirmCancel: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("MaterialReturn", "ConfirmCancel"))),
+            submitting: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("MaterialReturn", "Submitting"))),
+            submitSuccess: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("MaterialReturn", "SubmitSuccess"))),
+            submitFailed: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("MaterialReturn", "SubmitFailed"))),
+            networkError: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("MaterialReturn", "NetworkError"))),
+            assemblySeqRequired: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("MaterialReturn", "AssemblySeqRequired"))),
+            jobAndAssemblyRequired: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("MaterialReturn", "JobAndAssemblyRequired"))),
+            formReset: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("MaterialReturn", "FormReset"))),
+            processingPleaseWait: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("MaterialReturn", "ProcessingPleaseWait"))),
+            jobBarcodeParseSuccess: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("MaterialReturn", "JobBarcodeParseSuccess"))),
+            materialBarcodeParseSuccess: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("MaterialReturn", "MaterialBarcodeParseSuccess"))),
+            pleaseEnterAssemblySeq: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("MaterialReturn", "PleaseEnterAssemblySeq"))),
+            jobValidationPassed: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("MaterialReturn", "JobValidationPassed"))),
+            jobValidationFailed: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("MaterialReturn", "JobValidationFailed"))),
+            inventoryValidationPassed: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("MaterialReturn", "InventoryValidationPassed"))),
+            inventoryValidationFailed: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("MaterialReturn", "InventoryValidationFailed"))),
+            materialCodeRequiredMsg: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("MaterialReturn", "MaterialCodeRequiredMsg"))),
+            parserReady: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("MaterialReturn", "ParserReady"))),
+            parserInitFailed: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("MaterialReturn", "ParserInitFailed"))),
+            errorTitle: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("MaterialReturn", "ErrorTitle"))),
+            failedTitle: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("MaterialReturn", "FailedTitle"))),
+            confirmButton: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("MaterialReturn", "ConfirmButton"))),
+            cancelButton: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("MaterialReturn", "DialogCancelButton"))),
+            processingError: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("MaterialReturn", "ProcessingError")))
+        };
+
+        let barcodeParser = null;
+        let isProcessing = false;
+        let workOrderDebounceTimer = null;
+        let materialCodeDebounceTimer = null;
+        let toastTimer = null;
+
+        $(document).ready(function () {
+            initializeBarcodeParser();
+
+            $('#workOrderNo').val('');
+            $('#assemblySeq').val('');
+
+            $('.scan-input').on('change', function () {
+                $(this).addClass('scan-highlight');
+                setTimeout(() => $(this).removeClass('scan-highlight'), 500);
+            });
+
+            $('#workOrderNo').on('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    debounceHandleWorkOrderEnter();
+                }
+            });
+
+            $('#materialCode').on('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    debounceHandleMaterialCodeEnter();
+                }
+            });
+
+            // 仓库代码 Enter 事件 - 支持扫码解析 WarehouseDesc:XX; BinNum:YY; / Washouse:XX;BinNum:YY 格式
+            $('#warehouseCode').on('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    var raw = $(this).val().trim();
+                    var hasWarehouseKey = /WarehouseDesc\s*:|Warehouse\s*:|WarehouseCode\s*:|Washouse\s*:|Wh\s*:/i.test(raw);
+                    var hasBinKey = /BinNum\s*:|Bin\s*:|BinNo\s*:|Location\s*:|LocationCode\s*:/i.test(raw);
+                    if (hasWarehouseKey || hasBinKey) {
+                        e.preventDefault();
+                        var wh = '', bin = '';
+                        var pairsSemi = raw.split(';');
+                        var pairsSpace = raw.split(/\s+/);
+                        var pairs = pairsSemi.length >= pairsSpace.length ? pairsSemi : pairsSpace;
+                        for (var i = 0; i < pairs.length; i++) {
+                            var pair = pairs[i].trim();
+                            var ci = pair.indexOf(':');
+                            if (ci < 0) continue;
+                            var key = pair.substring(0, ci).trim().toLowerCase();
+                            var val = pair.substring(ci + 1).trim();
+                            if (key === 'warehousedesc' || key === 'warehouse' || key === 'warehousecode' || key === 'washouse' || key === 'wh') {
+                                wh = val;
+                            } else if (key === 'binnum' || key === 'bin' || key === 'binno' || key === 'location' || key === 'locationcode') {
+                                bin = val;
+                            }
+                        }
+                        if (wh) $('#warehouseCode').val(wh);
+                        if (bin) $('#location').val(bin);
+                        $('#batchNo').focus().select();
+                        return;
+                    }
+                    // 手动输入仓库代码（非条码格式）：阻止表单提交，跳到库位字段
+                    e.preventDefault();
+                    $('#location').focus().select();
+                }
+            });
+
+            $(document).on('keydown', function (e) {
+                if (e.key === 'Escape') {
+                    Swal.fire({
+                        title: localTexts.confirmCancel,
+                        icon: 'question',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: localTexts.confirmButton,
+                        cancelButtonText: localTexts.cancelButton
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = '/Home/Index';
+                        }
+                    });
+                }
+            });
+
+            $('#returnForm').on('submit', function (e) {
+                e.preventDefault();
+                submitReturnForm();
+            });
+
+            $('#resetBtn').on('click', resetForm);
+            $('#cancelBtn').on('click', function () {
+                Swal.fire({
+                    title: localTexts.confirmCancel,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: localTexts.confirmButton,
+                    cancelButtonText: localTexts.cancelButton
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '/Home/Index';
+                    }
+                });
+            });
+        });
+
+        // HTML 转义：动态消息（服务端响应/解析结果）插入 DOM 前统一转义，防止注入（与 CountView 同一实现）
+        function escapeHtml(str) {
+            if (str === null || str === undefined) return '';
+            return String(str).replace(/&/g, '&amp;')
+                              .replace(/</g, '&lt;')
+                              .replace(/>/g, '&gt;')
+                              .replace(/"/g, '&quot;')
+                              .replace(/'/g, '&#039;');
+        }
+
+        function showToast(message, type) {
+            if (toastTimer) {
+                clearTimeout(toastTimer);
+            }
+            $('.status-toast').remove();
+
+            var $toast = $('<div class="status-toast ' + type + '">' + escapeHtml(message) + '</div>');
+            $('body').append($toast);
+
+            toastTimer = setTimeout(function() {
+                $toast.fadeOut(300, function() {
+                    $(this).remove();
+                });
+                toastTimer = null;
+            }, 2000);
+        }
+
+        function showMessage(message, type) {
+            if (type === 'error') {
+                Swal.fire({
+                    icon: 'error',
+                    title: localTexts.errorTitle,
+                    text: message,
+                    confirmButtonText: localTexts.confirmButton,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+            } else {
+                showToast(message, type);
+            }
+        }
+
+        function initializeBarcodeParser() {
+            try {
+                if (typeof window.BarcodeParser !== 'undefined') {
+                    barcodeParser = new window.BarcodeParser();
+                } else {
+                    throw new Error(localTexts.parserInitFailed);
+                }
+            } catch (error) {
+                console.error('条码解析器初始化失败:', error);
+            }
+        }
+
+        function clearMaterialFields() {
+            $('#materialCode, #quantity, #Unit, #warehouseCode, #batchNo, #location').val('');
+            $('#availableQtyDisplay').hide();
+        }
+
+        function clearWorkOrderFields() {
+            $('#workOrderNo, #assemblySeq').val('');
+        }
+
+        function debounceHandleWorkOrderEnter() {
+            clearTimeout(workOrderDebounceTimer);
+            workOrderDebounceTimer = setTimeout(() => {
+                if (!isProcessing) handleWorkOrderEnter();
+            }, 200);
+        }
+
+        function debounceHandleMaterialCodeEnter() {
+            clearTimeout(materialCodeDebounceTimer);
+            materialCodeDebounceTimer = setTimeout(() => {
+                if (!isProcessing) handleMaterialCodeEnter();
+            }, 200);
+        }
+
+        function handleWorkOrderEnter() {
+            if (isProcessing) return;
+            isProcessing = true;
+
+            try {
+                let barcode = $('#workOrderNo').val().trim();
+                if (!barcode) {
+                    showMessage(localTexts.workOrderRequired, 'warning');
+                    $('#workOrderNo').focus();
+                    isProcessing = false;
+                    return;
+                }
+
+                $('#assemblySeq, #materialCode, #quantity, #Unit, #warehouseCode, #batchNo, #location').val('');
+                $('#parseStatus').removeClass().hide();
+
+                if (barcodeParser) {
+                    try {
+                        const result = barcodeParser.parse(barcode);
+                        if (result.success && (result.type === 'workOrder' || (result.data.workOrderNo && result.data.assemblySeq))) {
+                            const data = result.data;
+                            $('#workOrderNo').val(data.workOrderNo);
+                            $('#assemblySeq').val(data.assemblySeq);
+
+                            validateJob().then(valid => {
+                                if (valid) {
+                                    setTimeout(() => $('#materialCode').focus().select(), 100);
+                                } else {
+                                    clearWorkOrderFields();
+                                    $('#workOrderNo').focus().select();
+                                }
+                                isProcessing = false;
+                            });
+                            return;
+                        }
+                    } catch (e) {
+                    }
+                }
+
+                const assemblySeq = $('#assemblySeq').val().trim();
+                if (!assemblySeq) {
+                    showMessage(localTexts.pleaseEnterAssemblySeq, 'error');
+                    $('#assemblySeq').focus().select();
+                    isProcessing = false;
+                    return;
+                }
+
+                validateJob().then(valid => {
+                    if (valid) {
+                        setTimeout(() => $('#materialCode').focus().select(), 100);
+                    } else {
+                        $('#workOrderNo').focus().select();
+                    }
+                    isProcessing = false;
+                });
+            } catch (error) {
+                isProcessing = false;
+                showMessage(localTexts.processingError + ': ' + error.message, 'error');
+            }
+        }
+
+        function handleMaterialCodeEnter() {
+            if (isProcessing) return;
+            isProcessing = true;
+
+            try {
+                let barcode = $('#materialCode').val().trim();
+                if (!barcode) {
+                    showMessage(localTexts.materialCodeRequired, 'warning');
+                    $('#materialCode').focus();
+                    isProcessing = false;
+                    return;
+                }
+
+                $('#quantity, #Unit, #warehouseCode, #batchNo, #location').val('');
+                $('#parseStatus').removeClass().hide();
+
+                if (barcodeParser) {
+                    try {
+                        const result = barcodeParser.parse(barcode);
+                        if (result.success && (result.type === 'material' || result.data.materialCode)) {
+                            const data = result.data;
+                            $('#materialCode').val(data.materialCode);
+                            if (data.quantity) $('#quantity').val(data.quantity);
+                            if (data.unit) $('#Unit').val(data.unit);
+                            if (data.warehouseCode) $('#warehouseCode').val(data.warehouseCode);
+                            if (data.binNum) $('#location').val(data.binNum);
+                            if (data.lotNum) $('#batchNo').val(data.lotNum);
+
+                            // 条码不含仓库/库位信息时（如 PartNum:xxx;Qty:1;UOM:PCS;LotNum:xxx），
+                            // 跳过库存校验，聚焦仓库字段供用户手动录入
+                            if (!data.warehouseCode && !data.binNum) {
+                                isProcessing = false;
+                                setTimeout(() => $('#warehouseCode').focus().select(), 100);
+                                return;
+                            }
+
+                            validateInventory().then(valid => {
+                                if (valid) {
+                                    setTimeout(() => $('#quantity').focus().select(), 100);
+                                } else {
+                                    clearMaterialFields();
+                                    $('#materialCode').focus().select();
+                                }
+                                isProcessing = false;
+                            });
+                            return;
+                        }
+                    } catch (e) {
+                    }
+                }
+
+                validateInventory().then(valid => {
+                    if (valid) {
+                        setTimeout(() => $('#quantity').focus().select(), 100);
+                    } else {
+                        $('#materialCode').focus().select();
+                    }
+                    isProcessing = false;
+                });
+            } catch (error) {
+                isProcessing = false;
+                showMessage(localTexts.processingError + ': ' + error.message, 'error');
+            }
+        }
+
+        async function validateJob() {
+            const workOrderNo = $('#workOrderNo').val().trim();
+            const assemblySeq = $('#assemblySeq').val().trim();
+
+            if (!workOrderNo || !assemblySeq) {
+                showMessage(localTexts.jobAndAssemblyRequired, 'warning');
+                return false;
+            }
+
+            try {
+                const response = await $.ajax({
+                    url: '/Return/ValidateJob',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ workOrderNo: workOrderNo, assemblySeq: parseInt(assemblySeq) }),
+                    headers: { 'X-CSRF-TOKEN': $('input[name="__RequestVerificationToken"]').val() }
+                });
+                if (response.success) {
+                    return true;
+                } else {
+                    showMessage(response.message || localTexts.jobValidationFailed, 'error');
+                    return false;
+                }
+            } catch (error) {
+                showMessage(localTexts.networkError, 'error');
+                if (error.status === 401) window.location.href = '/Account/Login';
+                return false;
+            }
+        }
+
+        async function validateInventory() {
+            const materialCode = $('#materialCode').val().trim();
+            const warehouseCode = $('#warehouseCode').val().trim();
+            const location = $('#location').val().trim();
+            const batchNo = $('#batchNo').val().trim();
+            const quantity = parseFloat($('#quantity').val()) || 0;
+            const workOrderNo = $('#workOrderNo').val().trim();
+            const assemblySeq = $('#assemblySeq').val().trim();
+            const Unit = $('#Unit').val().trim();
+
+            if (!workOrderNo || !assemblySeq) {
+                showMessage(localTexts.jobAndAssemblyRequired, 'error');
+                return false;
+            }
+            if (!materialCode) {
+                showMessage(localTexts.materialCodeRequiredMsg, 'error');
+                return false;
+            }
+
+            try {
+                const response = await $.ajax({
+                    url: '/Return/ValidateInventory',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        workOrderNo: workOrderNo,
+                        assemblySeq: parseInt(assemblySeq),
+                        materialCode: materialCode,
+                        fromWarehouse: warehouseCode,
+                        location: location,
+                        batchNo: batchNo,
+                        unit: Unit,
+                        quantity: quantity
+                    }),
+                    headers: { 'X-CSRF-TOKEN': $('input[name="__RequestVerificationToken"]').val() }
+                });
+                if (response.success) {
+                    // 回填库存数量显示
+                    if (response.availableQty !== undefined && response.availableQty !== null) {
+                        $('#availableQtyValue').text(response.availableQty.toFixed(2));
+                        $('#availableQtyDisplay').show();
+                    }
+                    // 扫码数量超过已发数量时，弹出提示信息（不清空表单，允许修改数量）
+                    if (response.suggestedQty !== undefined && response.suggestedQty > 0) {
+                        showMessage(response.message, 'warning');
+                        $('#quantity').val(response.suggestedQty);
+                    }
+                    return true;
+                } else {
+                    // 回填库存数量显示
+                    if (response.availableQty !== undefined && response.availableQty !== null) {
+                        $('#availableQtyValue').text(response.availableQty.toFixed(2));
+                        $('#availableQtyDisplay').show();
+                    }
+                    showMessage(response.message || localTexts.inventoryValidationFailed, 'error');
+                    return false;
+                }
+            } catch (error) {
+                showMessage(localTexts.networkError, 'error');
+                if (error.status === 401) window.location.href = '/Account/Login';
+                return false;
+            }
+        }
+
+        function validateForm() {
+            const workOrderNo = $('#workOrderNo').val().trim();
+            const assemblySeq = $('#assemblySeq').val().trim();
+            const materialCode = $('#materialCode').val().trim();
+            const quantity = parseFloat($('#quantity').val());
+
+            if (!workOrderNo) {
+                $('#workOrderError').html('<i class="fas fa-exclamation-circle"></i> ' + localTexts.workOrderRequired);
+                return false;
+            }
+            $('#workOrderError').html('');
+
+            if (!assemblySeq) {
+                $('#assemblySeqError').html('<i class="fas fa-exclamation-circle"></i> ' + localTexts.assemblySeqRequired);
+                return false;
+            }
+            $('#assemblySeqError').html('');
+
+            if (!materialCode) {
+                $('#materialCodeError').html('<i class="fas fa-exclamation-circle"></i> ' + localTexts.materialCodeRequired);
+                return false;
+            }
+            $('#materialCodeError').html('');
+
+            if (!quantity || quantity <= 0) {
+                $('#quantityError').html('<i class="fas fa-exclamation-circle"></i> ' + localTexts.quantityRequired);
+                return false;
+            }
+            $('#quantityError').html('');
+
+            return true;
+        }
+
+        // 一次提交尝试内固定 ID：失败/超时重试复用同一 ID（服务端据此拦截重复过账），成功后重置。
+        var pendingRequestId = null;
+        function getRequestId() {
+            if (!pendingRequestId) {
+                pendingRequestId = (window.crypto && typeof crypto.randomUUID === 'function')
+                    ? crypto.randomUUID()
+                    : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                        var r = Math.random() * 16 | 0;
+                        var v = c === 'x' ? r : (r & 0x3 | 0x8);
+                        return v.toString(16);
+                    });
+            }
+            return pendingRequestId;
+        }
+        function resetRequestId() { pendingRequestId = null; }
+
+        function submitReturnForm() {
+            if (!validateForm()) return;
+
+            const formData = $('#returnForm').serialize();
+            showToast(localTexts.submitting, 'warning');
+            $('#submitBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> ' + localTexts.submitting);
+
+            $.ajax({
+                url: $('#returnForm').attr('action'),
+                type: 'POST',
+                data: formData,
+                headers: { 'X-CSRF-TOKEN': $('input[name="__RequestVerificationToken"]').val(),
+                           'X-Request-ID': getRequestId() },
+                success: function (response) {
+                    if (response.success) {
+                        resetRequestId();
+                        showToast(response.message || localTexts.submitSuccess, 'success');
+                        resetAfterSuccess();
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: localTexts.failedTitle,
+                            text: response.message || localTexts.submitFailed,
+                            confirmButtonText: localTexts.confirmButton
+                        });
+                    }
+                    resetSubmitButton();
+                },
+                error: function (xhr) {
+                    let errorMsg = localTexts.networkError;
+                    if (xhr.responseJSON?.message) errorMsg = xhr.responseJSON.message;
+                    Swal.fire({
+                        icon: 'error',
+                        title: localTexts.failedTitle,
+                        text: localTexts.submitFailed + ': ' + errorMsg,
+                        confirmButtonText: localTexts.confirmButton
+                    });
+                    resetSubmitButton();
+                }
+            });
+        }
+
+        function resetAfterSuccess() {
+            $('#materialCode, #quantity, #Unit, #warehouseCode, #batchNo, #location, #remarks').val('');
+            $('.error-message').html('');
+            $('#availableQtyDisplay').hide();
+            $('#materialCode').focus().select();
+        }
+
+        function resetSubmitButton() {
+            setTimeout(() => {
+                $('#submitBtn').prop('disabled', false).html('<i class="fas fa-paper-plane"></i> @GetText("MaterialReturn", "SubmitButton")');
+            }, 1000);
+        }
+
+        function resetForm() {
+            $('#returnForm')[0].reset();
+            $('.error-message').html('');
+            $('#workOrderNo').focus();
+            showToast(localTexts.formReset, 'info');
+        }
+    </script>
+</body>
+</html>

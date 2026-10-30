@@ -1,0 +1,72 @@
+@{
+    var getText = ViewBag.GetText as Func<string, string, string>;
+
+    string GetText(string section, string key)
+    {
+        return getText?.Invoke(section, key) ?? $"[{section}.{key}]";
+    }
+
+    ViewData["Title"] = GetText("FactoryManagement", "DeleteTitle");
+    Layout = "_FactoryLayout";
+}
+
+@model WarehouseScannerCore.Models.Factory
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h4><i class="fas fa-exclamation-triangle"></i> @GetText("FactoryManagement", "ConfirmDelete")</h4>
+                </div>
+                <div class="card-body">
+                    <h5>@GetText("FactoryManagement", "DeleteWarning")</h5>
+
+                    <div class="alert alert-warning">
+                        <strong>@GetText("FactoryCommon", "Warning"): </strong>@GetText("FactoryManagement", "DeleteConfirmText")
+                    </div>
+
+                    <dl class="row">
+                        <dt class="col-sm-3">@GetText("FactoryManagement", "Code")</dt>
+                        <dd class="col-sm-9">@Model.Code</dd>
+
+                        <dt class="col-sm-3">@GetText("FactoryManagement", "Name")</dt>
+                        <dd class="col-sm-9">@Model.Name</dd>
+
+                        <dt class="col-sm-3">@GetText("FactoryManagement", "NameCN")</dt>
+                        <dd class="col-sm-9">@Model.NameCN</dd>
+
+                        <dt class="col-sm-3">@GetText("FactoryManagement", "Location")</dt>
+                        <dd class="col-sm-9">@Model.Location</dd>
+
+                        <dt class="col-sm-3">API URL</dt>
+                        <dd class="col-sm-9">@Model.ApiUrl</dd>
+
+                        <dt class="col-sm-3">@GetText("FactoryManagement", "Status")</dt>
+                        <dd class="col-sm-9">
+                            @if (Model.Enabled)
+                            {
+                                <span class="badge bg-success">@GetText("FactoryManagement", "Active")</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-danger">@GetText("FactoryManagement", "Inactive")</span>
+                            }
+                        </dd>
+                    </dl>
+
+                    <form asp-action="Delete" asp-route-code="@Model.Code" method="post">
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash"></i> @GetText("FactoryManagement", "ConfirmDelete")
+                            </button>
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> @GetText("FactoryManagement", "CancelButton")
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

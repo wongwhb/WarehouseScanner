@@ -1,0 +1,439 @@
+﻿/* wwwroot/css/login.css */
+:root {
+    --primary-color: #667eea;
+    --primary-light: #849dff;
+    --primary-dark: #5a67d8;
+    --secondary-color: #764ba2;
+    --success-color: #48bb78;
+    --error-color: #e53e3e;
+    --warning-color: #ed8936;
+    --info-color: #4299e1;
+    --text-primary: #2d3748;
+    --text-secondary: #4a5568;
+    --text-light: #718096;
+    --bg-primary: #f7fafc;
+    --bg-secondary: #edf2f7;
+    --border-color: #e2e8f0;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.15);
+    --radius-sm: 4px;
+    --radius: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body, html {
+    height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--text-primary);
+    /* background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);*/
+    /* 可以设置为透明或简单的背景色 */
+    background: transparent;
+    /* background: #f8f9fa;*/
+    overflow-x: hidden;
+}
+
+/* 登录容器 */
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(16px, 4vw, 32px);
+    /*   background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);   */
+    /* 可以设置为透明或简单的背景色 */
+    background: transparent;
+    /* background: #f8f9fa;*/
+    animation: gradientBG 15s ease infinite;
+    background-size: 400% 400%;
+}
+
+@keyframes gradientBG {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* 登录卡片 */
+.login-card {
+    background: white;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    width: 100%;
+    max-width: min(95vw, 480px);
+    min-width: 300px;
+    padding: clamp(24px, 5vw, 48px);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    animation: cardSlideUp 0.5s ease-out;
+}
+
+@keyframes cardSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.login-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+}
+
+/* 登录头部 */
+.login-header {
+    text-align: center;
+    margin-bottom: clamp(24px, 5vw, 32px);
+}
+
+    .login-header h1 {
+        color: var(--text-primary);
+        font-size: clamp(1.5rem, 4vw, 2rem);
+        margin-bottom: clamp(8px, 2vw, 12px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: clamp(8px, 2vw, 12px);
+        flex-wrap: wrap;
+    }
+
+        .login-header h1 i {
+            font-size: clamp(1.75rem, 4vw, 2.25rem);
+            color: var(--primary-color);
+        }
+
+.welcome-text {
+    color: var(--text-light);
+    font-size: clamp(0.875rem, 2vw, 1rem);
+}
+
+/* 语言切换 */
+.language-switcher {
+    margin-bottom: clamp(20px, 4vw, 28px);
+}
+
+.lang-buttons {
+    display: flex;
+    gap: clamp(4px, 1vw, 8px);
+    background: var(--bg-secondary);
+    padding: 4px;
+    border-radius: var(--radius);
+    width: fit-content;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.lang-link {
+    padding: clamp(6px, 1.5vw, 8px) clamp(12px, 3vw, 16px);
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    color: var(--text-secondary);
+    font-size: clamp(0.75rem, 2vw, 0.875rem);
+    font-weight: 500;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: clamp(4px, 1vw, 6px);
+    white-space: nowrap;
+}
+
+    .lang-link:hover {
+        background: rgba(255, 255, 255, 0.8);
+    }
+
+    .lang-link.active {
+        background: var(--primary-color);
+        color: white;
+    }
+
+/* 表单样式 */
+.form-group {
+    margin-bottom: clamp(16px, 3vw, 24px);
+    position: relative;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: clamp(6px, 1.5vw, 8px);
+    color: var(--text-secondary);
+    font-weight: 600;
+    font-size: clamp(0.875rem, 2vw, 0.9375rem);
+    display: flex;
+    align-items: center;
+    gap: clamp(6px, 1.5vw, 8px);
+}
+
+.form-control {
+    width: 100%;
+    padding: clamp(12px, 3vw, 16px);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius);
+    font-size: clamp(0.875rem, 2vw, 1rem);
+    transition: all 0.3s ease;
+    background: var(--bg-primary);
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+    .form-control:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        background: white;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .form-control.invalid {
+        border-color: var(--error-color);
+    }
+
+/* 工厂选择 */
+.factory-select-wrapper {
+    position: relative;
+}
+
+    .factory-select-wrapper::before {
+        content: '\f1ad';
+        font-family: 'Font Awesome 6 Free';
+        font-weight: 900;
+        position: absolute;
+        left: clamp(12px, 3vw, 16px);
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-light);
+        z-index: 1;
+    }
+
+.factory-select {
+    padding-left: clamp(40px, 8vw, 50px);
+    cursor: pointer;
+    background-color: white;
+}
+
+    .factory-select option {
+        padding: 12px;
+    }
+
+.select-arrow {
+    position: absolute;
+    right: clamp(12px, 3vw, 16px);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-light);
+    pointer-events: none;
+}
+
+.factory-description {
+    margin-top: clamp(8px, 2vw, 12px);
+    padding: clamp(12px, 3vw, 16px);
+    background: var(--bg-primary);
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.factory-info {
+    display: flex;
+    align-items: flex-start;
+    gap: clamp(8px, 2vw, 12px);
+}
+
+    .factory-info i {
+        font-size: clamp(1.25rem, 3vw, 1.5rem);
+        color: var(--primary-color);
+        margin-top: 2px;
+    }
+
+.factory-details {
+    flex: 1;
+}
+
+    .factory-details strong {
+        display: block;
+        color: var(--text-primary);
+        font-size: clamp(0.875rem, 2vw, 1rem);
+        margin-bottom: 4px;
+    }
+
+    .factory-details p {
+        color: var(--text-light);
+        font-size: clamp(0.75rem, 1.5vw, 0.875rem);
+        line-height: 1.4;
+        margin: 0;
+    }
+
+ 密码输入框 
+.password-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.password-input {
+    padding-right: clamp(44px, 8vw, 50px);
+}
+
+.password-toggle {
+    position: absolute;
+    right: clamp(8px, 2vw, 12px);
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-light);
+    cursor: pointer;
+    padding: 4px;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: clamp(28px, 6vw, 32px);
+    height: clamp(28px, 6vw, 32px);
+    border-radius: var(--radius-sm);
+    transition: all 0.3s ease;
+}
+
+    .password-toggle:hover {
+        color: var(--primary-color);
+        background: var(--bg-secondary);
+    }
+
+    .password-toggle:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+/* 登录按钮 */
+.btn-primary {
+    width: 100%;
+    padding: clamp(14px, 3vw, 16px);
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    font-size: clamp(0.9375rem, 2vw, 1.0625rem);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(8px, 2vw, 12px);
+    margin-top: clamp(8px, 2vw, 12px);
+    position: relative;
+    overflow: hidden;
+}
+
+    .btn-primary::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: 0.5s;
+    }
+
+    .btn-primary:hover::before {
+        left: 100%;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .btn-primary:active {
+        transform: translateY(0);
+    }
+
+    .btn-primary:disabled {
+        opacity: 0.7;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+
+        .btn-primary:disabled::before {
+            display: none;
+        }
+
+/* 自定义验证消息 */
+.custom-validation-message {
+    color: var(--error-color);
+    font-size: clamp(0.75rem, 1.5vw, 0.8125rem);
+    margin-top: clamp(4px, 1vw, 6px);
+    display: none;
+    align-items: center;
+    gap: clamp(4px, 1vw, 6px);
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.custom-validation-message i {
+    font-size: clamp(0.875rem, 2vw, 1rem);
+}
+
+/* 测试账号提示 */
+.test-account-info {
+    margin-top: clamp(20px, 4vw, 28px);
+    padding: clamp(12px, 3vw, 16px);
+    background: var(--bg-primary);
+    border-radius: var(--radius);
+    text-align: center;
+    font-size: clamp(0.75rem, 1.5vw, 0.875rem);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+}
+
+    .test-account-info i

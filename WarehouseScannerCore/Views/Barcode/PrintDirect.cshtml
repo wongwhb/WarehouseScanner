@@ -1,0 +1,85 @@
+@model List<WarehouseScannerCore.Models.BarcodePrintModel>
+@{
+    ViewData["Title"] = "直接打印";
+    var currentCulture = ViewBag.CurrentCulture as string ?? Context.Request.Cookies["Language"] ?? "zh-CN";
+}
+
+<script>
+    window.onload = function () {
+        setTimeout(() => {
+            window.print();
+            window.close();
+        }, 500);
+    };
+</script>
+
+<style>
+    body { margin: 0; padding: 0; }
+    .label-container { display: block; }
+    .label {
+        page-break-inside: avoid;
+        width: @(Model.First().LabelWidth)mm;
+        height: @(Model.First().LabelHeight)mm;
+        border: none;
+        margin: 0;
+        padding: 0;
+    }
+    .label-content {
+        padding: @(Model.First().PaddingTop)mm @(Model.First().PaddingRight)mm @(Model.First().PaddingBottom)mm @(Model.First().PaddingLeft)mm;
+        display: flex;
+        gap: 4px;
+    }
+    .text-fields {
+        font-size: @(Model.First().FontSize)pt;
+        font-family: @Model.First().FontFamily;
+        font-weight: @Model.First().FontWeight;
+    }
+    .qr-image-container {
+        transform: translate(@(Model.First().BarcodeOffsetX)px, @(Model.First().BarcodeOffsetY)px);
+    }
+    @@media print {
+        * { -webkit-print-color-adjust: exact; }
+        @@page { margin: 0; size: auto; }
+    }
+</style>
+
+<div class="label-container">
+    @foreach (var item in Model)
+    {
+        <div class="label">
+            <div class="label-content">
+                <div class="text-fields">
+                    @if (currentCulture == "zh-CN")
+                    {
+                        <div>物料代码: @item.MaterialCode</div>
+                        <div>数量: @item.Quantity</div>
+                        <div>单位: @item.Unit</div>
+                        if (!item.IsFinishedProduct)
+                        {
+                            <div>仓库: @item.Warehouse</div>
+                            <div>库位: @item.Location</div>
+                        }
+                        <div>批号: @item.BatchNo</div>
+                        <div>打印日期: @item.PrintDate.ToString("yyyy-MM-dd")</div>
+                    }
+                    else
+                    {
+                        <div>PartNum: @item.MaterialCode</div>
+                        <div>Qty: @item.Quantity</div>
+                        <div>UOM: @item.Unit</div>
+                        if (!item.IsFinishedProduct)
+                        {
+                            <div>WarehouseDesc: @item.Warehouse</div>
+                            <div>BinNum: @item.Location</div>
+                        }
+                        <div>LotNum: @item.BatchNo</div>
+                        <div>PrintDate: @item.PrintDate.ToString("yyyy-MM-dd")</div>
+                    }
+                </div>
+                <div class="qr-image-container" style="width:@(item.BarcodeWidth)px;height:@(item.BarcodeHeight)px;">
+                    <img src="data:image/png;base64,@item.QrCodeBase64" />
+                </div>
+            </div>
+        </div>
+    }
+</div>

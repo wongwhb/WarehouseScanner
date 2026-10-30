@@ -1,0 +1,219 @@
+@model List<WarehouseScannerCore.Models.BarcodePrintModel>
+@{
+    var getText = ViewBag.GetText as Func<string, string, string>;
+    var currentCulture = ViewBag.CurrentCulture as string ?? "zh-CN";
+
+    string GetText(string section, string key)
+    {
+        return getText?.Invoke(section, key) ?? $"[{section}.{key}]";
+    }
+
+    ViewData["Title"] = GetText("BarcodePrint", "PreviewTitle");
+
+    // 计算单位（和参考代码完全一致）
+    double mmToPx = 3.7795275591;
+    double ptToPx = 1.33333333333;
+}
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes" />
+<style>
+    /* ===== 屏幕预览样式（和参考代码完全一致） ===== */
+    .preview-header {
+        padding: 15px;
+        background: #f8f9fa;
+        text-align: center;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        border-bottom: 2px solid #dee2e6;
+    }
+
+        .preview-header button {
+            display: inline-block;
+            margin: 5px 10px;
+            padding: 12px 24px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 8px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+
+    /* 标签容器 */
+    .label-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: flex-start;
+        padding: 10px;
+        background-color: #f5f5f5;
+    }
+
+    /* 单个标签卡片 */
+    .label {
+        box-sizing: border-box;
+        border: 1px solid #aaa;
+        margin: 5px;
+        display: inline-block;
+        vertical-align: top;
+        background-color: white;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        overflow: hidden;
+        position: relative;
+    }
+
+    /* 标签内容区域 */
+    .label-content {
+        box-sizing: border-box;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    /* 文字区域 */
+    .text-fields {
+        flex: 1;
+        font-family: @Model.First().FontFamily;
+        font-weight: @Model.First().FontWeight;
+        line-height: 1.4;
+        word-break: break-word;
+        text-align: left;
+        overflow: hidden;
+        min-width: 0;
+    }
+
+    /* 二维码容器 */
+    .qr-image-container {
+        flex-shrink: 0;
+        position: relative;
+    }
+
+    /* 二维码图片 */
+    .qr-image {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+        background-color: #f0f0f0;
+    }
+
+    /* ===== 打印样式（严格按照参考代码） ===== */
+    @@media print {
+        .preview-header {
+            display: none !important;
+        }
+
+        .label-container {
+            display: block;
+            padding: 0;
+            margin: 0;
+            background: none;
+        }
+
+        .label {
+            border: none;
+            box-shadow: none;
+            margin: 0;
+            page-break-inside: avoid;
+            width: @(Model.First().LabelWidth) mm !important;
+            height: @(Model.First().LabelHeight) mm !important;
+        }
+
+        .label-content {
+            padding: @(Model.First().PaddingTop) mm @(Model.First().PaddingRight) mm @(Model.First().PaddingBottom) mm @(Model.First().PaddingLeft) mm !important;
+        }
+
+        .text-fields {
+            font-size: @(Model.First().FontSize) pt !important;
+            font-family: @Model.First().FontFamily;
+            font-weight: @Model.First().FontWeight;
+        }
+
+        .qr-image-container {
+            transform: translate( @(Model.First().BarcodeOffsetX) px, @(Model.First().BarcodeOffsetY) px) !important;
+        }
+
+        body, .label, .label-content, .text-fields {
+            background: transparent;
+            color: black;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        @@page {
+            margin: 0;
+            size: auto;
+        }
+    }
+</style>
+
+<div class="preview-header">
+    <h2>@GetText("BarcodePrint", "PreviewTitle") - @GetText("BarcodePrint", "PreviewTotalItems").Replace("{0}", Model.Count.ToString())</h2>
+    <button onclick="print()">@GetText("BarcodePrint", "Print")</button>
+</div>
+
+<div class="label-container">
+    @foreach (var item in Model)
+    {
+        // 每一项都独立计算尺寸（严格跟随自己的设置）
+        int labelWidthPx = (int)(item.LabelWidth * mmToPx);
+        int labelHeightPx = (int)(item.LabelHeight * mmToPx);
+        int paddingLeftPx = (int)(item.PaddingLeft * mmToPx);
+        int paddingRightPx = (int)(item.PaddingRight * mmToPx);
+        int paddingTopPx = (int)(item.PaddingTop * mmToPx);
+        int paddingBottomPx = (int)(item.PaddingBottom * mmToPx);
+        int fontSizePx = (int)(item.FontSize * ptToPx);
+
+        // 打印样式用的原始单位
+        string paddingMm = $"{item.PaddingTop}mm {item.PaddingRight}mm {item.PaddingBottom}mm {item.PaddingLeft}mm";
+        string fontSizePt = $"{item.FontSize}pt";
+        string imageTransform = $"translate({item.BarcodeOffsetX}px, {item.BarcodeOffsetY}px)";
+
+        <div class="label" style="width: @(labelWidthPx)px; height: @(labelHeightPx)px;">
+            <div class="label-content" style="padding: @(paddingTopPx)px @(paddingRightPx)px @(paddingBottomPx)px @(paddingLeftPx)px;">
+                <!-- 文字区域 -->
+                <div class="text-fields" style="font-size: @(fontSizePx)px; font-family:@item.FontFamily; font-weight:@item.FontWeight;">
+                    @if (currentCulture == "zh-CN")
+                    {
+                        <div>物料代码: @item.MaterialCode</div>
+                        <div>数量: @item.Quantity</div>
+                        <div>单位: @item.Unit</div>
+                        if (!item.IsFinishedProduct)
+                        {
+                            <div>仓库: @item.Warehouse</div>
+                            <div>库位: @item.Location</div>
+                        }
+                        <div>批号: @item.BatchNo</div>
+                        <div>打印日期: @item.PrintDate.ToString("MM/dd/yyyy")</div>
+                    }
+                    else
+                    {
+                        <div>PartNum: @item.MaterialCode</div>
+                        <div>Qty: @item.Quantity</div>
+                        <div>UOM: @item.Unit</div>
+                        if (!item.IsFinishedProduct)
+                        {
+                            <div>WarehouseDesc: @item.Warehouse</div>
+                            <div>BinNum: @item.Location</div>
+                        }
+                        <div>LotNum: @item.BatchNo</div>
+                        <div>PrintDate: @item.PrintDate.ToString("MM/dd/yyyy")</div>
+                    }
+                </div>
+
+                <!-- 二维码：尺寸 + 偏移 100% 跟随设置 -->
+                <div class="qr-image-container"
+                     style="width: @(item.BarcodeWidth)px;
+                                height: @(item.BarcodeHeight)px;
+                                transform: @imageTransform;">
+                    <img class="qr-image" src="data:image/png;base64,@item.QrCodeBase64" alt="QR Code" />
+                </div>
+            </div>
+        </div>
+    }
+</div>

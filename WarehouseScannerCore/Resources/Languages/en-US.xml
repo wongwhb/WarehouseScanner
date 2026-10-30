@@ -1,0 +1,1498 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageResources>
+  <Language>
+    <Code>en-US</Code>
+    <Name>English</Name>
+    <NativeName>English</NativeName>
+    <Resources>
+      <Common>
+        <AppName>GCM Scan System</AppName>
+        <Loading>Loading...</Loading>
+        <Success>Success</Success>
+        <Error>Error</Error>
+        <Confirm>Confirm</Confirm>
+        <Cancel>Cancel</Cancel>
+        <Save>Save</Save>
+        <Delete>Delete</Delete>
+        <Search>Search</Search>
+        <Refresh>Refresh</Refresh>
+        <Close>Close</Close>
+        <Yes>Yes</Yes>
+        <No>No</No>
+        <OK>OK</OK>
+        <Unit>Unit</Unit>
+        <RequiredField>This field is required</RequiredField>
+        <UnknownError>Unknown error</UnknownError>
+        <OperationFailedRetry>Operation failed, please try again later</OperationFailedRetry>
+        <SwitchingLanguage>Switching language...</SwitchingLanguage>
+        <LanguageSwitchFailed>Failed to switch language</LanguageSwitchFailed>
+        <NetworkErrorRetry>Network error, please try again</NetworkErrorRetry>
+        <NetworkRestored>Network restored</NetworkRestored>
+        <NetworkOffline>Network disconnected; some features may be limited</NetworkOffline>
+        <OfflineDataSaved>You are offline; data will be saved locally</OfflineDataSaved>
+        <AddToHomeScreen>Add to Home Screen</AddToHomeScreen>
+        <AddedToHomeScreen>Added to Home Screen</AddedToHomeScreen>
+        <Processing>Processing...</Processing>
+        <NetworkConnError>Network connection error; please check and retry</NetworkConnError>
+        <SessionExpiredRelogin>Session expired, please log in again</SessionExpiredRelogin>
+        <ScannerReady>Scanner ready, please scan...</ScannerReady>
+        <ScanSuccess>Scan successful!</ScanSuccess>
+        <ScanModeLabel>Scan Mode:</ScanModeLabel>
+        <ScannerModeGun>Scanner Mode</ScannerModeGun>
+        <ScannerModeCamera>Camera Mode</ScannerModeCamera>
+        <ClickToSwitchScanMode>Click to switch scan mode</ClickToSwitchScanMode>
+        <BarcodeEmpty>Barcode content cannot be empty</BarcodeEmpty>
+        <BarcodeEmptyAfterClean>Barcode content is empty (after cleanup)</BarcodeEmptyAfterClean>
+        <NoValidFields>No valid fields recognized</NoValidFields>
+        <MockScanSuccess>Mock scan success: </MockScanSuccess>
+        <ParseFailed>Parse failed: {0}</ParseFailed>
+        <IdempotentResultUnknown>This request was submitted previously but the result is unknown (it may already be posted). Please verify in Epicor before retrying.</IdempotentResultUnknown>
+        <InvalidRequest>Invalid request parameters. Please refresh the page and try again.</InvalidRequest>
+      </Common>
+      <Login>
+        <Title>Login</Title>
+        <WelcomeText>Welcome</WelcomeText>
+        <Username>Username</Username>
+        <Password>Password</Password>
+        <LoginButton>Login</LoginButton>
+        <SiteSelect>Select Site</SiteSelect>
+        <SelectPlaceholder>Please select Site</SelectPlaceholder>
+        <UsernameRequired>Please enter username</UsernameRequired>
+        <PasswordRequired>Please enter password</PasswordRequired>
+        <SiteRequired>Please select Site</SiteRequired>
+        <UsernameTooShort>Username must be at least 3 characters</UsernameTooShort>
+        <PasswordTooShort>Password must be at least 6 characters</PasswordTooShort>
+        <LoggingIn>Logging in...</LoggingIn>
+        <ShowPassword>Show password</ShowPassword>
+        <HidePassword>Hide password</HidePassword>
+        <Chinese>Chinese</Chinese>
+        <English>English</English>
+        <LoginSuccess>Login successful</LoginSuccess>
+        <LoginError>Login failed</LoginError>
+        <InvalidCredentials>Invalid username or password</InvalidCredentials>
+        <LoginRequired>Please enter username, password and site</LoginRequired>
+        <SiteInvalid>Selected site is invalid</SiteInvalid>
+        <SiteConfigIncomplete>Site configuration is incomplete, please contact administrator</SiteConfigIncomplete>
+        <EpicorConnectionLimit>Epicor connection limit reached, failed to retrieve employee info</EpicorConnectionLimit>
+        <SystemError>System error, please try again later</SystemError>
+        <NoEpicorPermission>You do not have permission to log in to the EPicor system. Please contact the administrator</NoEpicorPermission>
+        <DebugCurrentLanguage>Current Language</DebugCurrentLanguage>
+        <DebugFactoryCount>Factory Count</DebugFactoryCount>
+        <DebugSavedSite>Saved Site</DebugSavedSite>
+        <DebugClientIP>Client IP</DebugClientIP>
+        <DebugDeviceName>Device Name</DebugDeviceName>
+        <DebugUserAgent>User Agent</DebugUserAgent>
+        <DebugNone>None</DebugNone>
+        <AuthCleared>Authentication cleared</AuthCleared>
+        <AuthClearFailed>Failed to clear authentication, please try again later</AuthClearFailed>
+        <SiteOptionDG>DG Factory (Default)</SiteOptionDG>
+        <DefaultSuffix> (Default)</DefaultSuffix>
+        <DeviceInfoFormat>Detected {0}, IP: {1}</DeviceInfoFormat>
+        <DeviceWindowsPC>Windows PC</DeviceWindowsPC>
+        <DeviceWindows11>Windows 11</DeviceWindows11>
+        <DeviceWindows10>Windows 10</DeviceWindows10>
+        <DeviceWindows8>Windows 8</DeviceWindows8>
+        <DeviceWindows7>Windows 7</DeviceWindows7>
+        <DeviceMac>Mac</DeviceMac>
+        <DeviceLinux>Android</DeviceLinux>
+        <DeviceAndroid>Android Device</DeviceAndroid>
+        <DeviceIOS>iOS Device</DeviceIOS>
+        <DeviceUnknown>Unknown Device</DeviceUnknown>
+        <DeviceDetectedPrefix>Detected</DeviceDetectedPrefix>
+      </Login>
+      <!-- Home Page -->
+      <Home>
+        <Title>Home</Title>
+        <Welcome>Welcome to Warehouse Scanning</Welcome>
+        <UserId>User ID</UserId>
+        <UserRole>User Role</UserRole>
+        <CurrentSite>Current Factory2</CurrentSite>
+        <LoginTime>Login Time</LoginTime>
+        <LogoutButton>Back to Home</LogoutButton>
+        <LogoutConfirm>Are you sure you want to logout?</LogoutConfirm>
+        <LoggingOut>Logging out...</LoggingOut>
+        <LogoutSuccess>You have successfully logged out</LogoutSuccess>
+        <SessionExpired>Session expired, please login again</SessionExpired>
+        <!-- Index page specific content -->
+        <SystemFunctions>System Functions</SystemFunctions>
+        <UserInformation>User Information</UserInformation>
+        <WelcomeBack>Welcome back</WelcomeBack>
+        <CurrentStation>Current Site</CurrentStation>
+        <!-- Function buttons -->
+        <MaterialIssuanceScan>Material Issuance Scanning</MaterialIssuanceScan>
+        <MaterialIssuanceDesc>Material Issuance to Work Orders</MaterialIssuanceDesc>
+        <ReturnMaterialScan>Return Material</ReturnMaterialScan>
+        <ReturnMaterialDesc>Return Material</ReturnMaterialDesc>
+        <OutboundScan>Customer Shipment Scanning</OutboundScan>
+        <OutboundScanDesc>Pick and Ship Materials</OutboundScanDesc>
+        <StockTransfer>Stock Transfer Scanning</StockTransfer>
+        <StockTransferDesc>Location Adjustment and Transfer Operations</StockTransferDesc>
+        <InboundScan>Job Receipt Scanning</InboundScan>
+        <InboundScanDesc> Job Scanning Registration</InboundScanDesc>
+        <ReceiptScan>PO Receiving Scanning</ReceiptScan>
+        <ReceiptScanDesc>Purchase Order Receiving Registration</ReceiptScanDesc>
+        <ReceivinScan>PO Receiving Scanning</ReceivinScan>
+        <ReceivinScanDesc>Purchase Order Receiving Registration</ReceivinScanDesc>
+        <InventoryScan>Inventory Counting Scan</InventoryScan>
+        <InventoryScanDesc>Inventory Counting Scan</InventoryScanDesc>
+        <LabelPrint>Inventory Query</LabelPrint>
+        <LabelPrintDesc>Inventory Query</LabelPrintDesc>
+        <SystemSettings>System Settings</SystemSettings>
+        <SystemSettingsDesc>Parameter Configuration and Management</SystemSettingsDesc>
+        <!-- Session related -->
+        <SessionExpiredTitle>Session Expired</SessionExpiredTitle>
+        <SessionExpiredMessage>Your session has expired due to inactivity or security reasons.</SessionExpiredMessage>
+        <SessionReloginMessage>Please log in again to continue using the system.</SessionReloginMessage>
+        <ReloginButton>Re-login</ReloginButton>
+        <!-- Authentication messages -->
+        <AuthRequired>Please login or re-login first</AuthRequired>
+        <!-- Application name -->
+        <AppTitle>GCM Warehouse Management System</AppTitle>
+        <!-- Added: System configuration management related (add Config prefix to avoid duplication with SystemSettings) -->
+        <ConfigTitle>System Configuration Management</ConfigTitle>
+        <ConfigFunctions>Configuration Functions</ConfigFunctions>
+        <ConfigSiteManagement>Site Management</ConfigSiteManagement>
+        <ConfigSiteManagementDesc>Manage site information in the system</ConfigSiteManagementDesc>
+        <ConfigMenuPermission>Menu Permission Configuration</ConfigMenuPermission>
+        <ConfigMenuPermissionDesc>Configure user menu access permissions</ConfigMenuPermissionDesc>
+        <ConfigDatabaseConfig>Database Connection Configuration</ConfigDatabaseConfig>
+        <ConfigDatabaseConfigDesc>Configure and manage database connections</ConfigDatabaseConfigDesc>
+        <ConfigBackToHome>Back to Home</ConfigBackToHome>
+      </Home>
+      <!-- Material Issue -->
+      <MaterialIssue>
+        <Title>Material Issue</Title>
+        <SubmitButton>Submit</SubmitButton>
+        <ResetButton>Reset</ResetButton>
+        <CancelButton>Back</CancelButton>
+        <WorkOrderNo>Work Order No.</WorkOrderNo>
+        <AssemblySeq>Assembly Sequence</AssemblySeq>
+        <IssueQty>Required Qty</IssueQty>
+        <IssuedQty>Issued Qty</IssuedQty>
+        <UnissuedQty>Unissued Qty</UnissuedQty>
+        <AvailableQty>Available Qty</AvailableQty>
+        <MaterialCode>Material Code</MaterialCode>
+        <Quantity>Quantity</Quantity>
+        <Unit>Unit</Unit>
+        <WarehouseCode>Warehouse Code</WarehouseCode>
+        <Location>Location</Location>
+        <BatchNo>Batch No.</BatchNo>
+        <Operator>Operator</Operator>
+        <Remarks>Remarks</Remarks>
+        <WorkOrderPlaceholder>Scan or enter work order barcode</WorkOrderPlaceholder>
+        <AssemblySeqPlaceholder>Enter assembly sequence</AssemblySeqPlaceholder>
+        <MaterialPlaceholder>Scan or enter material barcode</MaterialPlaceholder>
+        <QuantityPlaceholder>Enter issue quantity</QuantityPlaceholder>
+        <LocationPlaceholder>Enter location code</LocationPlaceholder>
+        <BatchNoPlaceholder>Enter batch number</BatchNoPlaceholder>
+        <RemarksPlaceholder>Enter remarks (optional)</RemarksPlaceholder>
+        <JobScanPromptMessage>Scan work order barcode to auto-fill work order and assembly sequence</JobScanPromptMessage>
+        <MatScanPromptMessage>Scan material barcode to auto-fill material information</MatScanPromptMessage>
+        <ScanPromptMessage>Please enter barcode</ScanPromptMessage>
+        <ScanBarcodePrompt>Please enter barcode content:</ScanBarcodePrompt>
+        <WorkOrderRequired>Please enter work order number</WorkOrderRequired>
+        <AssemblySeqRequired>Please enter assembly sequence</AssemblySeqRequired>
+        <MaterialCodeRequired>Please enter material code</MaterialCodeRequired>
+        <MaterialCodeRequiredMsg>Material code cannot be empty</MaterialCodeRequiredMsg>
+        <FromWarehouseRequired>Warehouse is required</FromWarehouseRequired>
+        <QuantityRequired>Please enter a valid issue quantity</QuantityRequired>
+        <InvalidQuantity>Invalid issue quantity</InvalidQuantity>
+        <JobAndAssemblyRequired>Please enter work order and assembly sequence first</JobAndAssemblyRequired>
+        <PleaseEnterAssemblySeq>Please enter assembly sequence</PleaseEnterAssemblySeq>
+        <AssemblySeqMustBeNumber>Assembly sequence must be a number</AssemblySeqMustBeNumber>
+        <JobValidationPassed>Work order validation passed</JobValidationPassed>
+        <JobValidationFailed>Work order validation failed</JobValidationFailed>
+        <InventoryValidationPassed>Inventory validation passed</InventoryValidationPassed>
+        <InventoryValidationFailed>Inventory validation failed</InventoryValidationFailed>
+        <JobStatus>Work Order {0} Assembly Number {1} Closed or Not Issued</JobStatus>
+        <JobNotFound>Work order {0} assembly sequence {1} does not exist</JobNotFound>
+        <MaterialNotFound>Material {1} not found in work order {0}</MaterialNotFound>
+        <MaterialFullyIssued>Material {0} has been fully issued</MaterialFullyIssued>
+        <UnitMismatch>Unit mismatch: entered {0}, expected {1}</UnitMismatch>
+        <NoAvailableInventory>No inventory available: Warehouse {0}, Location {1}, Batch {2}</NoAvailableInventory>
+        <InsufficientInventory>Insufficient inventory for material {0}</InsufficientInventory>
+        <QuantityExceedsInventory>Issue quantity {0} exceeds available inventory {1}</QuantityExceedsInventory>
+        <InventoryInsufficient>Issue quantity exceeds available inventory</InventoryInsufficient>
+        <BarcodeParseSuccess>Barcode parsed successfully</BarcodeParseSuccess>
+        <BarcodeParseFailed>Barcode parsing failed</BarcodeParseFailed>
+        <ParserReady>Barcode parser ready</ParserReady>
+        <ParserInitFailed>Failed to initialize barcode parser</ParserInitFailed>
+        <JobBarcodeParseSuccess>Work order barcode parsed successfully, work order and assembly sequence auto-filled</JobBarcodeParseSuccess>
+        <MaterialBarcodeParseSuccess>Material barcode parsed successfully, material information auto-filled</MaterialBarcodeParseSuccess>
+        <LoadingOrder>Loading work order information...</LoadingOrder>
+        <LoadOrderSuccess>Work order information loaded successfully</LoadOrderSuccess>
+        <LoadOrderFailed>Failed to load work order information</LoadOrderFailed>
+        <Submitting>Submitting issue...</Submitting>
+        <SubmitSuccess>Material issued successfully</SubmitSuccess>
+        <SubmitFailed>Material issue failed</SubmitFailed>
+        <NetworkError>Network error, please check connection</NetworkError>
+        <FormReset>Form has been reset</FormReset>
+        <ProcessingPleaseWait>Please wait, processing...</ProcessingPleaseWait>
+        <ConfirmCancel>Are you sure you want to cancel and return to home page?</ConfirmCancel>
+        <CommonSuccess>Operation successful</CommonSuccess>
+        <CommonError>Operation failed</CommonError>
+        <CommonWarning>Please check input information</CommonWarning>
+        <CommonInfo>Information</CommonInfo>
+        <RequiredField>This field is required</RequiredField>
+        <PleaseWait>Please wait...</PleaseWait>
+        <EpicorApiFailed>Epicor API call failed: {0}</EpicorApiFailed>
+        <JobStatusAbnormal>Work order {0} status is abnormal (closed, completed, or not released)</JobStatusAbnormal>
+        <JobAssemblyNotFound>Material assembly information not found for work order {0}</JobAssemblyNotFound>
+        <NoInventoryInWhseBinLot>No inventory under the specified warehouse/bin/lot</NoInventoryInWhseBinLot>
+        <QuantityAdjustedToSuggested>Scanned quantity {0} exceeds available inventory {1}; adjusted to {2} automatically</QuantityAdjustedToSuggested>
+        <QuantityExceedsUnissued>Requested quantity {0} exceeds unissued quantity {1}</QuantityExceedsUnissued>
+        <RequestParamsEmpty>Request parameters are empty</RequestParamsEmpty>
+        <AssemblySeqInvalid>Assembly sequence must be ≥ 0</AssemblySeqInvalid>
+        <QuantityMustBePositive>Quantity must be greater than 0</QuantityMustBePositive>
+        <RequestAlreadyProcessed>Already processed</RequestAlreadyProcessed>
+        <SystemBusy>System is busy, please try again later</SystemBusy>
+        <OperationFailed>Operation failed, please try again later</OperationFailed>
+        <IssueApiCallFailed>Issue interface call failed</IssueApiCallFailed>
+        <InvalidParams>Invalid parameters</InvalidParams>
+        <InvalidParamsWithDetail>Invalid parameters: {0}</InvalidParamsWithDetail>
+        <SessionExpired>Session expired, please log in again</SessionExpired>
+        <IssueMaterialFailed>Failed to execute material issue</IssueMaterialFailed>
+        <QueryJobInfoFailed>Failed to query work order information</QueryJobInfoFailed>
+        <MaterialInventoryNotFound>Material inventory information not found</MaterialInventoryNotFound>
+        <QueryMaterialInventoryFailed>Failed to query material inventory information</QueryMaterialInventoryFailed>
+      </MaterialIssue>
+      <!-- Site -->
+      <FactoryManagement>
+        <Title>Site Management</Title>
+        <Subtitle>Manage Site information</Subtitle>
+        <AppName>Warehouse Scanner System</AppName>
+        <ListTitle>Site List</ListTitle>
+        <Code>Code</Code>
+        <Company> Company</Company>
+        <Plant>Plant</Plant>
+        <CompanyHint>company code; leave blank to use the site code</CompanyHint>
+        <PlantHint> plant code; leave blank for no plant restriction</PlantHint>
+        <DuplicateCompanyPlant>The Company+Plant combination is already used by another site.</DuplicateCompanyPlant>
+        <Name>Name</Name>
+        <NameCN>Chinese Name</NameCN>
+        <Description>Description</Description>
+        <DescriptionCN>Chinese Description</DescriptionCN>
+        <Location>Location</Location>
+        <ApiUrl>API URL</ApiUrl>
+        <ApiKey>ApiKey</ApiKey>
+        <Icon>Icon</Icon>
+        <Enabled>Enabled</Enabled>
+        <Actions>Actions</Actions>
+        <Status>Status</Status>
+        <Active>Active</Active>
+        <Inactive>Inactive</Inactive>
+        <CreateButton>Create New Site</CreateButton>
+        <EditButton>Edit</EditButton>
+        <DeleteButton>Delete</DeleteButton>
+        <DetailsButton>Details</DetailsButton>
+        <SaveButton>Save</SaveButton>
+        <CancelButton>Cancel</CancelButton>
+        <BackButton>Back to List</BackButton>
+        <SubmitButton>Submit</SubmitButton>
+        <ResetButton>Reset</ResetButton>
+        <SearchPlaceholder>Search by code, name or location...</SearchPlaceholder>
+        <NoData>No factory data available</NoData>
+        <RecordsFound>Total records: {0}</RecordsFound>
+        <CreateTitle>Create New Site</CreateTitle>
+        <EditTitle>Edit Site</EditTitle>
+        <DeleteTitle>Delete Site</DeleteTitle>
+        <ConfirmDelete>Confirm Delete</ConfirmDelete>
+        <DeleteWarning>Are you sure you want to delete this Site?</DeleteWarning>
+        <DeleteConfirmText>This action cannot be undone!</DeleteConfirmText>
+        <DeleteSuccess>Site deleted successfully!</DeleteSuccess>
+        <SaveSuccess>Site saved successfully!</SaveSuccess>
+        <UpdateSuccess>Site updated successfully!</UpdateSuccess>
+        <CreateSuccess>Site created successfully!</CreateSuccess>
+        <ErrorOccurred>An error occurred, please try again.</ErrorOccurred>
+        <RequiredField>This field is required.</RequiredField>
+        <DuplicateCode>Site code already exists.</DuplicateCode>
+        <InvalidUrl>Please enter a valid URL.</InvalidUrl>
+        <FilterByStatus>Filter by Status</FilterByStatus>
+        <AllStatus>All Status</AllStatus>
+        <IconExample>e.g., fa-home, fa-building</IconExample>
+        <TimezoneExample>e.g., China Standard Time, UTC</TimezoneExample>
+        <ApiExample>e.g., https://api.factory.com/v1</ApiExample>
+        <FormValidation>Please check the form for errors.</FormValidation>
+        <SiteManagement>Site Management</SiteManagement>
+        <BackToHome>Back to Home</BackToHome>
+        <DescriptionHint>Please enter site description information</DescriptionHint>
+        <ApiUrlHint>Please enter the complete API endpoint URL, e.g., https://api.example.com</ApiUrlHint>
+        <ApiKeyHint>API key for authentication</ApiKeyHint>
+        <ApiKeyPlaceholderEdit>Keep the masked value (containing ***) or leave blank to keep the existing ApiKey</ApiKeyPlaceholderEdit>
+        <ApiKeyHintEdit>For security only the first and last few characters are shown. Keep the masked value unchanged or leave blank to keep the current ApiKey.</ApiKeyHintEdit>
+        <CodeHint>Unique site identification code</CodeHint>
+        <Saving>Saving</Saving>
+        <Creating>Creating</Creating>
+        <ApiEndpoint>API Endpoint</ApiEndpoint>
+        <Timezone>Timezone</Timezone>
+        <ApiEndpointHint>Factory API endpoint URL</ApiEndpointHint>
+        <NotFound>Factory not found</NotFound>
+        <UpdateFailed>Failed to update factory</UpdateFailed>
+        <DeleteFailed>Failed to delete factory</DeleteFailed>
+        <SystemBusy>A similar operation is already in progress. Please try again later.</SystemBusy>
+      </FactoryManagement>
+      <FactoryCommon>
+        <Yes>Yes</Yes>
+        <No>No</No>
+        <Confirm>Confirm</Confirm>
+        <Cancel>Cancel</Cancel>
+        <Close>Close</Close>
+        <Loading>Loading...</Loading>
+        <Success>Success</Success>
+        <Error>Error</Error>
+        <Warning>Warning</Warning>
+        <Info>Information</Info>
+        <Save>Save</Save>
+        <Delete>Delete</Delete>
+        <Edit>Edit</Edit>
+        <Create>Create</Create>
+        <View>View</View>
+        <Search>Search</Search>
+        <Filter>Filter</Filter>
+        <Refresh>Refresh</Refresh>
+        <Export>Export</Export>
+        <Import>Import</Import>
+        <Print>Print</Print>
+        <Download>Download</Download>
+        <Upload>Upload</Upload>
+        <Processing>Processing...</Processing>
+        <InvalidEmail>Please enter a valid email address.</InvalidEmail>
+        <InvalidDate>Please enter a valid date.</InvalidDate>
+        <InvalidNumber>Please enter a valid number.</InvalidNumber>
+        <DigitsOnly>Please enter only digits.</DigitsOnly>
+        <FieldMismatch>Fields do not match.</FieldMismatch>
+        <MaxLength>Please enter no more than {0} characters.</MaxLength>
+        <MinLength>Please enter at least {0} characters.</MinLength>
+        <RangeLength>Please enter a value between {0} and {1} characters long.</RangeLength>
+        <Range>Please enter a value between {0} and {1}.</Range>
+        <MaxValue>Please enter a value less than or equal to {0}.</MaxValue>
+        <MinValue>Please enter a value greater than or equal to {0}.</MinValue>
+      </FactoryCommon>
+      <!-- 新增用户菜单权限管理部分 -->
+      <!-- 菜单创建-->
+      <!-- 在原有Language/Resources节点内添加或替换 -->
+      <!-- 用户菜单权限管理 - 列表页面 (index.cshtml) -->
+      <UserMenuPermissionIndex>
+        <Title>User Menu Permission Management</Title>
+        <Subtitle>Manage system user's menu access permissions</Subtitle>
+        <SearchPermission>Search Permission</SearchPermission>
+        <SearchPlaceholder>Enter user code, name, user group or menu name to search...</SearchPlaceholder>
+        <AddPermission>Add Permission</AddPermission>
+        <PermissionList>Permission List</PermissionList>
+        <TotalRecords>Total {0} records</TotalRecords>
+        <SiteCode>Site</SiteCode>
+        <AllSites>All Sites</AllSites>
+        <UserCode>User Code</UserCode>
+        <UserName>User Name</UserName>
+        <UserGroup>User Group</UserGroup>
+        <MenuName>Menu Name</MenuName>
+        <MenuPermission>Menu Permission</MenuPermission>
+        <Remark>Remark</Remark>
+        <Actions>Actions</Actions>
+        <AllowAccess>Allow Access</AllowAccess>
+        <DenyAccess>Deny Access</DenyAccess>
+        <Edit>Edit</Edit>
+        <Delete>Delete</Delete>
+        <ConfirmDelete>Confirm to delete this permission?</ConfirmDelete>
+        <NoPermissionRecords>No permission records</NoPermissionRecords>
+        <CreateFirstPermission>Create first permission</CreateFirstPermission>
+        <CreateSuccess>Permission created successfully</CreateSuccess>
+        <CreateFailed>Permission creation failed</CreateFailed>
+        <DuplicatePermission>This user already has permission for this menu, do not add duplicate</DuplicatePermission>
+        <EditSuccess>Permission updated successfully</EditSuccess>
+        <EditFailed>Permission update failed</EditFailed>
+        <DeleteSuccess>Permission deleted successfully</DeleteSuccess>
+        <DeleteFailed>Permission deletion failed</DeleteFailed>
+        <Loading>Loading...</Loading>
+        <SystemBusy>A similar operation is already in progress. Please try again later.</SystemBusy>
+      </UserMenuPermissionIndex>
+      <!-- 用户菜单权限管理 - 创建/编辑页面 (create.cshtml, edit.cshtml) -->
+      <UserMenuPermissionCreate>
+        <CreatePermission>Create Permission</CreatePermission>
+        <EditPermission>Edit Permission</EditPermission>
+        <BackToList>Back to List</BackToList>
+        <Save>Save</Save>
+        <SiteCode>Site</SiteCode>
+        <SiteCodeHint>When a site is selected, this permission applies to that site only; "All Sites" applies to every site</SiteCodeHint>
+        <AllSites>All Sites</AllSites>
+        <SiteInvalid>Site does not exist or is not enabled, please select again</SiteInvalid>
+        <UserCode>User Code</UserCode>
+        <UserName>User Name</UserName>
+        <UserGroup>User Group</UserGroup>
+        <MenuSelection>Menu Selection</MenuSelection>
+        <MenuName>Menu Name</MenuName>
+        <PermissionSetting>Permission Setting</PermissionSetting>
+        <AllowAccess>Allow Access</AllowAccess>
+        <DenyAccess>Deny Access</DenyAccess>
+        <Remark>Remark</Remark>
+        <SaveAndContinue>Save and Continue</SaveAndContinue>
+        <SaveAndReturn>Save and Return</SaveAndReturn>
+        <!-- Validation messages -->
+        <UserCodeRequired>User Code is required</UserCodeRequired>
+        <UserNameRequired>User Name is required</UserNameRequired>
+        <UserGroupRequired>User Group is required</UserGroupRequired>
+        <MenuCodeRequired>Menu Code is required</MenuCodeRequired>
+        <MenuNameRequired>Menu Name is required</MenuNameRequired>
+        <PermissionInvalid>Invalid permission setting, please select again</PermissionInvalid>
+        <!-- Placeholders and hints -->
+        <UserCodePlaceholder>Enter user code, e.g.: user001</UserCodePlaceholder>
+        <UserNamePlaceholder>Enter user name</UserNamePlaceholder>
+        <SelectUserGroup>Select User Group</SelectUserGroup>
+        <SelectMenu>Select Menu</SelectMenu>
+        <AutoFillNote>Menu name will be auto-filled after selection</AutoFillNote>
+        <RemarkPlaceholder>Enter remarks if any</RemarkPlaceholder>
+        <!-- Operation messages -->
+        <SaveSuccess>Permission saved successfully</SaveSuccess>
+        <SaveFailed>Permission saving failed</SaveFailed>
+        <UpdateSuccess>Permission updated successfully</UpdateSuccess>
+        <UpdateFailed>
+						Permission update failed</UpdateFailed>
+        <Saving>Saving...</Saving>
+        <ValidationError>Please fill in the following required fields:</ValidationError>
+        <SystemBusy>A similar operation is already in progress. Please try again later.</SystemBusy>
+      </UserMenuPermissionCreate>
+      <!-- 数据库配置页面 -->
+      <DatabaseConfig>
+        <Title>Database Connection Configuration</Title>
+        <FormTitle>Database Connection Settings</FormTitle>
+        <CardTitle>Database Connection Configuration</CardTitle>
+        <BackToHome>BackToHome</BackToHome>
+        <BackToHomeTooltip>BackToHome</BackToHomeTooltip>
+        <!-- Form fields -->
+        <ConnectionString>Connection String</ConnectionString>
+        <ConnectionStringPlaceholder>e.g., Server=.\SQLEXPRESS;Database=MyDatabase;Trusted_Connection=True;</ConnectionStringPlaceholder>
+        <!-- 按钮 -->
+        <TestConnection>Test Connection</TestConnection>
+        <SaveConfiguration>Save Configuration</SaveConfiguration>
+        <TestRequiredBeforeSave>Please test connection before saving</TestRequiredBeforeSave>
+        <!-- 消息 -->
+        <TestSuccess>Current connection string is valid and can connect to the database</TestSuccess>
+        <TestFailed>Current connection string is invalid and cannot connect to the database</TestFailed>
+        <TestError>An error occurred during connection test</TestError>
+        <ConfigSaved>Configuration saved successfully</ConfigSaved>
+        <ConfigSaveFailed>Failed to save configuration</ConfigSaveFailed>
+        <ConnectionTestPassed>Connection test passed</ConnectionTestPassed>
+        <ConnectionTestFailed>Connection test failed</ConnectionTestFailed>
+        <ConnectionTestDataSourceMismatch>Only the currently configured database server can be tested</ConnectionTestDataSourceMismatch>
+        <ConfigFilePath>Configuration file path</ConfigFilePath>
+        <EncryptedConnectionString>Connection string: encrypted storage</EncryptedConnectionString>
+        <RestartRequired>Configuration changes require application restart to take effect</RestartRequired>
+        <ConfigurationInfo>Configuration Information</ConfigurationInfo>
+        <!-- 通用消息（合并到DatabaseConfig） -->
+        <Success>Success</Success>
+        <Error>Error</Error>
+        <Warning>Warning</Warning>
+        <Info>Information</Info>
+        <Confirm>Confirm</Confirm>
+        <Cancel>Cancel</Cancel>
+        <Save>Save</Save>
+        <Test>Test</Test>
+        <Close>Close</Close>
+        <SystemBusy>A similar operation is already in progress. Please try again later.</SystemBusy>
+        <ConnectionStringHint>Standard SQL Server connection string format; encrypted after saving</ConnectionStringHint>
+        <ConnectionStringMaskHint>For security, plaintext is not displayed. *** or empty keeps the existing connection string; enter a new value to overwrite.</ConnectionStringMaskHint>
+        <ConnectionStringRequired>Please enter the connection string</ConnectionStringRequired>
+        <Testing>Testing...</Testing>
+        <Saving>Saving...</Saving>
+        <ConnectionTestException>An error occurred during the connection test. Please check the configuration or contact your administrator.</ConnectionTestException>
+      </DatabaseConfig>
+      <Config>
+        <Title>System Management</Title>
+        <Functions>Configuration Functions</Functions>
+        <SiteManagement>Site Management</SiteManagement>
+        <SiteManagementDesc>Manage site information in the system</SiteManagementDesc>
+        <MenuPermission>Menu Permission Configuration</MenuPermission>
+        <MenuPermissionDesc>Configure user menu access permissions</MenuPermissionDesc>
+        <LanguageConfig>Interface Language Dictionary</LanguageConfig>
+        <LanguageConfigDesc>Configure Interface Language Dictionary</LanguageConfigDesc>
+        <DatabaseConfig>Database Connection Configuration</DatabaseConfig>
+        <DatabaseConfigDesc>Configure and manage database connections</DatabaseConfigDesc>
+        <BackToHome>Back </BackToHome>
+        <FeatureUnderDevelopment>This feature is under development...</FeatureUnderDevelopment>
+      </Config>
+      <!-- Language Management Page - Includes Common Messages -->
+      <LanguageIndex>
+        <!-- Common Messages -->
+        <SaveSuccess>Saved successfully</SaveSuccess>
+        <SaveFailed>Save failed</SaveFailed>
+        <DeleteSuccess>Deleted successfully</DeleteSuccess>
+        <DeleteFailed>Delete failed</DeleteFailed>
+        <UpdateSuccess>Updated successfully</UpdateSuccess>
+        <UpdateFailed>Update failed</UpdateFailed>
+        <Loading>Loading...</Loading>
+        <Saving>Saving...</Saving>
+        <ConfirmDelete>Are you sure you want to delete this? This operation cannot be undone!</ConfirmDelete>
+        <ValidationError>Please fill in all required fields</ValidationError>
+        <RequiredField>This field is required</RequiredField>
+        <BackToList>Back to List</BackToList>
+        <Cancel>Cancel</Cancel>
+        <Submit>Submit</Submit>
+        <Yes>Yes</Yes>
+        <No>No</No>
+        <Ok>OK</Ok>
+        <!-- Language Management Page Specific Content -->
+        <Title>Language Management</Title>
+        <Subtitle>Manage system interface language items</Subtitle>
+        <SearchLanguage>Search Language Items</SearchLanguage>
+        <SearchPlaceholder>Enter page, key, Chinese value, English value to search...</SearchPlaceholder>
+        <AddLanguageItem>Add Language Item</AddLanguageItem>
+        <LanguageList>Language Item List</LanguageList>
+        <TotalRecords>Total {0} language items</TotalRecords>
+        <TotalRecordsFormat>Total {0}/{1} language items</TotalRecordsFormat>
+        <Page>Page</Page>
+        <Key>Key</Key>
+        <ChineseValue>Chinese Value</ChineseValue>
+        <EnglishValue>English Value</EnglishValue>
+        <Actions>Actions</Actions>
+        <Edit>Edit</Edit>
+        <Delete>Delete</Delete>
+        <ConfirmDelete>Are you sure you want to delete this language item? This operation cannot be undone!</ConfirmDelete>
+        <NoSearchResults>No matching search results found, please try other keywords</NoSearchResults>
+        <NoLanguageRecords>No language data available</NoLanguageRecords>
+        <CreateFirstLanguageItem>Create first language item</CreateFirstLanguageItem>
+        <AllFields>All Fields</AllFields>
+        <Clear>Clear</Clear>
+        <SearchHint>Tip: Press Enter or wait for automatic search after entering keywords</SearchHint>
+        <MatchedResults>matched results</MatchedResults>
+        <!-- Add pagination related text -->
+        <PreviousPage>Previous Page</PreviousPage>
+        <NextPage>Next Page</NextPage>
+        <GoToFirstPage>First Page</GoToFirstPage>
+        <GoToLastPage>Last Page</GoToLastPage>
+        <PageSize>Page Size</PageSize>
+        <ItemsPerPage>Items Per Page</ItemsPerPage>
+        <ShowingResults>Showing {0}-{1} of {2} items</ShowingResults>
+        <Of>of {0} pages</Of>
+        <SystemBusy>A similar operation is already in progress. Please try again later.</SystemBusy>
+      </LanguageIndex>
+      <LanguageCreate>
+        <!-- Common Messages (inherited from LanguageIndex) -->
+        <!-- Language Create Page Specific Content -->
+        <CreateLanguageItem>Create Language Item</CreateLanguageItem>
+        <EditLanguageItem>Edit Language Item</EditLanguageItem>
+        <Save>Save</Save>
+        <Page>Page</Page>
+        <Key>Key</Key>
+        <ChineseValue>Chinese Value</ChineseValue>
+        <EnglishValue>English Value</EnglishValue>
+        <Required>Required</Required>
+        <PagePlaceholder>Enter page name, e.g.: Home</PagePlaceholder>
+        <KeyPlaceholder>Enter key name, e.g.: Title</KeyPlaceholder>
+        <ChinesePlaceholder>Enter Chinese text</ChinesePlaceholder>
+        <EnglishPlaceholder>Enter English text</EnglishPlaceholder>
+        <PageRequired>Page is required</PageRequired>
+        <KeyRequired>Key is required</KeyRequired>
+        <ChineseRequired>Chinese value is required</ChineseRequired>
+        <EnglishRequired>English value is required</EnglishRequired>
+        <DuplicateError>This page and key already exist, please modify</DuplicateError>
+        <SelectPage>SelectPage</SelectPage>
+        <BackToList>BackToList</BackToList>
+        <EnterNewPage>NewPage</EnterNewPage>
+      </LanguageCreate>
+      <LanguageEdit>
+        <CreateLanguageItem>Create Language Item</CreateLanguageItem>
+        <EditLanguageItem>Edit Language Item</EditLanguageItem>
+        <CreateLanguageItem>Create Language Item</CreateLanguageItem>
+        <Page>Page</Page>
+        <PageReadonly>Page field is read-only. If you need to modify it, please delete and recreate.</PageReadonly>
+        <Key>Key</Key>
+        <KeyReadonly>Key field is read-only. If you need to modify it, please delete and recreate.</KeyReadonly>
+        <ChineseValue>Chinese Value</ChineseValue>
+        <ChinesePlaceholder>Enter Chinese value</ChinesePlaceholder>
+        <ChineseValueSaveNote>Enter Chinese translation value, will take effect immediately after saving</ChineseValueSaveNote>
+        <EnglishValue>English Value</EnglishValue>
+        <EnglishPlaceholder>Enter English value</EnglishPlaceholder>
+        <EnglishValueSaveNote>Enter English translation value, will take effect immediately after saving</EnglishValueSaveNote>
+        <Save>Save</Save>
+        <BackToList>Back to List</BackToList>
+        <ChineseRequired>Chinese value cannot be empty</ChineseRequired>
+        <EnglishRequired>English value cannot be empty</EnglishRequired>
+        <AppName>GCM Warehouse Management System</AppName>
+        <Subtitle>Manage system interface language items</Subtitle>
+        <!-- Common Messages (Inherited from LanguageIndex) -->
+        <SaveSuccess>Saved successfully</SaveSuccess>
+        <SaveFailed>Save failed</SaveFailed>
+        <DeleteSuccess>Deleted successfully</DeleteSuccess>
+        <DeleteFailed>Delete failed</DeleteFailed>
+        <UpdateSuccess>Updated successfully</UpdateSuccess>
+        <UpdateFailed>Update failed</UpdateFailed>
+        <ConfirmDelete>Are you sure you want to delete this? This operation cannot be undone!</ConfirmDelete>
+        <Back>Back</Back>
+        <Saving>Saving...</Saving>
+        <ValidationError>Please check the form, the following fields are required:</ValidationError>
+        <BackToList>Back to List</BackToList>
+        <Required>Required</Required>
+        <PagePlaceholder>Enter page name, e.g.: Home</PagePlaceholder>
+        <KeyPlaceholder>Enter key name, e.g.: Title</KeyPlaceholder>
+        <PageRequired>Page is required</PageRequired>
+        <KeyRequired>Key is required</KeyRequired>
+        <DuplicateError>This page and key already exist, please modify</DuplicateError>
+        <SelectPage>Select Page</SelectPage>
+        <EnterNewPage>Enter New Page</EnterNewPage>
+        <SystemBusy>A similar operation is already in progress. Please try again later.</SystemBusy>
+      </LanguageEdit>
+      <!-- Outbound Page扫描出库 -->
+      <Outbound>
+        <!-- Page Title -->
+        <Title>Sales Shipment</Title>
+        <Subtitle>Scan order barcode for quick shipping</Subtitle>
+        <!-- Button Text -->
+        <SubmitButton>Submit</SubmitButton>
+        <ResetButton>Reset</ResetButton>
+        <CancelButton>Back</CancelButton>
+        <SearchButton>Search</SearchButton>
+        <!-- Form Field Labels -->
+        <OrderInfo>OrderInfo</OrderInfo>
+        <SalesOrderNo>Sales Order No.</SalesOrderNo>
+        <SalesOrderLineNo>Order Line No.</SalesOrderLineNo>
+        <OrderRelNum>OrderRelNum </OrderRelNum>
+        <MaterialCode>Material Code</MaterialCode>
+        <Quantity>Shipment Quantity</Quantity>
+        <Unit>Unit</Unit>
+        <WarehouseCode>Warehouse Code</WarehouseCode>
+        <Location>Location</Location>
+        <BatchNo>Batch No.</BatchNo>
+        <Operator>Operator</Operator>
+        <Remarks>Remarks</Remarks>
+        <!-- Table Column Headers -->
+        <Select>Select</Select>
+        <CustomerCode>Customer Code</CustomerCode>
+        <CustomerName>Customer Name</CustomerName>
+        <ReqDate>Req. Date</ReqDate>
+        <PO>PO Number</PO>
+        <Order>Order No.</Order>
+        <Line>Line</Line>
+        <Release>Release</Release>
+        <Part>Part Number</Part>
+        <PartDescription>Part Description</PartDescription>
+        <RequiredQty>Required Qty</RequiredQty>
+        <OnHandQty>Available Stock</OnHandQty>
+        <Comments>Comments</Comments>
+        <OrderShipmentList>Order Shipment List</OrderShipmentList>
+        <!-- Input Placeholders -->
+        <SalesOrderPlaceholder>Scan or enter sales order barcode</SalesOrderPlaceholder>
+        <MaterialPlaceholder>Scan or enter material barcode</MaterialPlaceholder>
+        <QuantityPlaceholder>Enter shipment quantity</QuantityPlaceholder>
+        <PlanShipQtyLabel>Plan Ship Qty</PlanShipQtyLabel>
+        <ShippedQtyLabel>Shipped Qty</ShippedQtyLabel>
+        <UnshippedQtyLabel>Unshipped Qty</UnshippedQtyLabel>
+        <StockQtyLabel>Stock Qty</StockQtyLabel>
+        <!-- Whole-line text for the shipment qty info (red single line): {0}=Plan Ship Qty, {1}=Shipped Qty, {2}=Unshipped Qty, {3}=Stock Qty -->
+        <OrderQtyInfoFormat>Plan Ship Qty: {0} Shipped Qty: {1} Unshipped Qty: {2} Stock Qty: {3}</OrderQtyInfoFormat>
+        <QuantityExceedsUnshippedQty>Scan quantity {0} exceeds unshipped quantity {1}</QuantityExceedsUnshippedQty>
+        <CustomerSearchPlaceholder>Enter customer code or name</CustomerSearchPlaceholder>
+        <!-- Input Hints -->
+        <OrderScanPromptMessage>Scan order barcode to auto-fill order number and line</OrderScanPromptMessage>
+        <MatScanPromptMessage>Scan material barcode to auto-fill material information</MatScanPromptMessage>
+        <ManualSelectOrder>Manual Select Order</ManualSelectOrder>
+        <!-- Validation Messages -->
+        <SalesOrderRequired>Please enter sales order number</SalesOrderRequired>
+        <SalesOrderLineRequired>Please enter order line number</SalesOrderLineRequired>
+        <MaterialCodeRequired>Please enter material code</MaterialCodeRequired>
+        <MaterialCodeRequiredMsg>Material code cannot be empty</MaterialCodeRequiredMsg>
+        <QuantityRequired>Please enter a valid shipment quantity</QuantityRequired>
+        <InvalidQuantity>Invalid shipment quantity</InvalidQuantity>
+        <OrderAndLineRequired>Please enter order number and line first</OrderAndLineRequired>
+        <OrderAndLineRequiredForInventory>Please enter order number and line first</OrderAndLineRequiredForInventory>
+        <PleaseEnterOrderLine>Please enter order line number</PleaseEnterOrderLine>
+        <PleaseEnterCustomerInfo>Please enter customer code or name</PleaseEnterCustomerInfo>
+        <LotNumberRequired>Please enter the lot number</LotNumberRequired>
+        <!-- Validation Result Messages -->
+        <OrderValidationPassed>Order validation passed</OrderValidationPassed>
+        <OrderValidationFailed>Order validation failed</OrderValidationFailed>
+        <InventoryValidationPassed>Inventory validation passed</InventoryValidationPassed>
+        <InventoryValidationFailed>Inventory validation failed</InventoryValidationFailed>
+        <OrderNotFound>Order {0} line {1} does not exist</OrderNotFound>
+        <OrderLocked>The order has not been confirmed and cannot be shipped</OrderLocked>
+        <FirmRelease>The order status is not Shipped, so it cannot be shipped</FirmRelease>
+        <OrderStatus>Order status: Closed; cannot be shipped</OrderStatus>
+        <OrderFullyShipped>Material {0} has been fully shipped</OrderFullyShipped>
+        <MaterialMismatch>Material mismatch: entered {0}, expected {1}</MaterialMismatch>
+        <UnitMismatch>Unit mismatch: entered {0}, expected {1}</UnitMismatch>
+        <NoAvailableInventory>No inventory in specified warehouse/location/batch</NoAvailableInventory>
+        <InsufficientInventory>Insufficient available inventory</InsufficientInventory>
+        <QuantityExceedsInventory>Packed quantity {0} exceeds inventory quantity {1}</QuantityExceedsInventory>
+        <!-- Barcode Parsing Messages -->
+        <OrderBarcodeParseSuccess>Order barcode parsed successfully, order number and line auto-filled</OrderBarcodeParseSuccess>
+        <MaterialBarcodeParseSuccess>Material barcode parsed successfully, material information auto-filled</MaterialBarcodeParseSuccess>
+        <ParserReady>Barcode parser ready</ParserReady>
+        <ParserInitFailed>Failed to initialize barcode parser</ParserInitFailed>
+        <!-- Search Messages -->
+        <Searching>Searching order information...</Searching>
+        <SearchSuccess>Order search successful</SearchSuccess>
+        <SearchFailed>Order search failed</SearchFailed>
+        <NoData>No data available</NoData>
+        <!-- Operation Messages -->
+        <Submitting>Submitting shipment...</Submitting>
+        <SubmitSuccess>Shipment successful</SubmitSuccess>
+        <SubmitFailed>Shipment failed</SubmitFailed>
+        <NetworkError>Network error, please check connection</NetworkError>
+        <licensedError>Maximum allowed users exceeded</licensedError>
+        <OrderRelNumRequired>Order release number is required</OrderRelNumRequired>
+        <BatchNoRequired>Batch number is required</BatchNoRequired>
+        <PackIdRequired>Pack ID is required</PackIdRequired>
+        <GeneratingPackId>Generating Pack ID...</GeneratingPackId>
+        <GeneratePackIdSuccess>Pack ID generated successfully</GeneratePackIdSuccess>
+        <GeneratePackIdFailed>Failed to generate Pack ID</GeneratePackIdFailed>
+        <FormReset>Form has been reset</FormReset>
+        <OperationSuccess>Operation successful</OperationSuccess>
+        <SessionExpired>Session expired, please login again</SessionExpired>
+        <SessionChanged>Login state changed, please log in again</SessionChanged>
+        <!-- Confirmation Dialog -->
+        <ConfirmCancel>Are you sure you want to cancel and return to home page?</ConfirmCancel>
+        <!-- Common Messages -->
+        <CommonSuccess>Operation successful</CommonSuccess>
+        <CommonError>Operation failed</CommonError>
+        <CommonWarning>Please check input information</CommonWarning>
+        <CommonInfo>Information</CommonInfo>
+        <RequiredField>This field is required</RequiredField>
+        <PleaseWait>Please wait...</PleaseWait>
+        <!-- Detail Inventory column -->
+        <DetailInventory>Detail Inventory</DetailInventory>
+        <DetailInventoryAction>Stock Info</DetailInventoryAction>
+        <InvLoading>Loading...</InvLoading>
+        <InvEmpty>No inventory</InvEmpty>
+        <InvFailed>Query failed</InvFailed>
+        <InvWhse>Warehouse</InvWhse>
+        <InvBin>Bin</InvBin>
+        <InvLot>Lot</InvLot>
+        <InvQty>Qty</InvQty>
+        <InvEmptyHint>Click the right button to query stock</InvEmptyHint>
+        <PartNumRequired>Part number is required</PartNumRequired>
+        <SessionExpired>Session expired, please login again</SessionExpired>
+        <Retry>Retry</Retry>
+        <Slot>records</Slot>
+        <ShippingScheduleNotFound>Shipping schedule not found for work order {0}, material {1} (last 7 days)</ShippingScheduleNotFound>
+        <ShippingScheduleNotFoundPo>Shipping schedule not found for PONum={0}, OrderLine={1}, OrderRelNum={2}</ShippingScheduleNotFoundPo>
+        <WarehouseCodeRequired>Warehouse is required</WarehouseCodeRequired>
+        <LocationRequired>Location is required</LocationRequired>
+        <LotDateLabel>Receipt Date: </LotDateLabel>
+        <OrderNumRequired>Order number is required</OrderNumRequired>
+        <EpicorApiFailed>Epicor API call failed: {0}</EpicorApiFailed>
+        <OrderRelNotFound>Order {0} line {1} release {2} not found</OrderRelNotFound>
+        <OrderFullyShippedDetail>Order {0} material {1} has been fully shipped</OrderFullyShippedDetail>
+        <RequestParamEmpty>Request parameters are empty</RequestParamEmpty>
+        <RequestAlreadyProcessed>Already processed</RequestAlreadyProcessed>
+        <SystemBusy>System is busy, please try again later</SystemBusy>
+        <ShipmentApiFailed>Shipment API call failed</ShipmentApiFailed>
+        <LimitReasonStock>Stock quantity {0}</LimitReasonStock>
+        <LimitReasonOrder>Order available quantity {0}</LimitReasonOrder>
+        <ShipQtyAdjusted>Ship quantity {0} exceeds {1}; automatically adjusted to {2}</ShipQtyAdjusted>
+        <ShipFailedRetry>Shipment failed, please try again later</ShipFailedRetry>
+        <OperationTooFrequent>Operation too frequent, please try again later</OperationTooFrequent>
+        <InitShipHeadFailed>Failed to initialize shipment header</InitShipHeadFailed>
+        <SaveShipHeadFailed>Failed to save shipment header</SaveShipHeadFailed>
+        <GeneratePackIdInvalid>Failed to generate Pack ID: no valid pack number returned</GeneratePackIdInvalid>
+        <GeneratePackIdFailedRetry>Failed to generate Pack ID, please try again later</GeneratePackIdFailedRetry>
+        <InvalidQueryParams>Invalid query parameters: please provide PONum+OrderLine+OrderRelNum (PART+PO barcode)</InvalidQueryParams>
+        <NoStockForPart>No stock available for this part; please receive it first</NoStockForPart>
+        <QueryShippingScheduleFailed>Failed to query shipping schedule</QueryShippingScheduleFailed>
+        <UnknownError>Unknown error</UnknownError>
+        <PackNumNotObtained>Failed to obtain PackNum</PackNumNotObtained>
+        <ShippingScheduleNotFoundSimple>Shipping schedule not found</ShippingScheduleNotFoundSimple>
+        <QueryingShippingSchedule>Querying shipping schedule...</QueryingShippingSchedule>
+        <PoBarcodeFormatHint>PO barcode format should be PO:Num-Line-Rel (e.g. 362823-3-1)</PoBarcodeFormatHint>
+      </Outbound>
+      <!-- Transfer Page库存转移 -->
+      <Transfer>
+        <!-- Page Title -->
+        <Title>Inventory Transfer</Title>
+        <Subtitle>Scan material barcode for quick inventory transfer</Subtitle>
+        <!-- Button Text -->
+        <SubmitButton>Submit</SubmitButton>
+        <ResetButton>Reset</ResetButton>
+        <CancelButton>Back</CancelButton>
+        <!-- Form Field Labels -->
+        <MaterialCode>Material Code</MaterialCode>
+        <Quantity>Transfer Quantity</Quantity>
+        <Unit>Unit</Unit>
+        <Operator>Operator</Operator>
+        <Remark>Remark</Remark>
+        <!-- From Location Section -->
+        <FromSectionTitle>From Location Information</FromSectionTitle>
+        <FromWarehouse>From Warehouse</FromWarehouse>
+        <FromLocation>From Location</FromLocation>
+        <FromBatch>From Batch No.</FromBatch>
+        <!-- To Location Section -->
+        <ToSectionTitle>To Location Information</ToSectionTitle>
+        <ToWarehouse>To Warehouse</ToWarehouse>
+        <ToLocation>To Location</ToLocation>
+        <ToBatch>To Batch No.</ToBatch>
+        <!-- Input Placeholders -->
+        <MaterialCodePlaceholder>Enter material code</MaterialCodePlaceholder>
+        <QuantityPlaceholder>Enter transfer quantity</QuantityPlaceholder>
+        <FromWarehousePlaceholder>Enter source warehouse code</FromWarehousePlaceholder>
+        <FromLocationPlaceholder>Enter source location code</FromLocationPlaceholder>
+        <FromBatchPlaceholder>Enter source batch number (optional)</FromBatchPlaceholder>
+        <ToWarehousePlaceholder>Enter target warehouse code</ToWarehousePlaceholder>
+        <ToLocationPlaceholder>Enter target location code</ToLocationPlaceholder>
+        <ToBatchPlaceholder>Enter target batch number (optional)</ToBatchPlaceholder>
+        <RemarkPlaceholder>Enter remarks (optional)</RemarkPlaceholder>
+        <!-- Input Hints -->
+        <MatScanPromptMessage>Scan material barcode to auto-fill material and from location information</MatScanPromptMessage>
+        <!-- Validation Messages -->
+        <MaterialCodeRequired>Please enter material code</MaterialCodeRequired>
+        <QuantityRequired>Please enter transfer quantity</QuantityRequired>
+        <QuantityPositiveRequired>Transfer quantity must be greater than 0</QuantityPositiveRequired>
+        <FromWarehouseRequired>Please enter source warehouse code</FromWarehouseRequired>
+        <FromLocationRequired>Please enter source location code</FromLocationRequired>
+        <FromBatchRequired>Batch number is required</FromBatchRequired>
+        <ToWarehouseRequired>Please enter target warehouse code</ToWarehouseRequired>
+        <ToLocationRequired>Please enter target location code</ToLocationRequired>
+        <FromAndToSame>Source and target locations are the same, please check input</FromAndToSame>
+        <!-- Validation Result Messages -->
+        <NoAvailableInventory>Source location inventory not found or fully allocated</NoAvailableInventory>
+        <InsufficientInventory>Insufficient inventory at source location</InsufficientInventory>
+        <QuantityExceedsInventory>Material {0} transfer quantity {1} exceeds available inventory {2}</QuantityExceedsInventory>
+        <TargetLocationNotFound>Target location does not exist or is invalid</TargetLocationNotFound>
+        <!-- Barcode Parsing Messages -->
+        <BarcodeParseSuccess>Barcode parsed successfully, material information auto-filled</BarcodeParseSuccess>
+        <ParseSuccess>Barcode parsed successfully</ParseSuccess>
+        <ParseFailed>Barcode parsing failed</ParseFailed>
+        <ParseError>Barcode parsing error</ParseError>
+        <PleaseScanValidMaterial>Please scan a valid material barcode</PleaseScanValidMaterial>
+        <ParserReady>Barcode parser ready</ParserReady>
+        <ParserInitFailed>Failed to initialize barcode parser</ParserInitFailed>
+        <!-- Operation Messages -->
+        <Submitting>Submitting inventory transfer...</Submitting>
+        <TransferSuccess>Inventory transfer successful</TransferSuccess>
+        <TransferFailed>Inventory transfer failed</TransferFailed>
+        <NetworkError>Network error, please check connection</NetworkError>
+        <FormReset>Form has been reset</FormReset>
+        <OperationSuccess>Operation successful</OperationSuccess>
+        <SessionExpired>Session expired, please login again</SessionExpired>
+        <!-- Confirmation Dialog -->
+        <ConfirmCancel>Are you sure you want to cancel and return to home page?</ConfirmCancel>
+        <!-- Common Messages -->
+        <CommonSuccess>Operation successful</CommonSuccess>
+        <CommonError>Operation failed</CommonError>
+        <CommonWarning>Please check input information</CommonWarning>
+        <CommonInfo>Information</CommonInfo>
+        <RequiredField>This field is required</RequiredField>
+        <PleaseWait>Please wait...</PleaseWait>
+        <!-- Added validation-related text -->
+        <ValidatingSource>Validating source inventory...</ValidatingSource>
+        <SourceInventoryValid>Source inventory validation successful</SourceInventoryValid>
+        <SourceInventoryInvalid>Source inventory validation failed</SourceInventoryInvalid>
+        <ValidatingTarget>Validating target location...</ValidatingTarget>
+        <TargetLocationValid>Target location validation successful</TargetLocationValid>
+        <TargetBatchExists>Target batch exists; existing batch will be used</TargetBatchExists>
+        <TargetBatchNotExists>Target batch does not exist; a new batch will be created during the transfer</TargetBatchNotExists>
+        <MaterialCodeRequiredForInventory>Please enter the material code first</MaterialCodeRequiredForInventory>
+        <BatchOptional>Batch number is optional; you may leave it blank</BatchOptional>
+        <OperationSuccess>Operation successful</OperationSuccess>
+        <SessionExpired>Session has expired; please log in again</SessionExpired>
+        <QuantityExceedsInventory>The transfer quantity for materialexceeds the available inventory</QuantityExceedsInventory>
+        <UnitMismatch>Unit mismatch: input {0}, expected {1}</UnitMismatch>
+        <RequestNull>Request parameters are empty</RequestNull>
+        <AlreadyProcessed>Already processed</AlreadyProcessed>
+        <SystemBusy>System is busy, please try again later</SystemBusy>
+        <EpicorApiFailed>Epicor API call failed: {0}</EpicorApiFailed>
+        <QtyExceedsAvailable>Insufficient inventory: requested {0}, available {1}</QtyExceedsAvailable>
+        <WarehouseOrBinNotFound>Warehouse or bin does not exist: {0}</WarehouseOrBinNotFound>
+        <OperationFailedRetry>Operation failed, please try again later</OperationFailedRetry>
+        <ValidateSourceError>An error occurred while validating source inventory</ValidateSourceError>
+        <ValidateBatchError>An error occurred while validating the target lot</ValidateBatchError>
+        <QueryLocationError>An error occurred while querying inventory location</QueryLocationError>
+        <AvailableQuantityLabel>Available Qty:</AvailableQuantityLabel>
+        <BinOnHandFormat>{0}: On Hand: {1}</BinOnHandFormat>
+        <BinQtyExceeded>Bin {0} on hand {1}; current quantity {2} exceeds this bin's inventory, please adjust the quantity</BinQtyExceeded>
+      </Transfer>
+      <!-- 物料退回 -->
+      <MaterialReturn>
+        <Title>Material Return</Title>
+        <SubmitButton>Submit Return</SubmitButton>
+        <ResetButton>Reset</ResetButton>
+        <CancelButton>Back</CancelButton>
+        <WorkOrderNo>Work Order</WorkOrderNo>
+        <WorkOrderPlaceholder>Scan or enter work order barcode</WorkOrderPlaceholder>
+        <AssemblySeq>Assembly Seq</AssemblySeq>
+        <AssemblySeqPlaceholder>Assembly Sequence</AssemblySeqPlaceholder>
+        <MaterialCode>Material Code</MaterialCode>
+        <MaterialPlaceholder>Scan or enter material barcode</MaterialPlaceholder>
+        <Quantity>Return Quantity</Quantity>
+        <QuantityPlaceholder>Enter return quantity</QuantityPlaceholder>
+        <AvailableQty>Stock</AvailableQty>
+        <Unit>Unit</Unit>
+        <WarehouseCode>Warehouse</WarehouseCode>
+        <Location>Location</Location>
+        <LocationPlaceholder>Bin Location</LocationPlaceholder>
+        <BatchNo>Batch/Lot</BatchNo>
+        <BatchNoPlaceholder>Batch or Lot Number</BatchNoPlaceholder>
+        <Operator>Operator</Operator>
+        <Remarks>Remarks</Remarks>
+        <RemarksPlaceholder>Enter remarks</RemarksPlaceholder>
+        <WorkOrderRequired>Work Order is required</WorkOrderRequired>
+        <MaterialCodeRequired>Material Code is required</MaterialCodeRequired>
+        <QuantityRequired>Return quantity must be greater than 0</QuantityRequired>
+        <AssemblySeqRequired>Assembly Sequence is required</AssemblySeqRequired>
+        <ConfirmCancel>Are you sure you want to cancel and return to home?</ConfirmCancel>
+        <JobNotFound>Work Order {0} Assembly Seq {1} not found</JobNotFound>
+        <MaterialNotFound>Material {1} not found for Work Order {0}</MaterialNotFound>
+        <UnitMismatch>Unit mismatch: input {0}, expected {1}</UnitMismatch>
+        <NoMaterialIssued>Material {0} has not been issued, cannot return</NoMaterialIssued>
+        <QuantityExceedsIssued>Return quantity {0} exceeds issued quantity {1}</QuantityExceedsIssued>
+        <JobValidationPassed>Work Order validation successful</JobValidationPassed>
+        <InventoryValidationPassed>Material return validation successful</InventoryValidationPassed>
+        <SubmitSuccess>Material return successful</SubmitSuccess>
+        <SubmitFailed>Material return failed</SubmitFailed>
+        <NetworkError>Network error, please try again later</NetworkError>
+        <FormReset>Form has been reset</FormReset>
+        <ProcessingPleaseWait>Processing, please wait...</ProcessingPleaseWait>
+        <JobScanPromptMessage>Scan work order barcode or enter manually then press Enter</JobScanPromptMessage>
+        <MatScanPromptMessage>Scan material barcode or enter manually then press Enter</MatScanPromptMessage>
+        <Submitting>Submitting...</Submitting>
+        <JobAndAssemblyRequired>Please enter complete Work Order and Assembly Sequence</JobAndAssemblyRequired>
+        <NoAvailableInventory>No inventory available: Warehouse {0}, Location {1}, Batch {2}</NoAvailableInventory>
+        <JobBarcodeParseSuccess>Work Order barcode parsed successfully</JobBarcodeParseSuccess>
+        <MaterialBarcodeParseSuccess>Material barcode parsed successfully</MaterialBarcodeParseSuccess>
+        <PleaseEnterAssemblySeq>Please enter Assembly Sequence</PleaseEnterAssemblySeq>
+        <JobValidationFailed>Work Order validation failed</JobValidationFailed>
+        <InventoryValidationFailed>Inventory validation failed</InventoryValidationFailed>
+        <MaterialCodeRequiredMsg>Material code cannot be empty</MaterialCodeRequiredMsg>
+        <ParserReady>Barcode parser is ready</ParserReady>
+        <ParserInitFailed>Barcode parser initialization failed</ParserInitFailed>
+        <ScanBarcodePrompt>Please enter the barcode to parse</ScanBarcodePrompt>
+        <ErrorTitle>Error</ErrorTitle>
+        <FailedTitle>Failed</FailedTitle>
+        <ConfirmButton>OK</ConfirmButton>
+        <DialogCancelButton>Cancel</DialogCancelButton>
+        <ProcessingError>Processing error</ProcessingError>
+        <RequestNull>Request parameters are empty</RequestNull>
+        <AlreadyProcessed>Already processed</AlreadyProcessed>
+        <SystemBusy>System is busy, please try again later</SystemBusy>
+        <EpicorApiFailed>Epicor API call failed: {0}</EpicorApiFailed>
+        <JobMaterialsNotFound>No material information found for job {0}</JobMaterialsNotFound>
+        <InvalidReturnQuantity>Invalid return quantity</InvalidReturnQuantity>
+        <WarehouseRequired>Warehouse code is required</WarehouseRequired>
+        <WarehouseOrBinNotFound>Warehouse or bin does not exist: {0}</WarehouseOrBinNotFound>
+        <BinNotFound>Bin does not exist: warehouse {0}, bin {1}</BinNotFound>
+        <ReturnSuccess>Return successful</ReturnSuccess>
+        <OperationFailedRetry>Operation failed, please try again later</OperationFailedRetry>
+        <SessionExpired>Session expired, please log in again</SessionExpired>
+        <ValidateJobError>An error occurred while validating the job</ValidateJobError>
+        <AntiforgeryFailed>Login state has changed, please refresh the page and try again</AntiforgeryFailed>
+        <InvalidParameters>Invalid parameters</InvalidParameters>
+      </MaterialReturn>
+      <!--数量调整-->
+      <Adjustment>
+        <!-- Page Titles & General Text -->
+        <Title>Inventory Counting Scan</Title>
+        <Subtitle>Complete inventory adjustment quickly by scanning material barcode</Subtitle>
+        <FormTitle>Adjustment Information Entry</FormTitle>
+        <ScanHint>Press Enter after entering barcode to auto-fill</ScanHint>
+        <ShortcutHint>F1: Parse | F2: Reset | ESC: Cancel</ShortcutHint>
+        <BarcodeExample>Example: MaterialCode|Quantity|UOM|FromWH|FromLoc|FromBatch|ToWH|ToLoc|ToBatch|Remark</BarcodeExample>
+        <!-- Form Field Labels -->
+        <MaterialCode>Material Code</MaterialCode>
+        <Quantity>Quantity</Quantity>
+        <UOM>Unit of Measure</UOM>
+        <Location>Location</Location>
+        <LocationPlaceholder>Enter location code</LocationPlaceholder>
+        <FromWarehouse>From Warehouse</FromWarehouse>
+        <FromBatch>From Batch</FromBatch>
+        <FromLocation>From Location</FromLocation>
+        <ToWarehouse>To Warehouse</ToWarehouse>
+        <ToBatch>To Batch</ToBatch>
+        <ToLocation>To Location</ToLocation>
+        <Remark>Remark</Remark>
+        <!-- Section Titles -->
+        <FromSectionTitle>From Location</FromSectionTitle>
+        <ToSectionTitle>To Location</ToSectionTitle>
+        <!-- Button Texts -->
+        <SubmitButton>Confirm Adjustment</SubmitButton>
+        <ResetButton>Reset</ResetButton>
+        <CancelButton>Cancel</CancelButton>
+        <!-- Validation Messages -->
+        <MaterialCodeRequired>Material code is required</MaterialCodeRequired>
+        <QuantityRequired>Quantity must be greater than 0</QuantityRequired>
+        <FromWarehouseRequired>From warehouse is required</FromWarehouseRequired>
+        <FromLocationRequired>From location is required</FromLocationRequired>
+        <FromBatchNoRequired>Lot number is required</FromBatchNoRequired>
+        <ToWarehouseRequired>To warehouse is required</ToWarehouseRequired>
+        <ToLocationRequired>To location is required</ToLocationRequired>
+        <!-- General Notification Messages -->
+        <ConfirmCancel>Are you sure you want to cancel?</ConfirmCancel>
+        <Submitting>Submitting...</Submitting>
+        <AdjustmentSuccess>Adjustment successful</AdjustmentSuccess>
+        <AdjustmentFailed>Adjustment failed, please try again</AdjustmentFailed>
+        <NetworkError>Network error, please try again later</NetworkError>
+        <InvalidInput>Invalid input data, please check and try again</InvalidInput>
+        <SessionExpired>Session expired, please login again</SessionExpired>
+        <ParseSuccess>Barcode parsed successfully</ParseSuccess>
+        <ParseFailed>Barcode parsing failed, please check format</ParseFailed>
+        <FormReset>Form has been reset</FormReset>
+        <QuantityPositiveRequired>Quantity must be greater than 0</QuantityPositiveRequired>
+        <UOMRequired>Unit of measure is required</UOMRequired>
+        <Operator>Operator</Operator>
+        <BarcodeParseSuccess>Barcode parsed successfully</BarcodeParseSuccess>
+        <PleaseScanValidMaterial>Please scan a valid material barcode</PleaseScanValidMaterial>
+        <ParseError>Barcode parsing error</ParseError>
+        <ParserReady>Barcode parser ready</ParserReady>
+        <ParserInitFailed>Failed to initialize barcode parser</ParserInitFailed>
+        <ValidatingSource>Validating source inventory...</ValidatingSource>
+        <SourceInventoryValid>Source inventory validation successful</SourceInventoryValid>
+        <SourceInventoryInvalid>Source inventory validation failed</SourceInventoryInvalid>
+        <MaterialCodeRequiredForInventory>Please enter the material code first</MaterialCodeRequiredForInventory>
+        <NoAvailableInventory>Source location inventory not found or fully allocated</NoAvailableInventory>
+        <InsufficientInventory>Insufficient inventory at source location</InsufficientInventory>
+        <UnitMismatch>Unit mismatch: input {0}, expected {1}</UnitMismatch>
+        <QuantityExceedsInventory>Material {0} adjustment quantity {1} exceeds available inventory {2}</QuantityExceedsInventory>
+        <MatScanPromptMessage>Scan material barcode to auto-fill material information</MatScanPromptMessage>
+        <SystemBusy>A similar operation is already in progress. Please try again later.</SystemBusy>
+        <ValidateSourceError>An error occurred while validating source inventory</ValidateSourceError>
+        <EpicorApiCallFailed>Epicor API call failed: {0}</EpicorApiCallFailed>
+        <AvailableQuantityLabel>Available Qty:</AvailableQuantityLabel>
+      </Adjustment>
+      <CountTag>
+        <Title>Inventory Counting Scan</Title>
+        <Subtitle>Scan material barcode for quick count tag processing</Subtitle>
+        <MaterialCode>Material Code</MaterialCode>
+        <MaterialCodePlaceholder>Enter material code</MaterialCodePlaceholder>
+        <Quantity>Quantity</Quantity>
+        <QuantityPlaceholder>Enter quantity</QuantityPlaceholder>
+        <UOM>Unit</UOM>
+        <UOMPlaceholder>Enter unit</UOMPlaceholder>
+        <FromWarehouse>Warehouse</FromWarehouse>
+        <FromWarehousePlaceholder>Enter warehouse code</FromWarehousePlaceholder>
+        <FromBatch>Batch</FromBatch>
+        <FromBatchPlaceholder>Enter batch number</FromBatchPlaceholder>
+        <Location>Location</Location>
+        <LocationPlaceholder>Enter location code</LocationPlaceholder>
+        <Remark>Remark</Remark>
+        <RemarkPlaceholder>Enter remarks</RemarkPlaceholder>
+        <Operator>Operator</Operator>
+        <FromSectionTitle>Location</FromSectionTitle>
+        <SubmitButton>Confirm Count</SubmitButton>
+        <ResetButton>Reset</ResetButton>
+        <CancelButton>Back</CancelButton>
+        <MatScanPromptMessage>Scan/enter and press Enter to confirm</MatScanPromptMessage>
+        <MaterialCodeRequired>Material code cannot be empty</MaterialCodeRequired>
+        <QuantityRequired>Quantity cannot be empty</QuantityRequired>
+        <QuantityPositiveRequired>Quantity must be greater than 0</QuantityPositiveRequired>
+        <UOMRequired>Unit cannot be empty</UOMRequired>
+        <FromWarehouseRequired>Warehouse cannot be empty</FromWarehouseRequired>
+        <FromLocationRequired>Location cannot be empty</FromLocationRequired>
+        <ConfirmCancel>Are you sure you want to go back?</ConfirmCancel>
+        <Submitting>Submitting...</Submitting>
+        <CountTagSuccess>Success</CountTagSuccess>
+        <CountTagFailed>Failed</CountTagFailed>
+        <NetworkError>Network error</NetworkError>
+        <ParseSuccess>Parse success</ParseSuccess>
+        <ParseFailed>Parse failed</ParseFailed>
+        <FormReset>Form has been reset</FormReset>
+        <BarcodeParseSuccess>Barcode parsed successfully</BarcodeParseSuccess>
+        <MaterialBarcodeParseSuccess>Material barcode parsed successfully</MaterialBarcodeParseSuccess>
+        <PleaseScanValidMaterial>Please scan a valid material barcode</PleaseScanValidMaterial>
+        <ParseError>Parse error</ParseError>
+        <ParserReady>Parser ready</ParserReady>
+        <ParserInitFailed>Failed to initialize parser</ParserInitFailed>
+        <ValidatingCountTag>Validating count tag...</ValidatingCountTag>
+        <CountTagValid>Count tag validation passed</CountTagValid>
+        <CountTagNotFound>No count tag established for this material in the system</CountTagNotFound>
+        <CountTagWarehouseMismatch>Warehouse code does not match count tag (Tag: {0}, Input: {1})</CountTagWarehouseMismatch>
+        <CountTagBinMismatch>Bin number does not match count tag (Tag: {0}, Input: {1})</CountTagBinMismatch>
+        <CountTagLotMismatch>Lot number does not match count tag (Tag: {0}, Input: {1})</CountTagLotMismatch>
+        <CountTagValidationError>Count tag validation error</CountTagValidationError>
+        <CountTagNoMatchingTag>No count tag matches the input warehouse/bin/lot</CountTagNoMatchingTag>
+        <MaterialCodeRequiredForCountTag>Please enter material code first</MaterialCodeRequiredForCountTag>
+        <SessionExpired>Session expired, please login again</SessionExpired>
+        <Confirm>Confirm</Confirm>
+        <Cancel>Cancel</Cancel>
+        <OK>OK</OK>
+        <CommonError>Operation failed</CommonError>
+        <CommonSuccess>Operation successful</CommonSuccess>
+        <CommonWarning>Please check input information</CommonWarning>
+        <CommonInfo>Information</CommonInfo>
+        <RequiredField>This field is required</RequiredField>
+        <PleaseWait>Please wait...</PleaseWait>
+        <CycleCountQuery>Cycle Count Query</CycleCountQuery>
+        <!-- Inventory qty display -->
+        <InventoryOnHandLabel>Inventory Qty: {0}{1}</InventoryOnHandLabel>
+        <InventoryLoading>Loading inventory...</InventoryLoading>
+        <InventoryQueryFailed>Inventory query failed</InventoryQueryFailed>
+        <InventoryQueryError>Inventory query error</InventoryQueryError>
+        <InventoryNotFound>Inventory Qty: 0 (No inventory record found)</InventoryNotFound>
+        <SystemBusy>A similar operation is already in progress. Please try again later.</SystemBusy>
+        <NoInventoryRecord>No matching inventory record found</NoInventoryRecord>
+      </CountTag>
+      <CycleCount>
+        <Title>Cycle Count Query</Title>
+        <Subtitle>Query cycle count header and detail data</Subtitle>
+        <CycleDate>Cycle Date</CycleDate>
+        <Warehouse>Warehouse</Warehouse>
+        <WarehousePlaceholder>Enter warehouse code</WarehousePlaceholder>
+        <Query>Query</Query>
+        <HeaderInfo>Header Information</HeaderInfo>
+        <DetailInfo>Detail Data</DetailInfo>
+        <CycleStatusDesc>Cycle Status</CycleStatusDesc>
+        <TagGenDate>Tag Generated Date</TagGenDate>
+        <TotalParts>Total Parts</TotalParts>
+        <CycleSeq>Cycle Seq</CycleSeq>
+        <CCYear>Year</CCYear>
+        <PartNum>Part Num</PartNum>
+        <PartDescription>Description</PartDescription>
+        <QtyAdjustmentStatus>Adjustment Status</QtyAdjustmentStatus>
+        <ABCCode>ABC Code</ABCCode>
+        <BaseUOM>Base UOM</BaseUOM>
+        <FrozenQOH>Frozen QOH</FrozenQOH>
+        <CountQOH>Count QOH</CountQOH>
+        <QuerySuccess>Query successful</QuerySuccess>
+        <QueryFailed>Query failed</QueryFailed>
+        <NoData>No cycle count data found</NoData>
+        <NoDetailData>No detail data</NoDetailData>
+        <CycleDateRequired>Please select cycle date</CycleDateRequired>
+        <WarehouseRequired>Please enter warehouse code</WarehouseRequired>
+        <User>User</User>
+        <Site>Site</Site>
+        <!-- Detail inventory column -->
+        <DetailInventory>Detail Inventory</DetailInventory>
+        <DetailInventoryLoading>Loading...</DetailInventoryLoading>
+        <DetailInventoryEmpty>No inventory</DetailInventoryEmpty>
+        <DetailInvWhse>Whse</DetailInvWhse>
+        <DetailInvBin>Bin</DetailInvBin>
+        <DetailInvLot>Lot</DetailInvLot>
+        <DetailInvQty>Qty</DetailInvQty>
+        <BackToHome>Go Back</BackToHome>
+        <WarehouseCodeInvalid>Invalid warehouse code format</WarehouseCodeInvalid>
+      </CycleCount>
+      <Receipt>
+        <Title>Work Order Receipt</Title>
+        <Subtitle>Scan work order barcode and material barcode to complete receipt</Subtitle>
+        <WorkOrderNo>Work Order</WorkOrderNo>
+        <WorkOrderPlaceholder>Enter work order number</WorkOrderPlaceholder>
+        <AssemblySeq>Assembly Seq</AssemblySeq>
+        <AssemblySeqPlaceholder>Enter assembly sequence</AssemblySeqPlaceholder>
+        <MaterialCode>Material Code</MaterialCode>
+        <MaterialPlaceholder>Enter material code</MaterialPlaceholder>
+        <Quantity>Quantity</Quantity>
+        <QuantityPlaceholder>Enter quantity</QuantityPlaceholder>
+        <AvailableQty>Stock</AvailableQty>
+        <JobQtyInfoFormat>Order Qty: {0} Received Qty: {1} Unreceived Qty: {2} Stock Qty: {3}</JobQtyInfoFormat>
+        <Unit>Unit</Unit>
+        <WarehouseCode>Warehouse</WarehouseCode>
+        <Location>Location</Location>
+        <LocationPlaceholder>Enter location</LocationPlaceholder>
+        <BatchNo>Batch No</BatchNo>
+        <BatchNoPlaceholder>Enter batch number</BatchNoPlaceholder>
+        <Operator>Operator</Operator>
+        <Remarks>Remarks</Remarks>
+        <RemarksPlaceholder>Enter remarks</RemarksPlaceholder>
+        <SubmitButton>Confirm Receipt</SubmitButton>
+        <ResetButton>Reset</ResetButton>
+        <CancelButton>Back</CancelButton>
+        <WorkOrderRequired>Work order cannot be empty</WorkOrderRequired>
+        <AssemblySeqRequired>Assembly sequence cannot be empty</AssemblySeqRequired>
+        <MaterialCodeRequired>Material code cannot be empty</MaterialCodeRequired>
+        <QuantityRequired>Quantity cannot be empty and must be greater than 0</QuantityRequired>
+        <ConfirmCancel>Are you sure you want to go back?</ConfirmCancel>
+        <Submitting>Submitting...</Submitting>
+        <SubmitSuccess>Receipt successful</SubmitSuccess>
+        <SubmitFailed>Receipt failed</SubmitFailed>
+        <NetworkError>Network error</NetworkError>
+        <BarcodeParseSuccess>Barcode parsed successfully</BarcodeParseSuccess>
+        <BarcodeParseFailed>Barcode parse failed</BarcodeParseFailed>
+        <ParserReady>Barcode parser ready</ParserReady>
+        <ParserInitFailed>Failed to initialize barcode parser</ParserInitFailed>
+        <JobBarcodeParseSuccess>Work order barcode parsed successfully</JobBarcodeParseSuccess>
+        <MaterialBarcodeParseSuccess>Material barcode parsed successfully</MaterialBarcodeParseSuccess>
+        <FormReset>Form has been reset</FormReset>
+        <CommonError>Operation failed</CommonError>
+        <JobScanPromptMessage>Scan work order barcode to auto-fill work order info</JobScanPromptMessage>
+        <MatScanPromptMessage>Scan material barcode to auto-fill material info</MatScanPromptMessage>
+        <JobValidated>Work order validated</JobValidated>
+        <JobValidationFailed>Work order validation failed</JobValidationFailed>
+        <MaterialValidated>Material validated</MaterialValidated>
+        <MaterialValidationFailed>Material validation failed</MaterialValidationFailed>
+        <AssemblySeqNotFound>Assembly sequence not found for JobNum={0}, PartNum={1}. Work order closed or not generated</AssemblySeqNotFound>
+        <ShippingScheduleNotFound>Shipping schedule not found for PONum={0}, OrderLine={1}, OrderRelNum={2} (last 7 days)</ShippingScheduleNotFound>
+        <PartNotFound>Material code does not exist in the system</PartNotFound>
+        <PartNotExists>Material code {0} does not exist in the system, please check and re-enter</PartNotExists>
+        <WarehouseCodeRequired>Warehouse is required</WarehouseCodeRequired>
+        <LocationRequired>Bin location is required</LocationRequired>
+        <BatchNoRequired>Batch number is required</BatchNoRequired>
+        <SessionExpired>Session expired, please log in again</SessionExpired>
+        <QueryAssemblySeqFailed>Failed to query assembly sequence</QueryAssemblySeqFailed>
+        <QueryShippingScheduleFailed>Failed to query shipping schedule</QueryShippingScheduleFailed>
+        <SystemProcessingError>System error, please contact administrator</SystemProcessingError>
+        <JobNoRequired>Work order number is required</JobNoRequired>
+        <EpicorApiFailed>Epicor API call failed: {0}</EpicorApiFailed>
+        <JobNotExists>Work order {0} does not exist</JobNotExists>
+        <JobClosed>Work order {0} is closed and cannot be received</JobClosed>
+        <JobCompleted>Work order {0} is completed and cannot be received</JobCompleted>
+        <JobNotReleased>Work order {0} is not released and cannot be received</JobNotReleased>
+        <JobReceiptInfoNotFound>Unable to retrieve receipt info for work order {0}</JobReceiptInfoNotFound>
+        <JobQtyInvalid>Invalid work order quantity; cannot receive</JobQtyInvalid>
+        <WarehouseNotExists>Warehouse {0} does not exist; cannot receive</WarehouseNotExists>
+        <BinNotExists>Bin {0} does not exist; cannot receive</BinNotExists>
+        <OverReceiptWarning>Over-receipt notice: scan qty {0} + received {1} exceeds job qty {2}; receipt is still allowed</OverReceiptWarning>
+        <RequestParamEmpty>Request parameters are empty</RequestParamEmpty>
+        <QuantityMustBePositive>Quantity must be greater than 0</QuantityMustBePositive>
+        <AlreadyProcessed>Already processed</AlreadyProcessed>
+        <SystemBusy>System busy, please try again later</SystemBusy>
+        <ReceiptApiFailed>Receipt API call failed</ReceiptApiFailed>
+        <InvalidParams>Invalid parameters</InvalidParams>
+        <InvalidParamsWithDetail>Invalid parameters: {0}</InvalidParamsWithDetail>
+        <JobNoAndPartRequired>Job number and material code are required</JobNoAndPartRequired>
+        <PoParamsRequired>PONum, OrderLine and OrderRelNum are required</PoParamsRequired>
+        <ShippingScheduleNotFoundSimple>Shipping schedule not found</ShippingScheduleNotFoundSimple>
+        <QueryingShippingSchedule>Querying shipping schedule...</QueryingShippingSchedule>
+        <PoBarcodeFormatHint>PO barcode format should be PO:Num-Line-Rel (e.g. 362823-3-1)</PoBarcodeFormatHint>
+        <QueryingAssemblySeq>Querying assembly sequence...</QueryingAssemblySeq>
+        <AssemblySeqNotFoundSimple>Assembly sequence not found, please enter manually</AssemblySeqNotFoundSimple>
+        <ValidatingJob>Validating work order...</ValidatingJob>
+      </Receipt>
+      <!-- Purchase Order Receiving -->
+      <Receivin>
+        <Title>Purchase Order Receiving</Title>
+        <Subtitle>Scan PO barcode and material barcode to complete receiving</Subtitle>
+        <PONo>PO Number</PONo>
+        <PONoPlaceholder>Scan or enter PO number</PONoPlaceholder>
+        <PONoRequired>PO number cannot be empty</PONoRequired>
+        <PackSlip>Packing Slip</PackSlip>
+        <PackSlipPlaceholder>Scan or enter packing slip number</PackSlipPlaceholder>
+        <PackSlipRequired>Packing slip cannot be empty</PackSlipRequired>
+        <PackSlipPrompt>Scan packing slip barcode to auto-fill</PackSlipPrompt>
+        <POScanPrompt>Scan PO barcode to auto-fill PO info</POScanPrompt>
+        <MaterialCode>Material Code</MaterialCode>
+        <MaterialPlaceholder>Scan or enter material code</MaterialPlaceholder>
+        <MaterialCodeRequired>Material code cannot be empty</MaterialCodeRequired>
+        <MatScanPrompt>Scan material barcode to auto-fill material info</MatScanPrompt>
+        <Quantity>Quantity</Quantity>
+        <QuantityPlaceholder>Enter receiving quantity</QuantityPlaceholder>
+        <QuantityRequired>Quantity cannot be empty and must be greater than 0</QuantityRequired>
+        <Unit>Unit</Unit>
+        <UnitRequired>Unit cannot be empty</UnitRequired>
+        <UnitMismatch>Unit mismatch: scanned unit {0}, purchase order unit {1}</UnitMismatch>
+        <WarehouseCode>Warehouse</WarehouseCode>
+        <WarehousePlaceholder>Enter warehouse code</WarehousePlaceholder>
+        <Location>Location</Location>
+        <LocationPlaceholder>Enter location</LocationPlaceholder>
+        <BatchNo>Batch No</BatchNo>
+        <BatchNoPlaceholder>Enter batch number</BatchNoPlaceholder>
+        <Operator>Operator</Operator>
+        <Remarks>Remarks</Remarks>
+        <RemarksPlaceholder>Enter remarks</RemarksPlaceholder>
+        <SubmitButton>Confirm Receipt</SubmitButton>
+        <ResetButton>Reset</ResetButton>
+        <CancelButton>Back</CancelButton>
+        <Submitting>Submitting...</Submitting>
+        <SubmitSuccess>Receipt successful</SubmitSuccess>
+        <SubmitFailed>Receipt failed</SubmitFailed>
+        <NetworkError>Network error</NetworkError>
+        <FormReset>Form has been reset</FormReset>
+        <CommonError>Operation failed</CommonError>
+        <ConfirmCancel>Are you sure you want to go back?</ConfirmCancel>
+        <POValidated>PO validated</POValidated>
+        <POValidationFailed>PO validation failed</POValidationFailed>
+        <ValidatingPO>Validating PO...</ValidatingPO>
+        <ScanParsed>Scan parsed successfully</ScanParsed>
+        <VendorName>Vendor</VendorName>
+        <POType>PO Type</POType>
+        <CurrencyCode>Currency</CurrencyCode>
+        <OrderQty>Order Qty</OrderQty>
+        <ReceivedQty>Received</ReceivedQty>
+        <RemainingQty>Remaining</RemainingQty>
+        <UnreceivedQty>Unreceived Qty</UnreceivedQty>
+        <ItemSelected>Item selected</ItemSelected>
+        <POLineNo>PO Line No.</POLineNo>
+        <POLineNoPlaceholder>Enter or scan PO line number</POLineNoPlaceholder>
+        <POLineNoPrompt>Enter PO line number and press Enter to quickly locate item</POLineNoPrompt>
+        <POLineNoInvalid>Invalid PO line number, please check and retry</POLineNoInvalid>
+        <WarehouseCodeRequired>Warehouse is required</WarehouseCodeRequired>
+        <LocationRequired>Location is required</LocationRequired>
+        <BatchNoRequired>Batch No. is required</BatchNoRequired>
+        <WarehouseNotExist>Warehouse {0} does not exist</WarehouseNotExist>
+        <LocationNotExist>Location {0} does not exist</LocationNotExist>
+        <LocationNotInWarehouse>Location {0} does not belong to Warehouse {1}</LocationNotInWarehouse>
+        <ConfirmButton>Confirm</ConfirmButton>
+        <CancelButtonText>Cancel</CancelButtonText>
+        <OKButton>OK</OKButton>
+        <InvalidParameters>Invalid parameters: {0}</InvalidParameters>
+        <PONotFound>PO {0} does not exist or has no open lines to receive</PONotFound>
+        <POQtyZero>PO {0} order quantity is 0; cannot receive</POQtyZero>
+        <OverReceiptWarning>Receipt qty {0} + received qty {1} = {2} exceeds order qty {3}; remaining available {4}. Epicor allows over-receipt; please confirm to continue</OverReceiptWarning>
+        <WarehouseNotExistCannotReceive>Warehouse {0} does not exist; cannot receive into it</WarehouseNotExistCannotReceive>
+        <WarehouseValidationFailed>Warehouse {0} validation failed; please try again later</WarehouseValidationFailed>
+        <BinNotExistCannotReceive>Bin {0} does not exist; cannot receive into it</BinNotExistCannotReceive>
+        <BinValidationFailed>Bin {0} validation failed; please try again later</BinValidationFailed>
+        <SessionExpired>Session expired; please log in again</SessionExpired>
+        <ValidatePOError>An error occurred while validating the PO</ValidatePOError>
+        <POLineMustBePositive>PO line number must be a positive integer</POLineMustBePositive>
+        <QtyMustBePositive>Receipt quantity must be greater than 0</QtyMustBePositive>
+        <DeliveryNoteRequired>Delivery note number is required</DeliveryNoteRequired>
+        <ReceiptSuccessIdempotent>Receipt succeeded (request already processed; not resubmitted)</ReceiptSuccessIdempotent>
+        <ReceiptInProgress>This PO line is being received; please try again later</ReceiptInProgress>
+        <POLineNotFound>PO {0} line {1} does not exist or has no open lines to receive</POLineNotFound>
+        <POLineQtyZero>PO {0} line {1} order quantity is 0; cannot receive</POLineQtyZero>
+        <PORelNumUndetermined>Cannot determine the release number of PO {0} line {1}; please contact the administrator to check the BAQ configuration</PORelNumUndetermined>
+        <PartNumMismatch>Scanned part {0} does not match part {3} on PO {1} line {2}; please verify</PartNumMismatch>
+        <VendorNumUndetermined>Cannot determine the vendor number of PO {0}; please contact the administrator to check the BAQ configuration</VendorNumUndetermined>
+        <QueryReceiptHeadFailed>Failed to query receipt header (network or service error); please try again later</QueryReceiptHeadFailed>
+        <InitReceiptHeadFailed>Failed to initialize receipt header: {0}</InitReceiptHeadFailed>
+        <PONotReceivable>PO {0} does not exist or receipt is not allowed</PONotReceivable>
+        <POLineClosed>PO {0} line {1} is closed and cannot be received</POLineClosed>
+        <PONotApproved>PO {0} is not approved; please get it approved before receiving</PONotApproved>
+        <GetPOInfoFailed>Failed to get PO info: {0}</GetPOInfoFailed>
+        <GetVendorInfoFailed>Failed to get vendor info</GetVendorInfoFailed>
+        <CNPreUpdateFailed>CNPreUpdate failed: {0}</CNPreUpdateFailed>
+        <UpdateMasterFailed>UpdateMaster failed: {0}</UpdateMasterFailed>
+        <GetNewRcvDtlFailed>GetNewRcvDtl failed: {0}</GetNewRcvDtlFailed>
+        <GetDtlPOLineInfoFailed>GetDtlPOLineInfo failed: {0}</GetDtlPOLineInfoFailed>
+        <GetDtlQtyInfoFailed>GetDtlQtyInfo failed: {0}</GetDtlQtyInfoFailed>
+        <CheckOnLeaveHeadFailed>CheckOnLeaveHead failed: {0}</CheckOnLeaveHeadFailed>
+        <OnChangeDtlReceivedFailed>OnChangeDtlReceived failed: {0}</OnChangeDtlReceivedFailed>
+        <CheckDtlLotInfoFailed>CheckDtlLotInfo failed: {0}</CheckDtlLotInfoFailed>
+        <LotValidationFailed>Lot validation failed: {0}</LotValidationFailed>
+        <GetDtlLotInfoFailed>GetDtlLotInfo failed: {0}</GetDtlLotInfoFailed>
+        <LotInfoValidationFailed>Lot info validation failed: {0}</LotInfoValidationFailed>
+        <GetDtlQtyInfoValidationFailed>GetDtlQtyInfo validation failed: {0}</GetDtlQtyInfoValidationFailed>
+        <PersistReceiptDetailFailed>Failed to persist receipt detail: {0}</PersistReceiptDetailFailed>
+        <SystemError>System error; please contact the administrator</SystemError>
+        <EpicorApiFailed>Epicor API call failed (network or service error)</EpicorApiFailed>
+        <GetPOInfoReturnedFalse>GetPOInfo returned false</GetPOInfoReturnedFalse>
+        <GetPOInfoNoRcvHead>GetPOInfo did not return RcvHead data</GetPOInfoNoRcvHead>
+        <InvalidResponseStructure>Unexpected receipt data structure returned by Epicor. The receipt was aborted; please contact your administrator.</InvalidResponseStructure>
+      </Receivin>
+      <Errors>
+        <UnauthorizedAccess>Unauthorized Access</UnauthorizedAccess>
+        <PageNotFound>Page Not Found</PageNotFound>
+        <InternalServerError>Internal Server Error</InternalServerError>
+        <SessionTimeout>Session Timeout</SessionTimeout>
+        <NetworkError>Network Connection Error</NetworkError>
+        <DataNotFound>Data Not Found</DataNotFound>
+        <ValidationFailed>Validation Failed</ValidationFailed>
+        <OperationFailed>Operation Failed</OperationFailed>
+        <GenericErrorTitle>Notice</GenericErrorTitle>
+        <GenericErrorMessage>An error occurred while processing your request. Please try again later. If the problem persists, contact your administrator.</GenericErrorMessage>
+        <BackToHome>Back to Home</BackToHome>
+      </Errors>
+      <Factory>
+        <DG>GCM DG</DG>
+        <DG_Description>GCM DongGuan</DG_Description>
+        <US1>San Francisco</US1>
+        <US1_Description>San Francisco Manufacturing Facility</US1_Description>
+        <US2>Chicago</US2>
+        <US2_Description>Chicago Manufacturing Facility</US2_Description>
+      </Factory>
+      <!-- Barcode Print Page -->
+      <BarcodePrint>
+        <Title>Barcode Print</Title>
+        <Subtitle>Query inventory and batch print barcode labels</Subtitle>
+        <BatchPrintSelected>Print Selected Items</BatchPrintSelected>
+        <Preview>Preview</Preview>
+        <PrintSettings>Barcode Print Settings</PrintSettings>
+        <!-- Inventory Query -->
+        <InventoryQuery>Inventory Query</InventoryQuery>
+        <MaterialCode>Material Code</MaterialCode>
+        <MaterialCodePlaceholder>Enter material code</MaterialCodePlaceholder>
+        <WarehouseCode>Warehouse Code (Optional)</WarehouseCode>
+        <WarehouseCodePlaceholder>Enter warehouse code</WarehouseCodePlaceholder>
+        <BinNumLabel>Bin Num (Optional)</BinNumLabel>
+        <BinNumPlaceholder>Enter bin num</BinNumPlaceholder>
+        <QueryInventory>Query Inventory</QueryInventory>
+        <!-- Print Range -->
+        <PrintRangeTitle>Sort From</PrintRangeTitle>
+        <From>From</From>
+        <To>To</To>
+        <SelectRange>Range Select</SelectRange>
+        <SelectPrinter>Select Printer</SelectPrinter>
+        <SelectPrinterPlaceholder>-- Select Printer --</SelectPrinterPlaceholder>
+        <!-- Table Columns -->
+        <Select>Select All</Select>
+        <No>No.</No>
+        <MaterialCodeColumn>Material Code</MaterialCodeColumn>
+        <MaterialDescription>Material Description</MaterialDescription>
+        <Warehouse>Warehouse</Warehouse>
+        <BinNum>Bin</BinNum>
+        <LotNum>Lot</LotNum>
+        <OnhandQty>On-hand Qty</OnhandQty>
+        <NoData>No data</NoData>
+        <TotalRecords>Total {0} records</TotalRecords>
+        <!-- Page Settings -->
+        <PageSettingsToggle>Page Settings</PageSettingsToggle>
+        <PageSettingsToggleHint>Check to show label size, padding and other settings</PageSettingsToggleHint>
+        <ShowPageSettings>Show label size, padding and other page settings</ShowPageSettings>
+        <HidePageSettings>Hide page display</HidePageSettings>
+        <!-- Label Size -->
+        <LabelSize>Label Size</LabelSize>
+        <LabelWidth>Label Width (mm)</LabelWidth>
+        <LabelHeight>Label Height (mm)</LabelHeight>
+        <!-- Padding -->
+        <Padding>Padding</Padding>
+        <PaddingLeft>Left Padding (mm)</PaddingLeft>
+        <PaddingRight>Right Padding (mm)</PaddingRight>
+        <PaddingTop>Top Padding (mm)</PaddingTop>
+        <PaddingBottom>Bottom Padding (mm)</PaddingBottom>
+        <!-- Font Settings -->
+        <FontSettings>Font Settings</FontSettings>
+        <FontFamily>Font Family</FontFamily>
+        <FontSize>Font Size (pt)</FontSize>
+        <FontWeight>Font Weight</FontWeight>
+        <Bold>Bold</Bold>
+        <Normal>Normal</Normal>
+        <!-- Barcode Settings -->
+        <BarcodeSettings>Barcode Settings</BarcodeSettings>
+        <BarcodeWidth>Barcode Height (px)</BarcodeWidth>
+        <BarcodeHeight>Barcode Height (px)</BarcodeHeight>
+        <BarcodeOffsetX>Horizontal Offset (px)</BarcodeOffsetX>
+        <BarcodeOffsetY>Vertical Offset (px)</BarcodeOffsetY>
+        <!-- Print Content Labels -->
+        <MaterialCodeLabel>Material Code</MaterialCodeLabel>
+        <UnitLabel>Unit</UnitLabel>
+        <QuantityLabel>Quantity</QuantityLabel>
+        <WarehouseLabel>Warehouse</WarehouseLabel>
+        <LocationLabel>Bin</LocationLabel>
+        <BatchNoLabel>Lot</BatchNoLabel>
+        <PrintCountLabel>Print Count</PrintCountLabel>
+        <StartNumberLabel>Start Number</StartNumberLabel>
+        <EndNumberLabel>End Number</EndNumberLabel>
+        <PrintDateLabel>Print Date</PrintDateLabel>
+        <!-- Action Messages -->
+        <QuerySuccess>Query successful</QuerySuccess>
+        <QueryFailed>Query failed</QueryFailed>
+        <NoInventory>No inventory records found</NoInventory>
+        <SelectItemsFirst>Please select items to print first</SelectItemsFirst>
+        <Printing>Printing...</Printing>
+        <PrintSuccess>Print successful</PrintSuccess>
+        <PrintFailed>Print failed</PrintFailed>
+        <PreviewGenerating>Generating preview...</PreviewGenerating>
+        <PreviewSuccess>Preview generated successfully</PreviewSuccess>
+        <PreviewFailed>Preview generation failed</PreviewFailed>
+        <ConfigSaved>Configuration saved</ConfigSaved>
+        <NetworkError>Network error, please check connection</NetworkError>
+        <!-- Preview Page -->
+        <PreviewTitle>Batch Label Preview</PreviewTitle>
+        <PreviewTotalItems>{0} items total</PreviewTotalItems>
+        <Print>Print</Print>
+        <BackToHome>Back to Home</BackToHome>
+        <PreviewError>Preview failed; please try again later</PreviewError>
+        <InvalidRequest>Invalid request parameters</InvalidRequest>
+        <PrinterRequired>Please select a printer</PrinterRequired>
+        <PrintCountOutOfRange>Print count must be between 1 and 100</PrintCountOutOfRange>
+        <PrintLimitExceeded>Print limit exceeded: items cannot exceed 500, and items × copies cannot exceed 1000</PrintLimitExceeded>
+        <PrintJobSent>Print job sent</PrintJobSent>
+        <PrintJobSentToPrinter>Print job sent to printer:</PrintJobSentToPrinter>
+        <PrintFailedCheckPrinter>Print failed; please check printer connection and settings</PrintFailedCheckPrinter>
+        <PrintError>Print error; please try again later</PrintError>
+        <SessionExpired>Session expired; please log in again</SessionExpired>
+        <NoInventoryData>No inventory data found</NoInventoryData>
+        <ServiceError>Service error; please try again later</ServiceError>
+        <FinishedProduct>Finished Product</FinishedProduct>
+        <NoPrinterDetected>No printer detected</NoPrinterDetected>
+        <PrinterListLoadFailed>Failed to load printer list</PrinterListLoadFailed>
+        <PrinterListUnavailable>Unable to load printer list, please check system settings</PrinterListUnavailable>
+        <StartNoGreaterThanEnd>Start number cannot be greater than end number</StartNoGreaterThanEnd>
+        <RangeSelected>Selected items from No. {0} to {1}</RangeSelected>
+        <QuantityMustBePositive>Quantity must be greater than 0</QuantityMustBePositive>
+        <CannotExceedStock>Cannot exceed stock:</CannotExceedStock>
+        <SelectPrinterFirst>Please select a printer first</SelectPrinterFirst>
+        <PrintRequestFailed>Print request failed</PrintRequestFailed>
+        <MaterialQtyMustBePositive>Material [{0}]: quantity must be greater than 0</MaterialQtyMustBePositive>
+        <MaterialCannotExceedStock>Material [{0}]: cannot exceed stock {1}</MaterialCannotExceedStock>
+        <QueryFoundItems>Found {0} items</QueryFoundItems>
+        <QueryFailedRetry>Query failed, please retry</QueryFailedRetry>
+      </BarcodePrint>
+    </Resources>
+  </Language>
+</LanguageResources>

@@ -1,0 +1,42 @@
+/* 物料详情样式 */
+.material-details {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+
+.detail-item {
+    display: flex;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #eef2f7;
+}
+
+.detail-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.detail-item label {
+    font-weight: 600;
+    color: #555;
+    min-width: 120px;
+}
+
+.detail-item span {
+    color: #333;
+    flex: 1;
+}
+
+/* 响应式调整 */
+@media (max-width: 576px) {
+    .detail-item {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .detail-item label {
+        min-width: auto;
+    }
+}

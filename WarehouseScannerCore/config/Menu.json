@@ -1,0 +1,105 @@
+{
+  "Menu": [
+    {
+      "Code": "Issue",
+      "Name": "Issue Scan",
+      "NameCN": "发料扫码",
+      "Description": "Material picking scanning operation",
+      "DescriptionCN": "发料扫码操作",
+      "Location": "Warehouse",
+      "Icon": "fa-box-open",
+      "Timezone": "China Standard Time",
+      "Enabled": true
+    },
+    {
+      "Code": "Outbound",
+      "Name": "Outbound Scan",
+      "NameCN": "出库扫码",
+      "Description": "Outbound goods scanning operation",
+      "DescriptionCN": "出库扫码操作",
+      "Location": "Warehouse",
+
+      "Icon": "fa-truck-loading",
+      "Timezone": "China Standard Time",
+      "Enabled": true
+    },
+    {
+      "Code": "Transfer",
+      "Name": "Transfer Scan",
+      "NameCN": "库存转移",
+      "Description": "Inventory transfer scanning operation",
+      "DescriptionCN": "库存转移扫码操作",
+      "Location": "Warehouse",
+      "Icon": "fa-exchange-alt",
+      "Timezone": "China Standard Time",
+      "Enabled": true
+    },
+    {
+      "Code": "ReturnMaterial",
+      "Name": "Return Material",
+      "NameCN": "返回物料",
+      "Description": "Return to Material Scanning Operations",
+      "DescriptionCN": "返回物料扫码操作",
+      "Location": "Warehouse",
+      "Icon": "fa-exchange-alt",
+      "Timezone": "China Standard Time",
+      "Enabled": true
+    },
+
+    {
+      "Code": "Inbound",
+      "Name": "Inbound Scan",
+      "NameCN": "产品入库扫码",
+      "Description": "Inbound goods scanning operation",
+      "DescriptionCN": "产品入库扫码操作",
+      "Location": "Warehouse",
+      "Icon": "fa-sign-in-alt",
+      "Timezone": "China Standard Time",
+      "Enabled": true
+    },
+    {
+      "Code": "Receipt",
+      "Name": "Receipt Scan",
+      "NameCN": "材料入库扫码",
+      "Description": "Receipt Entry scanning operation",
+      "DescriptionCN": "材料入库扫码操作",
+      "Location": "Warehouse",
+      "Icon": "fa-sign-in-alt",
+      "Timezone": "China Standard Time",
+      "Enabled": true
+    },
+    {
+      "Code": "Inventory",
+      "Name": "Inventory Scan",
+      "NameCN": "盘点扫码",
+      "Description": "Inventory count scanning operation",
+      "DescriptionCN": "盘点扫码操作",
+      "Location": "Warehouse",
+      "Icon": "fa-clipboard-check",
+      "Timezone": "China Standard Time",
+      "Enabled": true
+    },
+    {
+      "Code": "LabelPrint",
+      "Name": "LabelPrint",
+      "NameCN": "库存查询",
+      "Description": "Inventory Query",
+      "DescriptionCN": "库存查询",
+      "Location": "Warehouse",
+      "Icon": "fa-clipboard-check",
+      "Timezone": "China Standard Time",
+      "Enabled": true
+    },
+    {
+      "Code": "Settings",
+      "Name": "System Settings",
+      "NameCN": "系统设置",
+      "Description": "System configuration and settings",
+      "DescriptionCN": "系统配置和设置",
+      "Location": "System",
+      "Icon": "fa-cog",
+      "Timezone": "China Standard Time",
+      "Enabled": true
+    }
+  ]
+}

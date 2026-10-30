@@ -1,0 +1,769 @@
+@{
+    var getText = ViewBag.GetText as Func<string, string, string>;
+    var currentCulture = ViewBag.CurrentCulture as string ?? "zh-CN";
+
+
+    string GetText(string section, string key)
+    {
+        return getText?.Invoke(section, key) ?? $"[{section}.{key}]";
+    }
+}
+
+<!DOCTYPE html>
+<html lang="@currentCulture">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@GetText("CycleCount", "Title")</title>
+    <link rel="stylesheet" href="~/css/fontawesome/all.min.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/shared-scanner.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/sweetalert2.css" asp-append-version="true">
+    <style>
+        :root {
+            --primary-color: #4a6fa5;
+            --bg-light: #f8f9fa;
+            --bg-section: #ffffff;
+            --border-color: #e1e5ea;
+            --text-color: #2c3e50;
+            --shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+        }
+
+        .page-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .page-header {
+            background: var(--bg-section);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 20px 25px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+            .page-header h2 {
+                margin: 0 0 5px 0;
+                font-size: 1.5rem;
+                color: var(--primary-color);
+            }
+
+            .page-header .subtitle {
+                font-size: 0.9rem;
+                color: #6c757d;
+            }
+
+        .query-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: flex-end;
+            background: var(--bg-section);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 20px 25px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+            .query-bar .form-group {
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+            }
+
+                .query-bar .form-group label {
+                    font-size: 0.85rem;
+                    font-weight: 600;
+                    color: var(--text-color);
+                }
+
+                .query-bar .form-group input,
+                .query-bar .form-group select {
+                    padding: 10px 14px;
+                    border: 1px solid var(--border-color);
+                    border-radius: 8px;
+                    font-size: 1rem;
+                    min-width: 180px;
+                    background: #fff;
+                }
+
+                    .query-bar .form-group input:focus,
+                    .query-bar .form-group select:focus {
+                        outline: none;
+                        border-color: var(--primary-color);
+                        box-shadow: 0 0 0 3px rgba(74, 111, 165, 0.1);
+                    }
+
+            .query-bar .btn-query {
+                padding: 10px 28px;
+                background: var(--primary-color);
+                color: white;
+                border: none;
+                border-radius: 8px;
+                font-size: 1rem;
+                cursor: pointer;
+                transition: background 0.2s;
+            }
+
+                .query-bar .btn-query:hover {
+                    background: #3a5a8a;
+                }
+
+                .query-bar .btn-query:disabled {
+                    background: #aaa;
+                    cursor: not-allowed;
+                }
+
+        .result-section {
+            background: var(--bg-section);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            padding: 20px 25px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+            .result-section h3 {
+                margin: 0 0 15px 0;
+                font-size: 1.2rem;
+                color: var(--text-color);
+            }
+
+        .header-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f0f4f8;
+            border-radius: 8px;
+        }
+
+            .header-info .info-item {
+                display: flex;
+                flex-direction: column;
+                gap: 3px;
+            }
+
+                .header-info .info-item .label {
+                    font-size: 0.8rem;
+                    color: #6c757d;
+                }
+
+                .header-info .info-item .value {
+                    font-size: 1rem;
+                    font-weight: 600;
+                    color: var(--text-color);
+                }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .status-1 { background: #fff3cd; color: #856404; }
+        .status-2 { background: #d1ecf1; color: #0c5460; }
+        .status-3 { background: #d4edda; color: #155724; }
+        .status-4 { background: #f8d7da; color: #721c24; }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+            .data-table thead th {
+                background: var(--primary-color);
+                color: white;
+                padding: 12px 15px;
+                text-align: left;
+                font-weight: 600;
+                white-space: nowrap;
+            }
+
+            .data-table thead th:first-child {
+                border-radius: 8px 0 0 0;
+            }
+
+            .data-table thead th:last-child {
+                border-radius: 0 8px 0 0;
+            }
+
+            .data-table tbody td {
+                padding: 10px 15px;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .data-table tbody tr:hover {
+                background: #f5f8ff;
+            }
+
+            .data-table tbody tr:nth-child(even) {
+                background: #fafbfc;
+            }
+
+                .data-table tbody tr:nth-child(even):hover {
+                    background: #f5f8ff;
+                }
+
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #6c757d;
+            font-size: 1.1rem;
+        }
+
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,255,255,0.7);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+
+            .loading-overlay.active {
+                display: flex;
+            }
+
+            .loading-overlay .spinner {
+                width: 48px;
+                height: 48px;
+                border: 4px solid #e1e5ea;
+                border-top-color: var(--primary-color);
+                border-radius: 50%;
+                animation: spin 0.8s linear infinite;
+            }
+
+        /* 明细库存列单元格样式 */
+        .inv-detail-cell {
+            min-width: 260px;
+            max-width: 380px;
+            font-size: 0.8rem;
+            line-height: 1.55;
+        }
+        .inv-detail-list {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .inv-detail-row {
+            padding: 4px 8px;
+            background: #f7f9fc;
+            border: 1px solid #e3e7ee;
+            border-radius: 5px;
+        }
+        .inv-detail-row .label {
+            color: #6c757d;
+            font-weight: 500;
+            margin-right: 3px;
+        }
+        .inv-detail-empty {
+            color: #6c757d;
+            font-style: italic;
+        }
+        .inv-detail-failed {
+            color: #c0392b;
+        }
+
+        /* 响应式表格横向滚动容器：手机/平板滑动查看完整列；PC 溢出滚动 */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;     /* iOS Safari 惯性滑动 */
+            -ms-overflow-style: -ms-autohiding-scrollbar;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .table-responsive::-webkit-scrollbar {
+            height: 6px;
+            width: 6px;
+        }
+        .table-responsive::-webkit-scrollbar-thumb {
+            background: #cfd7df;
+            border-radius: 3px;
+        }
+        .table-responsive::-webkit-scrollbar-thumb:hover {
+            background: #aeb7c0;
+        }
+
+        /* 确保数字/代码列不换行，"明细库存"列允许自然换行显示多行卡片 */
+        .data-table tbody td:not(.inv-detail-cell),
+        .data-table thead th {
+            white-space: nowrap;
+        }
+
+        @@keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .user-info {
+            font-size: 0.85rem;
+            color: #6c757d;
+            margin-left: auto;
+        }
+
+        /* 返回主页按钮 */
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, #6c757d 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(74, 111, 165, 0.3);
+        }
+
+            .btn-back:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(74, 111, 165, 0.4);
+            }
+
+            .btn-back:active {
+                transform: translateY(1px);
+            }
+
+            .btn-back i {
+                font-size: 0.9rem;
+            }
+
+        .page-header-flex {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        /* =============================================================
+         * 三档响应式：手机 (<=640px) / 平板 (641–1024px) / PC (>1024px，默认)
+         * 让周期盘点查询在扫码枪手机、iPad、办公电脑都能舒适查看。
+         * ============================================================= */
+
+        /* ---- 平板：641px ~ 1024px（iPad / 折叠屏展开 / 窄屏笔记本） ---- */
+        @@media (min-width: 641px) and (max-width: 1024px) {
+            .page-container { padding: 16px; }
+
+            .page-header {
+                padding: 16px 18px;
+                border-radius: 10px;
+            }
+            .page-header h2 { font-size: 1.3rem; }
+
+            .query-bar { padding: 16px 18px; gap: 12px; border-radius: 10px; }
+            .query-bar .form-group input,
+            .query-bar .form-group select {
+                padding: 9px 12px;
+                font-size: 0.95rem;
+            }
+            .btn-query { padding: 9px 20px; font-size: 0.95rem; }
+
+            .result-section h3 { font-size: 1.05rem; }
+
+            .data-table { font-size: 0.85rem; }
+            .data-table thead th,
+            .data-table tbody td {
+                padding: 8px 10px;
+            }
+
+            .inv-detail-cell {
+                min-width: 240px;
+                max-width: 340px;
+                font-size: 0.78rem;
+            }
+            .inv-detail-row {
+                padding: 3px 7px;
+                border-radius: 4px;
+            }
+        }
+
+        /* ---- 手机：<= 640px（扫码枪 / iPhone / Android 手持） ---- */
+        @@media (max-width: 640px) {
+            body { font-size: 14px; }
+
+            .page-container {
+                padding: 8px;
+                max-width: 100%;
+            }
+
+            .page-header {
+                padding: 12px 14px;
+                border-radius: 8px;
+                margin-bottom: 12px;
+            }
+            .page-header h2 { font-size: 1.1rem; }
+            .page-header .subtitle { font-size: 0.8rem; }
+
+            .user-info {
+                display: block;
+                margin-left: 0;
+                margin-top: 6px;
+                font-size: 0.8rem;
+            }
+
+            /* 查询栏：纵向堆叠 + 100% 宽 */
+            .query-bar {
+                flex-direction: column;
+                align-items: stretch;
+                padding: 12px 14px;
+                gap: 10px;
+                border-radius: 8px;
+                margin-bottom: 12px;
+            }
+            .query-bar .form-group { width: 100%; }
+            .query-bar .form-group input,
+            .query-bar .form-group select {
+                min-width: 100%;
+                width: 100%;
+                padding: 10px 12px;
+                font-size: 16px;    /* 16px 避免 iOS Safari 自动聚焦放大 */
+            }
+            .btn-query {
+                width: 100%;
+                padding: 12px 16px;
+                font-size: 1rem;
+                margin-top: 4px;
+            }
+
+            .result-section {
+                padding: 12px;
+                border-radius: 8px;
+                margin-bottom: 12px;
+            }
+            .result-section h3 {
+                font-size: 0.95rem;
+                margin: 0 0 10px 0;
+            }
+            .no-data { padding: 20px 10px; font-size: 0.85rem; }
+
+            /* 结果表格：紧凑字号 + 极小 padding，避免内容溢出滚动条不明显 */
+            .data-table {
+                font-size: 0.75rem;
+                border-radius: 6px;
+            }
+            .data-table thead th,
+            .data-table tbody td {
+                padding: 6px 8px;
+            }
+
+            /* 头部信息卡片在手机端改单列布局 */
+            .header-info-grid {
+                grid-template-columns: 1fr !important;
+                gap: 8px;
+            }
+            .info-item {
+                padding: 6px 10px;
+                font-size: 0.8rem;
+            }
+            .info-item .label {
+                min-width: 70px;
+                font-size: 0.75rem;
+            }
+
+            /* 明细库存列更窄，卡片更小更紧凑 */
+            .inv-detail-cell {
+                min-width: 210px;
+                max-width: 280px;
+                font-size: 0.72rem;
+                line-height: 1.45;
+            }
+            .inv-detail-list { gap: 3px; }
+            .inv-detail-row {
+                padding: 3px 6px;
+                border-radius: 4px;
+            }
+            .inv-detail-row .label {
+                margin-right: 2px;
+            }
+
+            .loading-overlay .spinner {
+                width: 36px;
+                height: 36px;
+                border-width: 3px;
+            }
+        }
+    </style>
+</head>
+<body>
+    @Html.AntiForgeryToken()
+
+    <div class="page-container">
+        <div class="page-header">
+            <div class="page-header-flex">
+                <h2>@GetText("CycleCount", "Title")</h2>
+                <button class="btn-back" id="backHomeBtn">
+                    <i class="fas fa-arrow-left"></i> @GetText("CycleCount", "BackToHome")
+                </button>
+            </div>
+        </div>
+
+        <div class="query-bar">
+            <div class="form-group">
+                <label for="cycleDate">@GetText("CycleCount", "CycleDate")</label>
+                <input type="date" id="cycleDate" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+            </div>
+            <div class="form-group">
+                <label for="warehouseCode">@GetText("CycleCount", "Warehouse")</label>
+                <input type="text" id="warehouseCode" placeholder="@GetText("CycleCount", "WarehousePlaceholder")" value="" />
+            </div>
+            <button class="btn-query" id="btnQuery">
+                @GetText("CycleCount", "Query")
+            </button>
+        </div>
+
+        <div id="resultArea" style="display:none;">
+            <div class="result-section" id="headerSection">
+                <h3>@GetText("CycleCount", "HeaderInfo")</h3>
+                <div id="headerContent"></div>
+            </div>
+
+            <div class="result-section">
+                <h3>@GetText("CycleCount", "DetailInfo")</h3>
+                <div class="table-responsive">
+                    <table class="data-table" id="detailTable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>@GetText("CycleCount", "PartNum")</th>
+                                <th>@GetText("CycleCount", "PartDescription")</th>
+                                <th>@GetText("CycleCount", "QtyAdjustmentStatus")</th>
+                                <th>@GetText("CycleCount", "ABCCode")</th>
+                                <th>@GetText("CycleCount", "BaseUOM")</th>
+                                <th>@GetText("CycleCount", "CountQOH")</th>
+                                <th>@GetText("CycleCount", "DetailInventory")</th>
+                            </tr>
+                        </thead>
+                        <tbody id="detailBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="noDataArea" style="display:none;">
+            <div class="result-section">
+                <div class="no-data">@GetText("CycleCount", "NoData")</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/sweetalert.js" asp-append-version="true"></script>
+    <script nonce="@Context.Items["CspNonce"]">
+        // 明细库存列本地化文本（中/英自动切换）—— 用 @@Html.Raw 跳过 Razor 自动 HTML 编码，避免中文被转成 &#xXXXX; 实体码（与 CountTag 页面写法一致）
+        var txtInv = {
+            loading: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("CycleCount", "DetailInventoryLoading"))),
+            empty: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("CycleCount", "DetailInventoryEmpty"))),
+            failed: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("CycleCount", "QueryFailed"))),
+            lWhse: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("CycleCount", "DetailInvWhse"))),
+            lBin:  @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("CycleCount", "DetailInvBin"))),
+            lLot:  @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("CycleCount", "DetailInvLot"))),
+            lQty:  @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("CycleCount", "DetailInvQty")))
+        };
+        var token = $('input[name="__RequestVerificationToken"]').val();
+
+        function queryCycleCount() {
+            var cycleDate = $('#cycleDate').val();
+            var warehouseCode = $('#warehouseCode').val().trim();
+
+            if (!cycleDate) {
+                Swal.fire(@Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("CycleCount", "CycleDateRequired"))), '', 'warning');
+                return;
+            }
+            if (!warehouseCode) {
+                Swal.fire(@Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("CycleCount", "WarehouseRequired"))), '', 'warning');
+                return;
+            }
+
+            $('#loadingOverlay').addClass('active');
+            $('#btnQuery').prop('disabled', true);
+
+            $.ajax({
+                url: '/CountView/GetCycleCount',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ cycleDate: cycleDate, warehouseCode: warehouseCode }),
+                headers: {
+                    'X-CSRF-TOKEN': $('input[name="__RequestVerificationToken"]').val(),
+                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                },
+                success: function (res) {
+                    if (res.success) {
+                        if (res.headers && res.headers.length > 0) {
+                            renderHeaders(res.headers);
+                            // 明细 + 异步加载明细库存列
+                            renderDetails(res.details || [], warehouseCode);
+                            $('#resultArea').show();
+                            $('#noDataArea').hide();
+                        } else {
+                            $('#resultArea').hide();
+                            $('#noDataArea').show();
+                        }
+                    } else {
+                        Swal.fire(res.message, '', 'error');
+                        $('#resultArea').hide();
+                        $('#noDataArea').hide();
+                    }
+                },
+                error: function () {
+                    Swal.fire(@Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("CycleCount", "QueryFailed"))), '', 'error');
+                },
+                complete: function () {
+                    $('#loadingOverlay').removeClass('active');
+                    $('#btnQuery').prop('disabled', false);
+                }
+            });
+        }
+
+        function renderHeaders(headers) {
+            var html = '';
+            headers.forEach(function (h) {
+                var statusClass = 'status-1';
+                // 后端已格式化为 yyyy-MM-dd 字符串，直接使用避免 UTC 偏差
+                var cycleDate = h.cycleDate || '';
+                var tagGenDate = h.tagGenDate || '';
+
+                html += '<div class="header-info">';
+                html += '  <div class="info-item"><span class="label">@GetText("CycleCount", "CycleStatusDesc")</span><span class="value"><span class="status-badge ' + statusClass + '">' + escapeHtml(h.cycleStatusDesc) + '</span></span></div>';
+                html += '  <div class="info-item"><span class="label">@GetText("CycleCount", "Warehouse")</span><span class="value">' + escapeHtml(h.warehouseCode) + ' - ' + escapeHtml(h.warehouseDesc) + '</span></div>';
+                html += '  <div class="info-item"><span class="label">@GetText("CycleCount", "CycleDate")</span><span class="value">' + cycleDate + '</span></div>';
+                html += '  <div class="info-item"><span class="label">@GetText("CycleCount", "TagGenDate")</span><span class="value">' + tagGenDate + '</span></div>';
+                html += '  <div class="info-item"><span class="label">@GetText("CycleCount", "TotalParts")</span><span class="value">' + h.totalParts + '</span></div>';
+                html += '  <div class="info-item"><span class="label">@GetText("CycleCount", "CycleSeq")</span><span class="value">' + h.cycleSeq + '</span></div>';
+                html += '  <div class="info-item"><span class="label">@GetText("CycleCount", "CCYear")</span><span class="value">' + h.ccYear + '</span></div>';
+                html += '</div>';
+            });
+            $('#headerContent').html(html);
+        }
+
+        function renderDetails(details, warehouseCode) {
+            if (!details || details.length === 0) {
+                $('#detailBody').html('<tr><td colspan="9" class="no-data">@GetText("CycleCount", "NoDetailData")</td></tr>');
+                return;
+            }
+
+            var html = '';
+            details.forEach(function (d, idx) {
+                html += '<tr>';
+                html += '<td>' + (idx + 1) + '</td>';
+                html += '<td>' + escapeHtml(d.partNum) + '</td>';
+                html += '<td>' + escapeHtml(d.partDescription) + '</td>';
+                html += '<td>' + escapeHtml(d.qtyAdjustmentStatus) + '</td>';
+                html += '<td>' + escapeHtml(d.abcCode) + '</td>';
+                html += '<td>' + escapeHtml(d.baseUOM) + '</td>';
+                html += '<td>' + d.totCountQOH + '</td>';
+                // 明细库存列：异步加载（每个单元格带唯一 id，方便后续填充）
+                var cellId = 'inv-cell-' + idx;
+                html += '<td class="inv-detail-cell" id="' + cellId + '"><span class="inv-loading">' + escapeHtml(txtInv.loading) + '</span></td>';
+                html += '</tr>';
+            });
+            $('#detailBody').html(html);
+
+            // 渲染完成后，异步逐行加载明细库存
+            details.forEach(function (d, idx) {
+                if (!d.partNum) return;
+                loadInventoryDetailForCell(idx, d.partNum, warehouseCode);
+            });
+        }
+
+        /**
+         * 异步加载单个单元格的明细库存（按物料+仓库调用后端 BAQ 查询）
+         * 在单元格中显示多行：仓库(whseCode) / Bin位(binNum) / 批号(lotNumber) / 库存数量(qtyOnHand)
+         */
+        function loadInventoryDetailForCell(idx, partNum, warehouseCode) {
+            var $cell = $('#inv-cell-' + idx);
+            if ($cell.length === 0) return;
+
+            $.ajax({
+                url: '/CountView/QueryInventoryDetail',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ partNum: partNum, warehouseCode: warehouseCode }),
+                headers: {
+                    'X-CSRF-TOKEN': token,
+                    'RequestVerificationToken': token
+                },
+                success: function (res) {
+                    if (!res || !res.success) {
+                        $cell.html('<span class="inv-detail-failed">' + escapeHtml(txtInv.failed) + '</span>');
+                        return;
+                    }
+                    var items = res.items || [];
+                    if (items.length === 0) {
+                        $cell.html('<span class="inv-detail-empty">' + escapeHtml(txtInv.empty) + '</span>');
+                        return;
+                    }
+                    var inner = '<div class="inv-detail-list">';
+                    items.forEach(function (it) {
+                        var unit = it.ium ? ' ' + it.ium : '';
+                        var lot = it.lotNumber ? it.lotNumber : '-';
+                        inner += '<div class="inv-detail-row">';
+                        inner +=   '<span><span class="label">' + escapeHtml(txtInv.lWhse) + ':</span>' + escapeHtml(it.whseCode || '-') + '</span>';
+                        inner +=   '&nbsp;&nbsp;';
+                        inner +=   '<span><span class="label">' + escapeHtml(txtInv.lBin)  + ':</span>' + escapeHtml(it.binNum   || '-') + '</span>';
+                        inner +=   '<br>';
+                        inner +=   '<span><span class="label">' + escapeHtml(txtInv.lLot)  + ':</span>' + escapeHtml(lot)               + '</span>';
+                        inner +=   '&nbsp;&nbsp;';
+                        inner +=   '<span><span class="label" style="color:#b0351f;">' + escapeHtml(txtInv.lQty) + ':</span><b style="color:#b0351f;">' + it.qtyOnHand + unit + '</b></span>';
+                        inner += '</div>';
+                    });
+                    inner += '</div>';
+                    $cell.html(inner);
+                },
+                error: function () {
+                    $cell.html('<span class="inv-detail-failed">' + escapeHtml(txtInv.failed) + '</span>');
+                }
+            });
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/&/g, '&amp;')
+                      .replace(/</g, '&lt;')
+                      .replace(/>/g, '&gt;')
+                      .replace(/"/g, '&quot;')
+                      .replace(/'/g, '&#039;');
+        }
+
+        // Enter key triggers query
+        $('#warehouseCode').on('keypress', function (e) {
+            if (e.which === 13) {
+                queryCycleCount();
+            }
+        });
+
+        // 查询按钮点击事件（避免内联 onclick，符合 CSP 要求）
+        $('#btnQuery').on('click', queryCycleCount);
+
+        // 返回上一页按钮
+        $('#backHomeBtn').on('click', function () {
+            window.history.back();
+        });
+    </script>
+</body>
+</html>

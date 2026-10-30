@@ -1,0 +1,342 @@
+@{
+    Layout = "_MenuLayout";
+}
+@model WarehouseScannerCore.Models.LanguageItem
+
+@{
+    // 从ViewBag获取数据（与UserMenuPermission/Create.cshtml保持一致）
+    var getText = ViewBag.GetText as Func<string, string, string>;
+    var currentCulture = ViewBag.CurrentCulture as string ?? "zh-CN";
+    var currentUICulture = ViewBag.CurrentUICulture as string ?? "zh-CN";
+
+    // 定义本地辅助函数（与UserMenuPermission/Create.cshtml保持一致）
+    string GetText(string section, string key)
+    {
+        return getText?.Invoke(section, key) ?? $"[{section}.{key}]";
+    }
+
+    // 判断是创建还是编辑
+    bool isEdit = !string.IsNullOrEmpty(Model?.Page) && !string.IsNullOrEmpty(Model?.Key);
+    
+    // 设置页面标题
+    ViewData["Title"] = isEdit ? GetText("LanguageCreate", "EditLanguageItem") : GetText("LanguageCreate", "CreateLanguageItem");
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card language-card">
+                <div class="card-header language-card-header">
+                    <h4 class="mb-0">
+                        <i class="fas @(isEdit ? "fa-edit" : "fa-plus-circle") mr-2"></i>
+                        @(isEdit ? GetText("LanguageCreate", "EditLanguageItem") : GetText("LanguageCreate", "CreateLanguageItem"))
+                    </h4>
+                </div>
+
+                <div class="card-body">
+                    @using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
+
+                        @if (TempData["ErrorMessage"] != null)
+                        {
+                            <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+                                <i class="fas fa-exclamation-circle mr-2"></i>@Html.Raw(TempData["ErrorMessage"])
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        }
+
+                        @if (TempData["SuccessMessage"] != null)
+                        {
+                            <div class="alert alert-success alert-dismissible fade show mb-3" role="alert">
+                                <i class="fas fa-check-circle mr-2"></i>@Html.Raw(TempData["SuccessMessage"])
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        }
+
+                        @if (isEdit)
+                        {
+                            <input type="hidden" name="Page" value="@Model?.Page" />
+                            <input type="hidden" name="Key" value="@Model?.Key" />
+                        }
+
+                        <div class="form-group row">
+                            <label for="Page" class="col-md-3 col-form-label">@GetText("LanguageCreate", "Page") <span class="text-danger">*</span></label>
+                            <div class="col-md-9">
+                                @if (isEdit)
+                                {
+                                    <input type="text" id="Page" name="Page" 
+                                           class="form-control" 
+                                           value="@Model?.Page"
+                                           readonly />
+                                }
+                                else
+                                {
+                                    @Html.DropDownList("Page",
+                                        (SelectList)ViewBag.PageList,
+                                        GetText("LanguageCreate", "SelectPage"),
+                                        new { 
+                                            @class = "form-control", 
+                                            id = "PageSelect",
+                                            required = "required"
+                                        })
+                                }
+                                <div class="invalid-feedback">@GetText("LanguageCreate", "PageRequired")</div>
+                                <small class="form-text text-muted">@GetText("LanguageCreate", "PagePlaceholder")</small>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="Key" class="col-md-3 col-form-label">@GetText("LanguageCreate", "Key") <span class="text-danger">*</span></label>
+                            <div class="col-md-9">
+                                @if (isEdit)
+                                {
+                                    <input type="text" id="Key" name="Key" 
+                                           class="form-control" 
+                                           value="@Model?.Key"
+                                           readonly />
+                                }
+                                else
+                                {
+                                    <input type="text" id="Key" name="Key" 
+                                           class="form-control" 
+                                           value="@Model?.Key"
+                                           placeholder="@GetText("LanguageCreate", "KeyPlaceholder")"
+                                           required />
+                                }
+                                <div class="invalid-feedback">@GetText("LanguageCreate", "KeyRequired")</div>
+                                <small class="form-text text-muted">@GetText("LanguageCreate", "KeyPlaceholder")</small>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="ChineseValue" class="col-md-3 col-form-label">@GetText("LanguageCreate", "ChineseValue") <span class="text-danger">*</span></label>
+                            <div class="col-md-9">
+                                <textarea id="ChineseValue" name="ChineseValue" 
+                                          class="form-control" 
+                                          rows="3"
+                                          placeholder="@GetText("LanguageCreate", "ChinesePlaceholder")"
+                                          required>@Model?.ChineseValue</textarea>
+                                <div class="invalid-feedback">@GetText("LanguageCreate", "ChineseRequired")</div>
+                                <small class="form-text text-muted">@GetText("LanguageCreate", "ChinesePlaceholder")</small>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="EnglishValue" class="col-md-3 col-form-label">@GetText("LanguageCreate", "EnglishValue") <span class="text-danger">*</span></label>
+                            <div class="col-md-9">
+                                <textarea id="EnglishValue" name="EnglishValue" 
+                                          class="form-control" 
+                                          rows="3"
+                                          placeholder="@GetText("LanguageCreate", "EnglishPlaceholder")"
+                                          required>@Model?.EnglishValue</textarea>
+                                <div class="invalid-feedback">@GetText("LanguageCreate", "EnglishRequired")</div>
+                                <small class="form-text text-muted">@GetText("LanguageCreate", "EnglishPlaceholder")</small>
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-md-9 offset-md-3">
+                                <button type="submit" class="btn btn-language btn-language-primary" id="submitBtn">
+                                    <i class="fas fa-save mr-2"></i>@GetText("LanguageCreate", "Save")
+                                </button>
+                                <a href="@Url.Action("Index")" class="btn btn-language btn-language-secondary">
+                                    <i class="fas fa-arrow-left mr-2"></i>@GetText("LanguageCreate", "BackToList")
+                                </a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/sweetalert.js"></script>
+    <script>
+        $(document).ready(function() {
+            // 本地化文本配置
+            var localTexts = {
+                // 验证消息
+                pageRequired: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("LanguageCreate", "PageRequired"))),
+                keyRequired: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("LanguageCreate", "KeyRequired"))),
+                chineseRequired: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("LanguageCreate", "ChineseRequired"))),
+                englishRequired: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("LanguageCreate", "EnglishRequired"))),
+                duplicateError: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("LanguageCreate", "DuplicateError"))),
+                
+                // 操作消息
+                validationError: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("LanguageCreate", "ValidationError"))),
+                saving: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("LanguageCreate", "Saving"))),
+                saveSuccess: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("LanguageIndex", "SaveSuccess"))),
+                saveFailed: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("LanguageIndex", "SaveFailed"))),
+                updateSuccess: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("LanguageIndex", "UpdateSuccess"))),
+                updateFailed: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("LanguageIndex", "UpdateFailed"))),
+                
+                // 页面元素文本
+                selectPage: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("LanguageCreate", "SelectPage")))
+            };
+
+            // 表单提交验证
+            $('form').submit(function(e) {
+                var isValid = true;
+                var errorFields = [];
+
+                // 检查必填字段
+                $('[required]').each(function() {
+                    if (!$(this).val().trim()) {
+                        $(this).addClass('is-invalid');
+                        // 获取字段标签文本
+                        var label = $(this).closest('.form-group').find('.col-form-label').text().trim();
+                        label = label.replace('*', '').trim();
+                        errorFields.push(label);
+                        isValid = false;
+                    } else {
+                        $(this).removeClass('is-invalid');
+                    }
+                });
+
+                if (!isValid) {
+                    e.preventDefault();
+                    var validationMessage = @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("LanguageCreate", "ValidationError")));
+                    // 根据当前语言使用不同的分隔符
+                    var separator = '@currentCulture' === 'zh-CN' ? '、' : ', ';
+                    Swal.fire({ icon: 'warning', text: validationMessage + '\n\n' + errorFields.join(separator), timer: 3000, timerProgressBar: true });
+                } else {
+                    // 显示加载状态
+                    $('#submitBtn').prop('disabled', true)
+                        .html('<i class="fas fa-spinner fa-spin mr-2"></i>' + localTexts.saving);
+                }
+            });
+
+            // 实时验证
+            $('[required]').on('input', function() {
+                if ($(this).val().trim()) {
+                    $(this).removeClass('is-invalid');
+                }
+            });
+
+            // 页面选择逻辑 - 如果用户想要输入新页面而不是选择现有页面
+            @if (!isEdit)
+            {
+                <text>
+                // 添加"输入新页面"选项
+                $('#PageSelect').append(new Option(@Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("LanguageCreate", "EnterNewPage"))), 'new_page'));
+                
+                // 处理页面选择变化
+                $('#PageSelect').change(function() {
+                    if ($(this).val() === 'new_page') {
+                        // 移除下拉菜单，显示输入框
+                        var $input = $('<input type="text" class="form-control" id="PageInput" name="Page" placeholder=@Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("LanguageCreate", "PagePlaceholder"))) required />');
+                        $(this).replaceWith($input);
+                        $input.focus();
+                    }
+                });
+                </text>
+            }
+        });
+    </script>
+}
+
+<style>
+    .language-card {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        border: none;
+        border-radius: 10px;
+    }
+    
+    .language-card-header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border-radius: 10px 10px 0 0 !important;
+    }
+    
+    .btn-language {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+    }
+    
+    .btn-language-primary {
+        background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+        color: white;
+    }
+    
+    .btn-language-primary:hover {
+        background: linear-gradient(135deg, #45a049 0%, #3d8b40 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+    }
+    
+    .btn-language-secondary {
+        background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+        color: white;
+    }
+    
+    .btn-language-secondary:hover {
+        background: linear-gradient(135deg, #5a6268 0%, #484e53 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(108, 117, 125, 0.3);
+    }
+    
+    .is-invalid {
+        border-color: #e74c3c;
+    }
+    
+    .invalid-feedback {
+        display: block;
+        color: #e74c3c;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+    
+    .form-text.text-muted {
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+        color: #6c757d !important;
+    }
+    
+    /* 确保图标间距正确 */
+    .fa, .fas, .far, .fal, .fab {
+        margin-right: 0.5rem;
+    }
+    
+    .mr-2 {
+        margin-right: 0.5rem !important;
+    }
+    
+    .text-danger {
+        color: #e74c3c !important;
+    }
+    
+    .alert {
+        border-radius: 8px;
+    }
+    
+    .alert-danger {
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+        color: #721c24;
+    }
+    
+    .alert-success {
+        background-color: #d4edda;
+        border-color: #c3e6cb;
+        color: #155724;
+    }
+    
+    .btn-close {
+        background: transparent url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23000'%3e%3cpath d='M.293.293a1 1 0 011.414 0L8 6.586 14.293.293a1 1 0 111.414 1.414L9.414 8l6.293 6.293a1 1 0 01-1.414 1.414L8 9.414l-6.293 6.293a1 1 0 01-1.414-1.414L6.586 8 .293 1.707a1 1 0 010-1.414z'/%3e%3c/svg%3e") center/1em auto no-repeat;
+    }
+    
+    .form-control:focus {
+        border-color: #4CAF50;
+        box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25);
+    }
+</style>

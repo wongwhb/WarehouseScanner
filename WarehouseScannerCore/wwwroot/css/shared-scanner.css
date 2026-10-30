@@ -1,0 +1,445 @@
+/* ===== 共享扫描页面样式 ===== */
+/* 全局重置 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background-color: #f5f7fa;
+    color: #333;
+    line-height: 1.5;
+    padding: 20px;
+    font-size: 16px !important; /* 基础字体放大 */
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* ===== 页面头部 ===== */
+.page-header {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.page-title {
+    font-size: 24px !important;
+    font-weight: 700 !important;
+    color: #2c3e50;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+}
+
+    .page-title i {
+        color: #3498db;
+    }
+
+.page-subtitle {
+    color: #7f8c8d;
+    font-size: 14px !important;
+    margin-top: 4px;
+}
+
+/* 条码示例 */
+.barcode-example {
+    font-family: monospace;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 6px !important;
+    padding: 12px 15px !important;
+    margin-top: 16px;
+    font-size: 14px !important;
+    color: #495057;
+    border-left: 4px solid #3498db;
+}
+
+/* ===== 状态消息 ===== */
+.status-message {
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    display: none;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.message-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.message-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.message-warning {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+}
+
+.message-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+/* ===== 表单容器 ===== */
+.form-container {
+    background: white;
+    border-radius: 12px;
+    padding: 20px !important;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* 表单网格（默认两列，可通过附加类修改列数） */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px; /* 减小行列间距 */
+    margin-bottom: 20px;
+}
+
+/* 三列表格（用于数量调整页） */
+.form-grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+/* 表单项 */
+.form-item {
+    display: flex;
+    flex-direction: column;
+    /* 移除 margin-bottom，避免与 gap 叠加 */
+}
+
+    .form-item.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .form-item label {
+        font-size: 18px !important;
+        font-weight: 600 !important;
+        margin-bottom: 6px !important; /* 稍减小标签底部间距 */
+        display: block !important;
+        color: #2c3e50;
+    }
+
+.required {
+    color: #e74c3c;
+    margin-left: 4px;
+}
+
+/* 输入组（可用于图标等） */
+.input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+/* 输入框通用样式 */
+.input-field {
+    width: 100%;
+    font-size: 18px !important;
+    padding: 10px 12px !important; /* 减小内边距 */
+    border: 2px solid #ddd !important;
+    border-radius: 8px !important;
+    min-height: 46px !important; /* 略微降低高度 */
+    transition: all 0.3s ease;
+    outline: none;
+    background-color: white;
+}
+
+    .input-field:hover {
+        border-color: #3498db;
+        background-color: #f0f9ff;
+        box-shadow: 0 0 0 2px rgba(52,152,219,0.2);
+    }
+
+    .input-field:focus {
+        border-color: #3498db !important;
+        box-shadow: 0 0 0 3px rgba(52,152,219,0.1) !important;
+        outline: none;
+    }
+
+    .input-field.readonly {
+        background-color: #f8f9fa;
+        color: #6c757d;
+    }
+
+textarea.input-field {
+    min-height: 80px !important; /* 略微降低文本域高度 */
+    line-height: 1.5 !important;
+}
+
+/* 输入提示 */
+.input-hint {
+    font-size: 14px !important;
+    color: #7f8c8d;
+    margin-top: 4px; /* 减小顶部间距 */
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+    .input-hint i {
+        color: #3498db;
+    }
+
+/* 错误消息 */
+.error-message {
+    font-size: 12px;
+    color: #e74c3c;
+    margin-top: 4px; /* 减小顶部间距 */
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* ===== 按钮组 ===== */
+.button-group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: clamp(8px, 2vw, 15px);
+    margin: 15px 0 0 0; /* 略微减小顶部外边距 */
+    width: 100%;
+    flex-wrap: nowrap !important;
+    padding: 0 10px;
+    box-sizing: border-box;
+}
+
+.btn {
+    flex: 1 1 auto;
+    min-width: 80px;
+    max-width: 200px;
+    min-height: 56px !important; /* 略微降低按钮高度 */
+    padding: clamp(10px, 2vw, 14px) clamp(12px, 3vw, 24px) !important;
+    font-size: clamp(14px, 2.5vw, 18px) !important;
+    border: none;
+    border-radius: 8px !important;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+    box-sizing: border-box;
+}
+
+    .btn i {
+        font-size: clamp(14px, 2vw, 16px) !important;
+    }
+
+    .btn:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }
+
+.btn-primary {
+    background-color: #3498db;
+    color: white;
+}
+
+    .btn-primary:hover:not(:disabled) {
+        background-color: #2980b9;
+    }
+
+.btn-secondary {
+    background-color: #95a5a6;
+    color: white;
+}
+
+    .btn-secondary:hover:not(:disabled) {
+        background-color: #7f8c8d;
+    }
+
+.btn-danger {
+    background-color: #e74c3c;
+    color: white;
+}
+
+    .btn-danger:hover:not(:disabled) {
+        background-color: #c0392b;
+    }
+
+.btn-info {
+    background-color: #3498db;
+    color: white;
+}
+
+    .btn-info:hover:not(:disabled) {
+        background-color: #2980b9;
+    }
+
+/* ===== 解析预览 ===== */
+.parse-preview {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 6px !important;
+    padding: 12px !important; /* 略微减小内边距 */
+    margin-bottom: 15px;
+    display: none;
+}
+
+    .parse-preview.show {
+        display: block;
+        animation: fadeIn 0.3s ease;
+    }
+
+.preview-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px; /* 减小预览项间距 */
+}
+
+.preview-item {
+    display: flex;
+    flex-direction: column;
+}
+
+    .preview-item .label {
+        font-size: 14px !important;
+        color: #7f8c8d;
+        margin-bottom: 2px;
+    }
+
+    .preview-item .value {
+        font-size: 14px;
+        font-weight: 600;
+        color: #2c3e50;
+    }
+
+/* 解析状态指示（用于发料页） */
+.parse-status {
+    margin-top: 4px; /* 减小上边距 */
+    padding: 6px 10px !important; /* 略微减小内边距 */
+    border-radius: 6px !important;
+    display: none;
+    transition: all 0.3s ease;
+}
+
+    .parse-status.success {
+        background-color: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+        display: block;
+    }
+
+    .parse-status.error {
+        background-color: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+        display: block;
+    }
+
+
+/* 扫码高亮 */
+.scan-highlight {
+    animation: scanHighlight 0.5s ease-in-out;
+    background-color: #e8f7ee !important;
+    border-color: #07c160 !important;
+}
+
+@keyframes scanHighlight {
+    0% {
+        background-color: white;
+    }
+
+    50% {
+        background-color: #e8f7ee;
+    }
+
+    100% {
+        background-color: white;
+    }
+}
+
+/* 重置动画 */
+.reset-animation {
+    animation: resetFlash 0.3s ease-in-out;
+}
+
+@keyframes resetFlash {
+    0% {
+        background-color: white;
+    }
+
+    50% {
+        background-color: #ffebee;
+    }
+
+    100% {
+        background-color: white;
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== 隐藏操作员区域 ===== */
+#operator-section {
+    display: none !important;
+}
+
+/* ===== 响应式设计 ===== */
+@media (max-width: 768px) {
+    .form-grid,
+    .form-grid-3 {
+        grid-template-columns: 1fr; /* 所有网格窄屏单列 */
+    }
+
+    .button-group {
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        gap: clamp(5px, 1.5vw, 10px);
+        margin-top: 12px; /* 进一步减小顶部间距 */
+    }
+
+    .btn {
+        padding: clamp(8px, 2vw, 12px) clamp(8px, 2vw, 14px) !important;
+        font-size: clamp(14px, 2vw, 16px) !important;
+        min-width: 70px;
+        min-height: 48px !important; /* 移动端按钮高度再降低 */
+    }
+
+    .preview-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 400px) {
+    .btn {
+        padding: 6px 6px !important;
+        font-size: 13px !important;
+        min-width: 60px;
+        min-height: 42px !important;
+    }
+
+        .btn i {
+            font-size: 12px !important;
+        }
+}

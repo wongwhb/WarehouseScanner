@@ -1,0 +1,54 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <SslPort>44300</SslPort>
+    <!-- AnalysisLevel=latest：启用最新编译器分析与代码质量规则 -->
+    <AnalysisLevel>latest</AnalysisLevel>
+    <!-- 暂不启用 TreatWarningsAsErrors，待历史警告（CA1416 / CS8603 等）清理完毕后再启用 -->
+    <!-- 禁用 BrowserLink：其使用已弃用的 unload 事件，触发 Chrome Permissions Policy violation 警告 -->
+    <UseBrowserLink>false</UseBrowserLink>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Views\CountTag\" />
+    <Folder Include="Views\Receipt\" />
+    <Folder Include="wwwroot\data\" />
+    <Folder Include="Logs\" />
+  </ItemGroup>
+
+  <!-- 开发配置禁止发布到生产：敏感凭据不应随开发配置流转 -->
+  <ItemGroup>
+    <Content Update="appsettings.Development.json">
+      <CopyToPublishDirectory>Never</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+
+		<ItemGroup>
+    <PackageReference Include="AspNetCoreRateLimit" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="7.1.0" />
+
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="10.0.14" />
+    <PackageReference Include="Microsoft.Extensions.Http.Polly" Version="10.0.13" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+
+    <PackageReference Include="QRCoder" Version="1.7.0" />
+
+    <PackageReference Include="ZXing.Net" Version="0.16.11" />
+
+
+  </ItemGroup>
+
+
+		<Target Name="CopyLanguageFilesToPublish" AfterTargets="Publish">
+		<ItemGroup>
+			<LanguageFiles Include="Resources\Languages\*.xml" />
+		</ItemGroup>
+		<Copy SourceFiles="@(LanguageFiles)" DestinationFolder="$(PublishDir)Resources\Languages" />
+	</Target>
+	
+	
+</Project>

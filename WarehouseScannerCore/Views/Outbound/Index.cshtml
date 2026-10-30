@@ -1,0 +1,2881 @@
+@using Newtonsoft.Json.Linq
+@model WarehouseScannerCore.Models.ScanOutboundModel
+@{
+    var getText = ViewBag.GetText as Func<string, string, string>;
+    var currentCulture = ViewBag.CurrentCulture as string ?? "zh-CN";
+    var userId = ViewBag.UserId as string;
+    var lastPackId = ViewBag.LastPackId as string ?? "";  // 获取最后一次的 Pack ID
+
+    string GetText(string section, string key)
+    {
+        return getText?.Invoke(section, key) ?? $"[{section}.{key}]";
+    }
+}
+
+<!DOCTYPE html>
+<html lang="@currentCulture">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes">
+    <title>@GetText("Outbound", "Title")</title>
+
+    <link rel="stylesheet" href="~/css/fontawesome/all.min.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/shared-scanner.css" asp-append-version="true">
+    <!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="~/css/sweetalert2.css">
+
+    <style>
+        /* ========== 基础字体和触摸优化 ========== */
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-size: 16px;
+            line-height: 1.4;
+        }
+
+        /* 通用容器样式 */
+        .form-container {
+            width: 100%;
+            max-width: 100%;
+            overflow: hidden;
+            box-sizing: border-box;
+            padding: 0 10px;
+        }
+
+        /* ========== 大按钮样式 ========== */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 24px;
+            font-size: 18px;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-height: 56px;
+            touch-action: manipulation;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            color: white;
+        }
+
+            .btn-primary:active {
+                background-color: #0056b3;
+                transform: scale(0.98);
+            }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+            .btn-secondary:active {
+                background-color: #545b62;
+                transform: scale(0.98);
+            }
+
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+
+            .btn-danger:active {
+                background-color: #c82333;
+                transform: scale(0.98);
+            }
+
+        .btn-pack {
+            background-color: #28a745;
+            color: white;
+        }
+
+            .btn-pack:active {
+                background-color: #1e7e34;
+                transform: scale(0.98);
+            }
+
+        /* 按钮组布局 */
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        /* 手机横屏/平板时按钮横向排列 */
+        @@media (min-width: 768px) {
+            .button-group {
+                flex-direction: row;
+                gap: 15px;
+            }
+
+            .btn {
+                flex: 1;
+            }
+        }
+
+        /* Pack ID 行样式 */
+        .pack-id-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+            .pack-id-row .pack-id-input {
+                flex: 1;
+            }
+
+        /* ========== 大文本框样式 ========== */
+        .input-field {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 18px;
+            transition: border-color 0.2s;
+            background-color: white;
+            min-height: 52px;
+        }
+
+            .input-field:focus {
+                outline: none;
+                border-color: #007bff;
+                box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+            }
+
+            .input-field.readonly {
+                background-color: #f5f5f5;
+                cursor: not-allowed;
+            }
+
+        /* 同一行三个输入框布局 - 用于表单网格内 */
+        .order-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+            .order-row .order-no {
+                flex: 2;
+                min-width: 150px;
+            }
+
+            .order-row .order-line {
+                flex: 1;
+                min-width: 80px;
+            }
+
+            .order-row .order-rel {
+                flex: 1;
+                min-width: 80px;
+            }
+
+        /* 提示文字 */
+        .input-hint {
+            font-size: 14px;
+            color: #6c757d;
+            margin-top: 6px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* 错误信息 */
+        .error-message {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* 批号单选框容器样式（移动端大触控目标） */
+        .lot-radio-container {
+            margin-top: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .lot-radio-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+            line-height: 1.4;
+            cursor: pointer;
+            padding: 12px 14px;
+            min-height: 44px;            /* 移动端推荐最小触控高度 */
+            box-sizing: border-box;
+            border: 1px solid #d0d7e2;
+            border-radius: 8px;
+            background: #ffffff;
+            transition: background 0.15s, border-color 0.15s;
+        }
+        .lot-radio-label:active {
+            background: #e8f0fe;
+        }
+        .lot-radio-label.checked {
+            border-color: #1a73e8;
+            background: #e8f0fe;
+        }
+        .lot-radio-label input[type="radio"] {
+            margin: 0;
+            width: 20px;
+            height: 20px;
+            flex: 0 0 auto;
+            cursor: pointer;
+            accent-color: #1a73e8;
+        }
+
+        /* 必填星号样式 */
+        .required {
+            color: #dc3545;
+            margin-left: 4px;
+        }
+
+        /* ========== 复选框样式 ========== */
+        .manual-checkbox-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 15px;
+            margin-bottom: 15px;
+            width: 100%;
+        }
+
+            .manual-checkbox-container label {
+                font-size: 18px;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                cursor: pointer;
+                padding: 12px 20px;
+                background-color: #f0f0f0;
+                border-radius: 12px;
+                transition: background-color 0.2s;
+                touch-action: manipulation;
+            }
+
+                .manual-checkbox-container label:active {
+                    background-color: #e0e0e0;
+                }
+
+            .manual-checkbox-container input[type="checkbox"] {
+                width: 24px;
+                height: 24px;
+                cursor: pointer;
+                margin-right: 8px;
+            }
+
+        /* 表格中的复选框 */
+        .order-select {
+            cursor: pointer;
+            width: 22px;
+            height: 22px;
+            margin: 0 auto;
+            display: block;
+        }
+
+        /* ========== 客户查询区域 ========== */
+        .customer-search {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+            .customer-search .input-group {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                width: 100%;
+            }
+
+            .customer-search .input-field {
+                flex: 1;
+                width: 100%;
+            }
+
+        @@media (min-width: 768px) {
+            .customer-search .input-group {
+                flex-direction: row;
+            }
+        }
+
+        /* ========== 订单表格容器 ========== */
+        .orders-table-container {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-top: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+            .orders-table-container h3 {
+                margin-top: 0;
+                margin-bottom: 15px;
+                font-size: 20px;
+            }
+
+        /* 表格外层包装器 */
+        .table-outer-wrapper {
+            width: 100%;
+            max-width: 100%;
+            overflow-x: auto;
+            position: relative;
+            box-sizing: border-box;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* 表格内层包装器 */
+        .table-inner-wrapper {
+            max-height: 300px;
+            overflow-y: auto;
+            width: 100%;
+            box-sizing: border-box;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        @@media (min-width: 768px) and (max-width: 1024px) {
+            .table-inner-wrapper {
+                max-height: 450px;
+            }
+        }
+
+        @@media (min-width: 1024px) {
+            .table-inner-wrapper {
+                max-height: 400px;
+            }
+        }
+
+        /* 表格样式 */
+        .orders-table {
+            width: 100%;
+            min-width: 1560px;     /* 14 列：仅保留右侧「▼ 库存信息」按钮列 */
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 15px;
+            table-layout: fixed;
+            box-sizing: border-box;
+        }
+
+        @@media (min-width: 768px) {
+            .orders-table {
+                font-size: 14px;
+            }
+        }
+
+        /* 表头样式 — 允许换行，最多2行 */
+        .table-header th {
+            position: sticky !important;
+            top: 0 !important;
+            z-index: 105 !important;
+            padding: 8px 6px;
+            border-bottom: 2px solid #ddd;
+            white-space: normal;
+            word-break: break-word;
+            line-height: 1.2;
+            max-height: 2.4em;
+            overflow: hidden;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            box-sizing: border-box;
+            background-color: #f2f2f2 !important;
+            font-size: 14px;
+        }
+
+            .table-header th:active {
+                background-color: #e0e0e0 !important;
+            }
+
+        /* 固定列样式 */
+        .col-fix-1 {
+            position: sticky !important;
+            left: 0 !important;
+            z-index: 106 !important;
+            width: 90px !important;
+            min-width: 90px !important;
+            max-width: 90px !important;
+            text-align: center;
+            background-color: #f2f2f2 !important;
+        }
+
+        .col-fix-2 {
+            position: sticky !important;
+            left: 90px !important;
+            z-index: 105 !important;
+            width: 65px !important;
+            min-width: 65px !important;
+            max-width: 65px !important;
+            background-color: #f2f2f2 !important;
+            white-space: normal !important;
+            word-break: break-word;
+            line-height: 1.2;
+        }
+
+        .col-fix-3 {
+            position: sticky !important;
+            left: 155px !important;
+            z-index: 105 !important;
+            width: 220px !important;
+            min-width: 200px !important;
+            max-width: 300px !important;
+            background-color: #f2f2f2 !important;
+            white-space: normal !important;
+            word-break: break-word;
+            line-height: 1.2;
+        }
+
+        .col-fix-4 {
+            position: sticky !important;
+            left: 375px !important;
+            z-index: 105 !important;
+            width: 100px !important;
+            min-width: 90px !important;
+            max-width: 110px !important;
+            background-color: #f2f2f2 !important;
+            white-space: normal !important;
+            word-break: break-word;
+            line-height: 1.2;
+        }
+
+        /* 表格内容样式 */
+        .orders-table td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #ddd;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            box-sizing: border-box;
+            font-size: 15px;
+        }
+
+        @@media (min-width: 768px) {
+            .orders-table td {
+                padding: 10px 10px;
+                font-size: 14px;
+            }
+        }
+
+        /* 非固定列宽度 — Order No/Line/Release/RequiredQty/AvailableStock/Comments 缩窄 (65px) */
+        .orders-table th:not([class^="col-fix"]):not(.col-expander):not(.col-part):not(.col-po),
+        .orders-table td:not([class^="col-fix"]):not(.col-expander):not(.col-part):not(.col-po) {
+            width: 65px !important;
+            min-width: 55px !important;
+            max-width: 75px !important;
+        }
+        .orders-table th:not([class^="col-fix"]):not(.col-expander):not(.col-part):not(.col-po) {
+            white-space: normal !important;
+            word-break: break-word;
+            line-height: 1.15;
+        }
+
+        /* PO 列 — 110px 固定宽度 */
+        .orders-table th.col-po,
+        .orders-table td.col-po {
+            width: 110px !important;
+            min-width: 100px !important;
+            max-width: 120px !important;
+            white-space: normal !important;
+            word-break: break-word;
+        }
+
+        /* Part Number 列：固定宽度，内容自适应 */
+        .orders-table th.col-part,
+        .orders-table td.col-part {
+            width: 180px !important;
+            min-width: 150px !important;
+            max-width: 250px !important;
+            white-space: normal !important;
+            word-break: break-all;
+            overflow: visible !important;
+            text-overflow: clip !important;
+        }
+
+        /* 内容行固定列背景色 */
+        .orders-table tbody .col-fix-1,
+        .orders-table tbody .col-fix-2,
+        .orders-table tbody .col-fix-3,
+        .orders-table tbody .col-fix-4 {
+            background-color: #ffffff !important;
+            z-index: 100 !important;
+        }
+
+        /* 行点击效果 */
+        .orders-table tbody tr:active {
+            background-color: #f0f0f0 !important;
+        }
+
+        .orders-table tbody tr:hover {
+            background-color: #f5f5f5 !important;
+            cursor: pointer;
+        }
+        /* 鼠标悬停整行：固定列也要同步变色（优先级更高） */
+        .orders-table tbody tr:hover .col-fix-1,
+        .orders-table tbody tr:hover .col-fix-2,
+        .orders-table tbody tr:hover .col-fix-3,
+        .orders-table tbody tr:hover .col-fix-4 {
+            background-color: #f5f5f5 !important;
+        }
+
+        .orders-table tbody tr:active .col-fix-1,
+        .orders-table tbody tr:active .col-fix-2,
+        .orders-table tbody tr:active .col-fix-3,
+        .orders-table tbody tr:active .col-fix-4 {
+            background-color: #f0f0f0 !important;
+        }
+
+        /* 右侧「Stock Info」按钮列（sticky right）：点击后打开右侧抽屉（桌面）或底部弹层（手机） */
+        .orders-table th.col-expander,
+        .orders-table td.col-expander {
+            width: 124px !important;
+            min-width: 124px !important;
+            max-width: 124px !important;
+            text-align: center !important;
+            padding: 8px 6px !important;
+            position: sticky !important;
+            right: 0 !important;
+            z-index: 105 !important;
+            background-color: #f2f2f2 !important;
+            border-left: 1px solid #e8ecf1;
+        }
+        .orders-table tbody td.col-expander { background-color: #fff !important; }
+        .orders-table tbody tr:hover td.col-expander { background-color: #f5f5f5 !important; }
+        .orders-table tbody tr.inv-row-active td.col-expander { background-color: #e8f1fb !important; }
+
+        /* 蓝色胶囊「▼ Stock Info」按钮 */
+        .inv-arrow {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            min-width: 108px;
+            height: 30px;
+            padding: 0 12px;
+            font-size: 12.5px;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+            color: #fff;
+            background: linear-gradient(180deg, #4d94e6 0%, #2b79d4 100%);
+            cursor: pointer;
+            border-radius: 15px;
+            border: 1px solid #2b79d4;
+            box-shadow: 0 1px 2px rgba(45,123,213,0.28), inset 0 1px 0 rgba(255,255,255,0.25);
+            transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+            user-select: none;
+            touch-action: manipulation;
+            white-space: nowrap;
+        }
+        .inv-arrow .arr { font-size: 11px; line-height: 1; opacity: 0.95; }
+        .inv-arrow:hover {
+            background: linear-gradient(180deg, #5fa2ef 0%, #3684de 100%);
+            box-shadow: 0 2px 6px rgba(45,123,213,0.4), inset 0 1px 0 rgba(255,255,255,0.28);
+            transform: translateY(-1px);
+        }
+        .inv-arrow:active { transform: translateY(0); box-shadow: 0 1px 2px rgba(45,123,213,0.3); }
+
+        /* 库存卡片网格（抽屉 / 手机弹层共用） */
+        .inv-card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 8px;
+        }
+        .inv-card {
+            background: #fff;
+            border: 1px solid #dce4ee;
+            border-radius: 6px;
+            padding: 8px 10px;
+            font-size: 12.5px;
+            line-height: 1.55;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+        }
+        .inv-card-row { display: flex; justify-content: space-between; gap: 6px; }
+        .inv-card-row .lbl { color: #657587; font-weight: 500; }
+        .inv-card-row .val { color: #1d2a39; font-weight: 600; text-align: right; word-break: break-all; }
+        .inv-card-row .qty { color: #e34d59; font-weight: 700; font-size: 13px; }
+
+        .inv-loading-hint, .inv-empty-hint, .inv-drawer-loading, .inv-drawer-empty { color: #8595a7; font-style: italic; padding: 6px 0; }
+
+        /* ========== 库存抽屉 / 手机底部弹层 ========== */
+        .inv-drawer-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity .25s ease, visibility .25s;
+        }
+        .inv-drawer-overlay.open { opacity: 1; visibility: visible; }
+
+        /* 抽屉打开时禁止 body 滚动，避免底层表格随鼠标/手指滚动 */
+        body.inv-drawer-open { overflow: hidden !important; }
+
+        .inv-drawer {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 420px;
+            height: 100%;
+            background: #fff;
+            z-index: 2001;
+            transform: translateX(100%);
+            transition: transform .3s cubic-bezier(.16,1,.3,1);
+            display: flex;
+            flex-direction: column;
+            box-shadow: -4px 0 24px rgba(0,0,0,0.12);
+        }
+        .inv-drawer.open { transform: translateX(0); }
+
+        .inv-drawer-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 14px 18px;
+            border-bottom: 1px solid #e8ecf1;
+            background: #f8fbff;
+        }
+        .inv-drawer-title   { font-size: 15px; font-weight: 700; color: #1d2a39; }
+        .inv-drawer-subtitle { font-size: 12.5px; color: #657587; margin-top: 2px; }
+        .inv-drawer-close {
+            width: 32px; height: 32px; border: none; background: transparent;
+            font-size: 20px; color: #657587; cursor: pointer; border-radius: 6px;
+        }
+        .inv-drawer-close:hover { background: #eef2f7; }
+        .inv-drawer-body {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 18px;
+            background: linear-gradient(180deg, #f8fbff 0%, #f0f6ff 100%);
+        }
+
+        /* 手机端：抽屉变为底部弹层 */
+        @@media (max-width: 768px) {
+            .inv-drawer {
+                top: auto;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                width: 100%;
+                height: 75vh;
+                max-height: 520px;
+                transform: translateY(100%);
+                border-radius: 16px 16px 0 0;
+                box-shadow: 0 -4px 24px rgba(0,0,0,0.12);
+            }
+            .inv-drawer.open { transform: translateY(0); }
+            .inv-card-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)) !important; }
+        }
+
+        /* 排序图标 */
+        .sortable {
+            position: relative;
+            padding-right: 25px !important;
+        }
+
+            .sortable:after {
+                content: "⇅";
+                position: absolute;
+                right: 8px;
+                top: 50%;
+                transform: translateY(-50%);
+                opacity: 0.5;
+                font-size: 13px;
+            }
+
+        .sort-asc:after {
+            content: "↑";
+            opacity: 1;
+        }
+
+        .sort-desc:after {
+            content: "↓";
+            opacity: 1;
+        }
+
+        /* ========== 表单网格布局 ========== */
+        .form-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .form-item {
+            width: 100%;
+        }
+
+            .form-item label {
+                display: block;
+                font-size: 17px;
+                font-weight: 600;
+                margin-bottom: 10px;
+            }
+
+        /* 订单信息区域 - 使用与物料代码一致的样式，标题在上方 */
+        .order-info-item {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+            .order-info-item label {
+                display: block;
+                font-size: 17px;
+                font-weight: 600;
+                margin-bottom: 10px;
+            }
+
+        @@media (min-width: 768px) {
+            .form-grid {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+            }
+
+            .form-item.full-width {
+                grid-column: 1 / -1;
+            }
+
+            .form-item label {
+                font-size: 16px;
+            }
+
+            .order-info-item label {
+                font-size: 16px;
+            }
+        }
+
+        /* 全宽元素 */
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        /* 文本域 */
+        textarea.input-field {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* ========== 页面头部 ========== */
+        .page-header {
+            margin-bottom: 20px;
+            padding: 0 15px;
+        }
+
+        .page-title {
+            font-size: 26px;
+            margin: 0 0 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-subtitle {
+            font-size: 15px;
+            color: #6c757d;
+        }
+
+        /* 手机端隐藏页面标题 + 表单单列压缩 */
+        @@media (max-width: 768px) {
+            .page-header { display: none !important; }
+            .form-container { padding: 12px; }
+            .button-group { gap: 8px; flex-wrap: wrap; }
+            .button-group .btn { flex: 1; min-width: 44%; min-height: 48px; font-size: 15px; padding: 12px 8px; touch-action: manipulation; }
+
+            /* ========== 手机端：表格 → 卡片式布局 ========== */
+            .orders-table-container { padding: 10px; margin-top: 12px; border-radius: 10px; }
+            .orders-table-container h3 { font-size: 16px; margin-bottom: 10px; }
+
+            /* 隐藏表头，用卡片内 label 显示 */
+            .orders-table thead { display: none !important; }
+            .orders-table, .orders-table tbody, .orders-table tr, .orders-table td {
+                display: block !important;
+                width: 100% !important;
+                min-width: 100% !important;
+                max-width: 100% !important;
+            }
+            /* 每张订单一张卡片 */
+            .orders-table tbody tr {
+                position: relative !important;
+                display: block !important;
+                margin-bottom: 14px !important;
+                padding: 14px 12px 12px 52px !important;
+                border: 1px solid #e2e5e9 !important;
+                border-radius: 10px !important;
+                background: #fff !important;
+                box-shadow: 0 1px 4px rgba(0,0,0,0.05) !important;
+                white-space: normal !important;
+                left: 0 !important;
+            }
+            .orders-table tbody tr.selected {
+                border-color: #2d7bd5 !important;
+                box-shadow: 0 0 0 2px rgba(45,123,213,0.2) !important;
+            }
+            /* 清除固定列 sticky / 所有单元格：列转行显示 */
+            .orders-table td {
+                position: static !important;
+                display: flex !important;
+                justify-content: space-between !important;
+                align-items: flex-start !important;
+                padding: 6px 0 !important;
+                border-bottom: 1px dashed #eef0f2 !important;
+                background: transparent !important;
+                left: auto !important;
+                white-space: normal !important;
+                word-break: break-word !important;
+                font-size: 14px !important;
+                line-height: 1.4 !important;
+                overflow: visible !important;
+                text-overflow: clip !important;
+                width: 100% !important;
+                min-width: 100% !important;
+                max-width: 100% !important;
+                z-index: 1 !important;
+            }
+            .orders-table td:last-child { border-bottom: none !important; }
+
+            /* 单元格左边：字段 label（英文/中文自适应） */
+            .orders-table td::before {
+                content: attr(data-label);
+                display: inline-block;
+                font-weight: 600;
+                color: #526375;
+                flex: 0 0 100px;
+                min-width: 100px;
+                margin-right: 8px;
+                text-align: left;
+                font-size: 13px;
+            }
+            .orders-table td > * { flex: 1; text-align: right; }
+
+            /* 展开按钮列：卡片右上角折叠/展开（48×48 大触摸区） */
+            .orders-table td.col-expander {
+                position: absolute !important;
+                top: 0; right: 0;
+                width: 48px !important;
+                height: 48px !important;
+                padding: 0 !important;
+                margin: 0 !important;
+                border: none !important;
+                background: transparent !important;
+                justify-content: center !important;
+                align-items: center !important;
+                flex: none !important;
+            }
+            .orders-table td.col-expander::before { display: none !important; content: none !important; }
+            .orders-table td.col-expander .inv-arrow {
+                min-width: 108px !important;
+                height: 32px !important;
+                padding: 0 14px !important;
+                font-size: 13.5px !important;
+            }
+
+            /* 手机端：抽屉内卡片网格保持紧凑 */
+            .inv-card-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)) !important; }
+
+            /* 取消固定 sticky 包装器的横向滚动，改用纵向卡片 */
+            .table-outer-wrapper { overflow-x: visible !important; }
+            .table-inner-wrapper { max-height: none !important; }
+        }
+
+        /* 手机横屏 + 小平板：紧凑卡片网格，约 110px 列 */
+        @@media (max-width: 768px) and (orientation: landscape) {
+            .orders-table tbody tr { padding: 10px 12px 8px 52px; margin-bottom: 10px; }
+            .orders-table td { padding: 4px 0 !important; }
+            .inv-card-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)) !important; }
+        }
+
+        /* ========== 平板 769–1024px：表格保留，但所有列宽度收缩 + 横滑 ========== */
+        @@media (min-width: 769px) and (max-width: 1024px) {
+            .orders-table { min-width: 1260px; }  /* 14 列收缩版 + 108px 「▼ 库存信息」按钮列 */
+            /* 固定列整体缩 15~20% */
+            .col-fix-1 { width: 72px !important; min-width: 72px !important; max-width: 72px !important; }
+            .col-fix-2 { width: 52px !important; min-width: 52px !important; max-width: 52px !important; left: 72px !important; }
+            .col-fix-3 { width: 176px !important; min-width: 160px !important; max-width: 200px !important; left: 124px !important; padding: 8px 4px !important; }
+            .col-fix-4 { width: 88px !important; min-width: 80px !important; max-width: 96px !important; left: 300px !important; padding: 8px 4px !important; }
+            /* 窄列：65px → 52px（排除展开列 / Part / PO） */
+            .orders-table th:not([class^="col-fix"]):not(.col-expander):not(.col-part):not(.col-po),
+            .orders-table td:not([class^="col-fix"]):not(.col-expander):not(.col-part):not(.col-po) {
+                width: 52px !important; min-width: 44px !important; max-width: 60px !important;
+                padding: 8px 4px !important; font-size: 13px !important;
+            }
+            /* PO 列 110px → 88px */
+            .orders-table th.col-po, .orders-table td.col-po {
+                width: 88px !important; min-width: 78px !important; max-width: 96px !important;
+                padding: 8px 4px !important; font-size: 13px !important;
+            }
+            /* Part 列 180px → 140px */
+            .orders-table th.col-part, .orders-table td.col-part {
+                width: 140px !important; min-width: 120px !important; max-width: 180px !important;
+                padding: 8px 4px !important; font-size: 13px !important;
+            }
+            /* 右侧「▼ 库存信息」按钮列 124px → 108px */
+            .orders-table th.col-expander, .orders-table td.col-expander {
+                width: 108px !important; min-width: 108px !important; max-width: 108px !important;
+                padding: 8px 4px !important;
+            }
+            .orders-table td.col-expander .inv-arrow {
+                min-width: 94px !important; height: 28px !important;
+                padding: 0 10px !important; font-size: 12px !important;
+            }
+            .orders-table td { font-size: 13px !important; padding: 8px 6px !important; }
+            .table-header th { font-size: 12px !important; padding: 8px 4px !important; }
+            .inv-card-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+        }
+
+        /* PC 大屏幕：卡片更宽（相对紧凑版再放宽） */
+        @@media (min-width: 1440px) {
+            .inv-card-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); }
+        }
+
+        /* ========== 底部Toast提示样式 ========== */
+        .status-toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.85);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 40px;
+            font-size: 15px;
+            z-index: 10000;
+            max-width: 90%;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            animation: fadeInUp 0.3s ease;
+            font-weight: 500;
+        }
+
+        .status-toast.success { background: #28a745; }
+        .status-toast.error   { background: #dc3545; }
+        .status-toast.warning { background: #ffc107; color: #333; }
+        .status-toast.info    { background: #17a2b8; }
+
+        @@keyframes fadeInUp {
+            from { opacity: 0; transform: translateX(-50%) translateY(20px); }
+            to   { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        /* 隐藏原来的状态消息区域 */
+        .status-message { display: none; }
+
+        /* ========== 提交发货失败提示条（常驻显示，直到下次提交/重置） ==========
+           后端返回的具体错误（如 Epicor「无效仓库和库位」、「库位 01/3-1153 无可用库存」）
+           必须让操作员看得见：模态弹窗会被后续扫码动作关闭、底部 toast 仅 2 秒，
+           因此这里再提供一个不会自动消失的醒目提示条。 */
+        .submit-error-banner {
+            display: none;
+            margin: 0 0 12px;
+            padding: 10px 14px;
+            border: 1px solid #f5c6cb;
+            border-left: 5px solid #dc3545;
+            border-radius: 6px;
+            background: #fdecea;
+            color: #a71d2a;
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 1.5;
+            text-align: left;
+            word-break: break-word;
+            /* 注意：这里不能复用 fadeInUp —— 它的 translateX(-50%) 是配合固定定位的底部 toast
+               （position:fixed + left:50%）设计的；用在文档流内的提示条上，会让它先向左偏移
+               半个自身宽度再弹回，出现肉眼可见的横向抖动。故单独定义一个只做纵向位移的动画。 */
+            animation: bannerSlideIn 0.25s ease;
+        }
+
+        @@keyframes bannerSlideIn {
+            from { opacity: 0; transform: translateY(-6px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .submit-error-banner i { margin-right: 6px; }
+        .submit-error-banner .error-detail { font-weight: 600; }
+    </style>
+
+</head>
+<body>
+    <div class="container">
+        <!-- 页面标题 -->
+        <div class="page-header">
+            <h1 class="page-title">
+                <i class="fas fa-truck"></i> @GetText("Outbound", "Title")
+            </h1>
+            <div class="page-subtitle">
+                @GetText("Outbound", "Subtitle")
+            </div>
+        </div>
+
+        <div id="statusMessage" class="status-message"></div>
+
+        <div class="form-container">
+            <form id="outboundForm" method="post" asp-action="ShipOrder">
+                @Html.AntiForgeryToken()
+
+                <!-- 提交发货失败提示条：常驻展示后端返回的真实失败原因
+                     （Epicor 业务错误 / 库存与订单校验失败 / 接口调用失败等） -->
+                <div id="submitErrorBanner" class="submit-error-banner" role="alert" aria-live="assertive"></div>
+
+                <div class="button-group">
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        <i class="fas fa-check-circle"></i> @GetText("Outbound", "SubmitButton")
+                    </button>
+                    <button type="button" class="btn btn-secondary" id="resetBtn">
+                        <i class="fas fa-redo-alt"></i> @GetText("Outbound", "ResetButton")
+                    </button>
+                    <button type="button" class="btn btn-danger" id="cancelBtn">
+                        <i class="fas fa-times-circle"></i> @GetText("Outbound", "CancelButton")
+                    </button>
+                </div>
+
+                <!-- Pack ID 行 -->
+                <div class="pack-id-row">
+                    <button type="button" class="btn btn-pack" id="generatePackBtn">
+                        <i class="fas fa-box"></i> Pack ID
+                    </button>
+                    <input type="text" class="input-field pack-id-input" id="packId" name="packId" placeholder="Pack ID" value="@lastPackId" autocomplete="off">
+                </div>
+                <div class="error-message" id="packIdError"></div>
+
+                <div class="manual-checkbox-container">
+                    <label>
+                        <input type="checkbox" id="manualOrderCheckbox"> @GetText("Outbound", "ManualSelectOrder")
+                    </label>
+                </div>
+
+                <div class="customer-search" style="display: none;">
+                    <div class="input-group">
+                        <input type="text" id="customerCodeInput" class="input-field" placeholder="@GetText("Outbound", "CustomerCode")" />
+                        <input type="text" id="customerNameInput" class="input-field" placeholder="@GetText("Outbound", "CustomerName")" />
+                        <input type="text" id="orderNumInput" class="input-field" placeholder="@GetText("Outbound", "Order")" />
+                        <input type="text" id="poNumInput" class="input-field" placeholder="@GetText("Outbound", "PO")" />
+                        <button type="button" id="searchOrdersBtn" class="btn btn-primary">
+                            <i class="fas fa-search"></i> @GetText("Outbound", "SearchButton")
+                        </button>
+                    </div>
+                </div>
+
+                <div class="orders-table-container" style="display: none;">
+                    <h3>@GetText("Outbound", "OrderShipmentList")</h3>
+
+                    <div class="table-outer-wrapper">
+                        <div class="table-inner-wrapper" id="ordersTableWrapper">
+                            <table id="ordersTable" class="orders-table">
+                                <thead class="table-header">
+                                    <tr>
+                                        <th class="col-fix-1 sortable" data-sort-key="select">@GetText("Outbound", "Select")</th>
+                                        <th class="col-fix-2 sortable" data-sort-key="customerCode">@GetText("Outbound", "CustomerCode")</th>
+                                        <th class="col-fix-3 sortable" data-sort-key="customerName">@GetText("Outbound", "CustomerName")</th>
+                                        <th class="col-fix-4 sortable" data-sort-key="reqDate">@GetText("Outbound", "ReqDate")</th>
+                                        <th class="sortable col-po" data-sort-key="po">@GetText("Outbound", "PO")</th>
+                                        <th class="sortable" data-sort-key="order">@GetText("Outbound", "Order")</th>
+                                        <th>@GetText("Outbound", "Line")</th>
+                                        <th>@GetText("Outbound", "Release")</th>
+                                        <th class="col-part">@GetText("Outbound", "Part")</th>
+                                        <th class="col-part">@GetText("Outbound", "PartDescription")</th>
+                                        <th>@GetText("Outbound", "RequiredQty")</th>
+                                        <th>@GetText("Outbound", "OnHandQty")</th>
+                                        <th>@GetText("Outbound", "Comments")</th>
+                                        <th class="col-expander" style="width:124px !important; min-width:124px !important; max-width:124px !important;" title="@GetText("Outbound", "DetailInventory")">@GetText("Outbound", "DetailInventoryAction")</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 库存信息抽屉：桌面端右侧滑出，手机端底部弹层 -->
+                <div class="inv-drawer-overlay" id="invDrawerOverlay" aria-hidden="true"></div>
+                <div class="inv-drawer" id="invDrawerPanel" role="dialog" aria-modal="true" aria-labelledby="invDrawerTitle">
+                    <div class="inv-drawer-header">
+                        <div>
+                            <div class="inv-drawer-title" id="invDrawerTitle">@GetText("Outbound", "DetailInventory")</div>
+                            <div class="inv-drawer-subtitle" id="invDrawerSubtitle"></div>
+                        </div>
+                        <button type="button" class="inv-drawer-close" id="invDrawerClose" aria-label="Close">&times;</button>
+                    </div>
+                    <div class="inv-drawer-body" id="invDrawerBody">
+                        <div class="inv-drawer-loading" id="invDrawerLoading">@GetText("Outbound", "InvLoading")</div>
+                        <div class="inv-drawer-empty" id="invDrawerEmpty" style="display:none;"></div>
+                        <div id="invDrawerContent"></div>
+                    </div>
+                </div>
+
+                <!-- 订单信息区域 - 三个字段同一行 -->
+                <div class="form-item full-width">
+                    <div style="display: flex; gap: 10px;">
+                        <div style="flex: 1;">
+                            <label>@GetText("Outbound", "SalesOrderNo") <span class="required">*</span></label>
+                            <input type="text" class="input-field scan-input" id="salesOrderNo" name="SalesOrderNo" placeholder="@GetText("Outbound", "SalesOrderPlaceholder")" autocomplete="off" autofocus>
+                            <div class="error-message" id="salesOrderError"></div>
+                        </div>
+                        <div style="flex: 1;">
+                            <label>@GetText("Outbound", "SalesOrderLineNo") <span class="required">*</span></label>
+                            <input type="text" class="input-field" id="salesOrderLineNo" name="OrderLine" autocomplete="off">
+                            <div class="error-message" id="salesOrderLineError"></div>
+                        </div>
+                        <div style="flex: 1;">
+                            <label>@GetText("Outbound", "OrderRelNum") <span class="required">*</span></label>
+                            <input type="text" class="input-field" id="orderRelNum" name="OrderRelNum" autocomplete="off">
+                            <div class="error-message" id="orderRelNumError"></div>
+                        </div>
+                    </div>
+                    <div class="input-hint">
+                        <i class="fas fa-keyboard"></i> @GetText("Outbound", "OrderScanPromptMessage")
+                    </div>
+                </div>
+
+
+
+                <div class="form-grid">
+                    <div class="form-item">
+                        <label>
+                            @GetText("Outbound", "MaterialCode") <span class="required">*</span>
+                        </label>
+                        <div class="input-group">
+                            <input type="text"
+                                   class="input-field scan-input"
+                                   id="materialCode"
+                                   name="MaterialCode"
+                                   placeholder="@GetText("Outbound", "MaterialPlaceholder")"
+                                   autocomplete="off">
+                        </div>
+                        <div class="input-hint">
+                            <i class="fas fa-keyboard"></i> @GetText("Outbound", "MatScanPromptMessage")
+                        </div>
+                        <div class="error-message" id="materialCodeError"></div>
+                    </div>
+
+                    <div class="form-item">
+                        <label>
+                            @GetText("Outbound", "Quantity") <span class="required">*</span>
+                        </label>
+                        <input type="number"
+                               class="input-field"
+                               id="quantity"
+                               name="Quantity"
+                               min="0.01"
+                               step="0.01"
+                               placeholder="@GetText("Outbound", "QuantityPlaceholder")"
+                               autocomplete="off">
+                        <div class="error-message" id="quantityError"></div>
+                        @*出货数量信息（红色单行显示）：计划出货 / 已发货数量 / 未出货 / 库存数
+                          整行文案取自语言资源 OrderQtyInfoFormat（中英文），data-format 供 JS 填充数量
+                          注意：div 与 span 必须紧邻无空白，且不可用 white-space:pre——否则缩进空白会被渲染成左侧大段缩进*@
+                        <div id="orderQtyInfoDisplay" data-format="@GetText("Outbound", "OrderQtyInfoFormat")" style="display:none; color:#e53935; font-weight:bold; margin-top:4px; font-size:0.95em; text-align:left;"><span id="dispOrderQtyInfoLine"></span></div>
+                    </div>
+
+                    <div class="form-item">
+                        <label>@GetText("Outbound", "Unit")</label>
+                        <input type="text" class="input-field" id="unit" name="Unit" autocomplete="off">
+                    </div>
+
+                    <div class="form-item">
+                        <label>@GetText("Outbound", "WarehouseCode")</label>
+                        <input type="text" class="input-field" id="warehouseCode" name="WarehouseCode" autocomplete="off">
+                    </div>
+
+                    <div class="form-item">
+                        <label>@GetText("Outbound", "Location")</label>
+                        <input type="text" class="input-field" id="location" name="Location" autocomplete="off">
+                    </div>
+
+                    <div class="form-item">
+                        <label>@GetText("Outbound", "BatchNo") <span class="required">*</span></label>
+                        <input type="text" class="input-field" id="batchNo" name="BatchNo" autocomplete="off">
+                        <div class="error-message" id="batchNoError"></div>
+                        <div id="lotRadioList" class="lot-radio-container" style="display:none;"></div>
+                    </div>
+
+                    <div id="operator-section" class="form-item">
+                        <label>@GetText("Outbound", "Operator")</label>
+                        <input type="text" class="input-field readonly" id="operator" name="Operator" value="@userId" readonly>
+                    </div>
+                </div>
+
+                <div class="form-item full-width">
+                    <label>@GetText("Outbound", "Remarks")</label>
+                    <textarea class="input-field" id="remarks" name="Remarks" rows="2"></textarea>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/Scancode-parser.js" asp-append-version="true"></script>
+    <!-- SweetAlert2 JS -->
+    <script src="~/js/sweetalert.js"></script>
+
+    <script>
+        var localTexts = {
+            salesOrderRequired: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "SalesOrderRequired"))),
+            salesOrderLineRequired: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "SalesOrderLineRequired"))),
+            orderRelNumRequired: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "OrderRelNumRequired"))),
+            materialCodeRequired: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "MaterialCodeRequired"))),
+            quantityRequired: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "QuantityRequired"))),
+            batchNoRequired: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "BatchNoRequired"))),
+            lotDateLabel: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "LotDateLabel"))),
+            packIdRequired: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "PackIdRequired"))),
+            confirmCancel: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "ConfirmCancel"))),
+            submitting: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "Submitting"))),
+            submitSuccess: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "SubmitSuccess"))),
+            submitFailed: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "SubmitFailed"))),
+            networkError: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "NetworkError"))),
+            orderBarcodeParseSuccess: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "OrderBarcodeParseSuccess"))),
+            materialBarcodeParseSuccess: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "MaterialBarcodeParseSuccess"))),
+            pleaseEnterOrderLine: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "PleaseEnterOrderLine"))),
+            orderValidationPassed: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "OrderValidationPassed"))),
+            orderValidationFailed: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "OrderValidationFailed"))),
+            inventoryValidationPassed: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "InventoryValidationPassed"))),
+            inventoryValidationFailed: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "InventoryValidationFailed"))),
+            orderAndLineRequired: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "OrderAndLineRequired"))),
+            orderAndLineRequiredForInventory: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "OrderAndLineRequiredForInventory"))),
+            materialCodeRequiredMsg: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "MaterialCodeRequiredMsg"))),
+            formReset: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "FormReset"))),
+            pleaseEnterCustomerInfo: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "PleaseEnterCustomerInfo"))),
+            searching: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "Searching"))),
+            searchSuccess: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "SearchSuccess"))),
+            searchFailed: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "SearchFailed"))),
+            noData: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "NoData"))),
+            parserReady: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "ParserReady"))),
+            parserInitFailed: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "ParserInitFailed"))),
+            generatingPackId: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "GeneratingPackId"))),
+            generatePackIdSuccess: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "GeneratePackIdSuccess"))),
+            generatePackIdFailed: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "GeneratePackIdFailed"))),
+            confirmButton: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Common", "Confirm"))),
+            cancelButtonText: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Common", "Cancel"))),
+            okButton: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Common", "OK"))),
+            commonError: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "CommonError"))),
+            invLoading: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "InvLoading"))),
+            invEmpty: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "InvEmpty"))),
+            invFailed: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "InvFailed"))),
+            invWhse: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "InvWhse"))),
+            invBin: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "InvBin"))),
+            invLot: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "InvLot"))),
+            invQty: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "InvQty"))),
+            // 订单发货列表列名（手机端卡片 data-label）
+            customerCode: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "CustomerCode"))),
+            customerName: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "CustomerName"))),
+            reqDate: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "ReqDate"))),
+            po: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "PO"))),
+            order: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "Order"))),
+            line: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "Line"))),
+            release: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "Release"))),
+            part: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "Part"))),
+            partDescription: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "PartDescription"))),
+            requiredQty: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "RequiredQty"))),
+            onHandQty: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "OnHandQty"))),
+            comments: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "Comments"))),
+            detailInventory: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "DetailInventory"))),
+            detailInventoryAction: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "DetailInventoryAction"))),
+            retry: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "Retry"))),
+            slot: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "Slot"))),
+            quantityExceedsUnshippedQty: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "QuantityExceedsUnshippedQty"))),
+            orderFullyShipped: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "OrderFullyShipped"))),
+            sessionExpiredText: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "SessionExpired"))),
+            // 防伪令牌失效时后端返回的文案（与 SessionExpired 语义相同，都必须识别，否则不跳登录页）
+            sessionChangedText: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "SessionChanged"))),
+            unknownError: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Common", "UnknownError"))),
+            packNumNotObtained: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "PackNumNotObtained"))),
+            shippingScheduleNotFoundSimple: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "ShippingScheduleNotFoundSimple"))),
+            queryShippingScheduleFailed: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "QueryShippingScheduleFailed"))),
+            queryingShippingSchedule: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "QueryingShippingSchedule"))),
+            poBarcodeFormatHint: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetText("Outbound", "PoBarcodeFormatHint")))
+        };
+
+        var barcodeParser = null;
+        var currentPlanShipQty = 0;  // 计划出货数量（来自 QueryShippingSchedule 的 PlanShipQty）
+        var currentShippedQty = 0;   // 已发货数量（来自 QueryShippingSchedule 的 shippedQty，BAQ SO_SchdUpdate.Calculated_reltotalqty）
+        var currentStockQty = 0;     // 库存数（来自 ValidateInventory 的 availableQty，所选批号的在手数量）
+        var currentOrderData = [];
+        var currentSortKey = null;
+        var currentSortOrder = null;
+        var toastTimer = null;
+
+        // —— searchOrders/validate AJAX 并发保护 & 进行中 Promise 去重（减少重复请求）
+        var __searchXhr = null;           // 上次未完成的 search 订单 AJAX 句柄（用于 abort，避免返回覆盖）
+        var __searchDebounceTimer = null; // search 防抖定时器（回车+点击双重触发时合并）
+        var __inFlight = {};              // 进行中 Promise 去重缓存：key -> Promise，避免重复打同一 Epicor
+
+        /** 轻量 HTML 转义：动态文本拼入 innerHTML 前统一处理，避免特殊字符破坏 DOM */
+        function __htmlEscape(v) {
+            if (v === null || v === undefined) return '';
+            v = String(v);
+            return v.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+        }
+        /** 生成"进行中 Promise 去重"的缓存 key */
+        function __pKey(prefix, parts) {
+            return prefix + ':' + parts.map(function (s) { return s == null ? '' : String(s); }).join('|');
+        }
+        /** 进行中 Promise 去重复用（不改变业务逻辑，只是避免同一参数并发重复打接口）
+         *  —— 相同 key 的调用，如果上一次 Promise 还未 settle（未 resolve/reject），直接返回上一次 Promise。
+         *  —— 完成后自动从 __inFlight 清除，下一轮会再次请求（保证结果新鲜度）。
+         */
+        function __useInFlight(key, factory) {
+            if (__inFlight[key]) return __inFlight[key];
+            var p = Promise.resolve().then(function () { return factory(); });
+            __inFlight[key] = p;
+            var cleanup = function () { delete __inFlight[key]; };
+            p.then(cleanup, cleanup);
+            return p;
+        }
+        /** CSRF 头统一读取（避免每次 AJAX 重复拼接两个 header，且只写一个 X-CSRF-TOKEN 即可） */
+        function __csrfHeader() {
+            var t = $('input[name="__RequestVerificationToken"]').val() || '';
+            return { 'X-CSRF-TOKEN': t };
+        }
+
+        /** 一次提交尝试内固定请求 ID（RFC4122 v4），随提交请求头 X-Request-ID 下发给服务端做幂等拦截；
+         *  失败 / 超时重试复用同一 ID（服务端据此拦截重复过账），业务成功后才重置。
+         */
+        var pendingRequestId = null;
+        function getRequestId() {
+            if (!pendingRequestId) {
+                pendingRequestId = (window.crypto && typeof crypto.randomUUID === 'function')
+                    ? crypto.randomUUID()
+                    : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                        var r = Math.random() * 16 | 0;
+                        var v = c === 'x' ? r : (r & 0x3 | 0x8);
+                        return v.toString(16);
+                    });
+            }
+            return pendingRequestId;
+        }
+        function resetRequestId() { pendingRequestId = null; }
+
+        $(document).ready(function () {
+            initializeBarcodeParser();
+
+            // ===== 订单表事件统一提升到文档级委托（只注册一次，不随每次 render 解绑重绑） =====
+            // 1. 订单 checkbox 选中/取消
+            $(document).on('change', '#ordersTable tbody input.order-select', function (e) {
+                e.stopPropagation();
+                __handleOrderSelectChange($(this), true);
+            });
+            // 2. 数据行点击（无 expand-row 占位行）
+            $(document).on('click', '#ordersTable tbody tr', function (e) {
+                return __handleOrderRowClick(this, e);
+            });
+            // 3. Stock Info 按钮：点击 / Enter / Space → 打开右侧抽屉（桌面）或底部弹层（手机）
+            $(document).on('click', '#ordersTable tbody .inv-arrow', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                var pn = $(this).attr('data-part');
+                __openInventoryDrawer(pn, $(this).closest('tr'));
+            }).on('keydown', '#ordersTable tbody .inv-arrow', function (e) {
+                if (e.key === 'Enter' || e.key === ' ' || e.keyCode === 13 || e.keyCode === 32) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    var pn = $(this).attr('data-part');
+                    __openInventoryDrawer(pn, $(this).closest('tr'));
+                }
+            });
+            // 4. 抽屉关闭：遮罩、关闭按钮、ESC
+            $(document).on('click', '#invDrawerOverlay, #invDrawerClose', function () { __closeInventoryDrawer(); })
+                       .on('keydown', function (e) { if (e.key === 'Escape' && __currentDrawerPart) __closeInventoryDrawer(); });
+            // ==========================================================================================
+
+            $('#salesOrderNo').val('');
+            $('#salesOrderLineNo').val('');
+            $('#orderRelNum').val('');
+
+            $('.scan-input').on('change', function () {
+                $(this).addClass('scan-highlight');
+                var self = this;
+                setTimeout(function() { $(self).removeClass('scan-highlight'); }, 500);
+            });
+
+            // Pack ID 按钮点击事件
+            $('#generatePackBtn').on('click', function () {
+                generatePackId();
+            });
+
+            // Pack ID 输入框变化时清除错误提示
+            $('#packId').on('input', function () {
+                $('#packIdError').html('');
+            });
+
+            // 销售订单号 Enter 事件 - 解析条码
+            $('#salesOrderNo').on('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleSalesOrderEnter();
+                }
+            });
+
+            // 销售订单行号 Enter 事件 - 跳转到发货批次号
+            $('#salesOrderLineNo').on('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    $('#orderRelNum').focus().select();
+                }
+            });
+
+            // 发货批次号 Enter 事件 - 触发验证
+            $('#orderRelNum').on('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    validateOrder().then(function(valid) {
+                        if (valid) {
+                            $('#materialCode').focus().select();
+                        }
+                    });
+                }
+            });
+
+            $('#materialCode').on('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    handleMaterialCodeEnter();
+                }
+            });
+
+            // 发货数量变化：实时刷新"计划出货数量/已发货数量/未出货数量"显示
+            $('#quantity').on('input', function () {
+                if ($('#orderQtyInfoDisplay').is(':visible')) {
+                    refreshOrderQtyInfo();
+                }
+            });
+
+            // 仓库代码 Enter 事件 - 集成 Scancode-parser.js 仓库条码解析
+            bindWarehouseScan({
+                warehouseInput: '#warehouseCode',
+                locationInput: '#location',
+                nextFocusInput: '#batchNo',
+                fallbackFocus: '#location'
+            });
+
+            // 批号字段 Enter 事件 - 跳转到数量
+            $('#batchNo').on('keydown', function (e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    $('#quantity').focus().select();
+                }
+            });
+
+            $('#outboundForm').on('submit', function (e) {
+                e.preventDefault();
+                submitForm();
+            });
+
+            $('#resetBtn').on('click', resetForm);
+            $('#cancelBtn').on('click', function () {
+                Swal.fire({
+                    title: localTexts.confirmCancel,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: localTexts.confirmButton,
+                    cancelButtonText: localTexts.cancelButtonText
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '/Home/Index';
+                    }
+                });
+            });
+
+            $('#searchOrdersBtn').on('click', function () {
+                var custID = $('#customerCodeInput').val().trim();
+                var custName = $('#customerNameInput').val().trim();
+                var orderNum = $('#orderNumInput').val().trim();
+                var poNum = $('#poNumInput').val().trim();
+                if (!custID && !custName && !orderNum && !poNum) {
+                    showMessage(localTexts.pleaseEnterCustomerInfo, 'warning');
+                    return;
+                }
+                searchOrders(custID, custName, orderNum, poNum);
+            });
+
+            // 客户代码/客户名称/订单号/采购订单号 输入框回车触发查询
+            $('#customerCodeInput, #customerNameInput, #orderNumInput, #poNumInput').on('keydown', function (e) {
+                if (e.which === 13) {
+                    e.preventDefault();
+                    var custID = $('#customerCodeInput').val().trim();
+                    var custName = $('#customerNameInput').val().trim();
+                    var orderNum = $('#orderNumInput').val().trim();
+                    var poNum = $('#poNumInput').val().trim();
+                    if (!custID && !custName && !orderNum && !poNum) {
+                        showMessage(localTexts.pleaseEnterCustomerInfo, 'warning');
+                        return;
+                    }
+                    searchOrders(custID, custName, orderNum, poNum);
+                }
+            });
+
+            $('#manualOrderCheckbox').on('change', function () {
+                if ($(this).is(':checked')) {
+                    $('.customer-search').show();
+                } else {
+                    $('.customer-search').hide();
+                    $('.orders-table-container').hide();
+                }
+            });
+
+            $(document).on('click', '#ordersTable thead th.sortable', function () {
+                var sortKey = $(this).data('sort-key');
+                if (sortKey) {
+                    sortTable(sortKey);
+                }
+            });
+        });
+
+        // 生成 Pack ID - 调用后端接口
+        async function generatePackId() {
+            var generateBtn = $('#generatePackBtn');
+            var originalHtml = generateBtn.html();
+            generateBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> ' + localTexts.generatingPackId);
+
+            try {
+                var response = await $.ajax({
+                    url: '/Outbound/GeneratePackId',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    headers: { 'X-CSRF-TOKEN': $('input[name="__RequestVerificationToken"]').val() }
+                });
+
+                if (!response || !response.success) {
+                    throw new Error(response?.message || localTexts.generatePackIdFailed);
+                }
+
+                var packNum = response.packNum;
+
+                if (packNum) {
+                    $('#packId').val(packNum);
+                    $('#packIdError').html('');
+                    // showMessage(localTexts.generatePackIdSuccess + ': ' + packNum, 'success');
+                } else {
+                    throw new Error(localTexts.packNumNotObtained);
+                }
+            } catch (error) {
+                console.error('生成 Pack ID 失败:', error);
+                showMessage(localTexts.generatePackIdFailed + ': ' + (error.message || localTexts.unknownError), 'error');
+                $('#packId').val('');
+            } finally {
+                generateBtn.prop('disabled', false).html(originalHtml);
+            }
+        }
+
+        // HTML 转义：动态消息（服务端响应/解析结果）插入 DOM 前统一转义，防止注入（与 CountView 同一实现）
+        function escapeHtml(str) {
+            if (str === null || str === undefined) return '';
+            return String(str).replace(/&/g, '&amp;')
+                              .replace(/</g, '&lt;')
+                              .replace(/>/g, '&gt;')
+                              .replace(/"/g, '&quot;')
+                              .replace(/'/g, '&#039;');
+        }
+
+        // 显示底部Toast提示（非错误消息使用）
+        // duration：可选，停留毫秒数，默认 2000（提交失败等关键错误可传更长值，避免操作员漏看）
+        function showToast(message, type, duration) {
+            if (toastTimer) {
+                clearTimeout(toastTimer);
+            }
+            $('.status-toast').remove();
+
+            var $toast = $('<div class="status-toast ' + type + '">' + escapeHtml(message) + '</div>');
+            $('body').append($toast);
+
+            toastTimer = setTimeout(function() {
+                $toast.fadeOut(300, function() {
+                    $(this).remove();
+                });
+                toastTimer = null;
+            }, duration || 2000);
+        }
+
+        /** 安全关闭可能残留的 SweetAlert 模态弹窗（避免模态层阻塞扫码输入）
+         *  Swal 未加载 / 未提供 isVisible 时静默跳过——否则异常会打断调用方，导致提示根本弹不出来。 */
+        function __closeSwalIfVisible() {
+            if (typeof Swal !== 'undefined' && typeof Swal.isVisible === 'function' && Swal.isVisible()) {
+                Swal.close();
+            }
+        }
+
+        // 通用消息提示 - 错误类型使用 SweetAlert2 模态弹窗（与 Issue/Index 一致）；其他类型使用底部 toast
+        // duration：可选，非错误类型停留毫秒数，默认 2000
+        function showMessage(message, type, duration) {
+            if (type === 'error') {
+                Swal.fire({
+                    icon: 'error',
+                    title: localTexts.commonError,
+                    text: message,
+                    confirmButtonText: localTexts.okButton,
+                    timer: 3000,
+                    timerProgressBar: true
+                });
+            } else {
+                showToast(message, type, duration);
+            }
+        }
+
+        /**
+         * 判定后端文案是否属于「会话/登录态失效」（此时应提示并跳回登录页）。
+         * 后端有两类文案，必须都识别，否则只会显示提示而不跳转，操作员需手动重新登录：
+         *   1. 会话过期（UnauthorizedAccessException / Outbound.SessionExpired）→「登录已过期，请重新登录」
+         *   2. 防伪令牌失效（AntiforgeryValidationException，GlobalExceptionMiddleware）
+         *      →「登录状态已变更，请重新登录」
+         * 参数 message：后端返回的错误文案
+         * 返回：true=属于会话/登录态失效
+         */
+        function isSessionExpiredText(message) {
+            if (!message) return false;
+            var text = String(message);
+            var markers = [localTexts.sessionExpiredText, localTexts.sessionChangedText];
+            for (var i = 0; i < markers.length; i++) {
+                if (markers[i] && text.indexOf(markers[i]) >= 0) return true;
+            }
+            return false;
+        }
+
+        /**
+         * 判定 AJAX 失败是否属于「会话/登录态失效」（不依赖文案，界面语言无关）。
+         * 依据：
+         *   - HTTP 401 / 302：会话失效；
+         *   - 响应体 errorCode 为 SessionExpired / SessionChanged（GlobalExceptionMiddleware 写入）。
+         * 注意：不能用「HTTP 400 且响应体为空」来推断。中间件已保证防伪校验失败的请求一定带回
+         *       errorCode，而"其它原因的空 400"（例如某个 Action 直接 return BadRequest()）会被
+         *       中间件补上普通 JSON 提示，若仍按空 400 推断，会把操作员误踢回登录页。
+         * 参数 xhr：jQuery 的 jqXHR 对象
+         * 返回：true=应跳转登录页
+         */
+        function isSessionFailureXhr(xhr) {
+            if (!xhr) return false;
+            if (xhr.status === 401 || xhr.status === 302) return true;
+
+            var body = xhr.responseJSON;
+            if (body && (body.errorCode === 'SessionExpired' || body.errorCode === 'SessionChanged')) return true;
+
+            return false;
+        }
+
+        /** 会话/登录态失效的展示与跳转：提示 + 1.5s 后回登录页 */
+        function redirectToLoginWithNotice(message) {
+            var text = message || localTexts.sessionExpiredText;
+            __closeSwalIfVisible();
+            showToast(text, 'error');
+            setTimeout(function () {
+                window.location.href = '/Account/Login';
+            }, 1500);
+        }
+
+        /** 检测后端返回是否为会话过期，若是则提示并跳转登录页 */
+        function handleSessionIfExpired(message) {
+            if (!isSessionExpiredText(message)) return false;
+            redirectToLoginWithNotice(message);
+            return true;
+        }
+
+        /**
+         * 提交发货失败提示：把后端返回的具体错误信息用「底部红色 toast」呈现（与订单/库存校验失败通道一致）。
+         * 停留时长 6 秒（默认 2 秒），避免操作员在连续扫码时漏看。
+         * 参数 message：后端返回的错误信息（Epicor 业务错误 / 校验失败原因 / 接口调用失败）
+         */
+        function showSubmitError(message) {
+            var text = (message === undefined || message === null || message === '') ? localTexts.submitFailed : String(message);
+
+            Swal.fire({
+                icon: 'error',
+                title: localTexts.commonError,
+                text: text,
+                confirmButtonText: localTexts.okButton
+            });
+        }
+
+        /** 清除提交发货失败提示条（下次提交、提交成功、重置表单时调用） */
+        function clearSubmitError() {
+            $('#submitErrorBanner').hide().empty();
+        }
+
+        /**
+         * 从 AJAX 失败响应中提取后端返回的错误文案。
+         * 依次尝试：JSON 体 message → 纯文本响应体（HTML 会被剥离标签并截断）→ HTTP 状态码。
+         * 参数 xhr：jQuery 的 jqXHR 对象
+         * 返回：可直接展示给操作员的错误文案；无可用信息时返回空串
+         */
+        function extractServerError(xhr) {
+            if (!xhr) return '';
+
+            var data = xhr.responseJSON;
+            if (data && data.message) return String(data.message);
+            if (data && data.title) return String(data.title);
+
+            var raw = xhr.responseText;
+            if (raw) {
+                var text = String(raw).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+                if (text) return text.length > 300 ? text.substring(0, 300) + '...' : text;
+            }
+
+            if (xhr.status) {
+                return 'HTTP ' + xhr.status + (xhr.statusText ? ' ' + xhr.statusText : '');
+            }
+            return '';
+        }
+
+        function initializeBarcodeParser() {
+            try {
+                if (typeof window.BarcodeParser !== 'undefined') {
+                    barcodeParser = new window.BarcodeParser();
+                    // showMessage(localTexts.parserReady, 'success');
+                } else {
+                    throw new Error('BarcodeParser not defined');
+                }
+            } catch (error) {
+                console.error('Parser init failed:', error);
+                showMessage(localTexts.parserInitFailed, 'error');
+            }
+        }
+
+        function sortTable(sortKey) {
+            if (!currentOrderData || currentOrderData.length === 0) return;
+
+            if (currentSortKey === sortKey) {
+                currentSortOrder = currentSortOrder === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSortKey = sortKey;
+                currentSortOrder = 'asc';
+            }
+
+            updateSortHeaderStyle();
+
+            // —— 用 slice() 浅拷贝即可，无需 JSON.parse(JSON.stringify) 深拷贝。
+            //    currentOrderData 元素为普通对象，sort 比较不修改对象属性，浅拷贝足以隔离原数组顺序。
+            var sortedData = currentOrderData.slice();
+            sortedData.sort(function (a, b) {
+                var valA, valB;
+                switch (sortKey) {
+                    case 'reqDate':
+                        valA = a.customerReqDate || '';
+                        valB = b.customerReqDate || '';
+                        break;
+                    case 'customerCode':
+                        valA = a.custNum || '';
+                        valB = b.custNum || '';
+                        break;
+                    case 'customerName':
+                        valA = a.custName || '';
+                        valB = b.custName || '';
+                        break;
+                    case 'po':
+                        valA = a.po || '';
+                        valB = b.po || '';
+                        break;
+                    case 'order':
+                        valA = a.order || '';
+                        valB = b.order || '';
+                        break;
+                    default:
+                        return 0;
+                }
+
+                if (sortKey === 'reqDate') {
+                    var dateA = parseDate(valA);
+                    var dateB = parseDate(valB);
+                    if (dateA && dateB) {
+                        return currentSortOrder === 'asc' ? dateA - dateB : dateB - dateA;
+                    }
+                }
+
+                var strA = String(valA).toLowerCase();
+                var strB = String(valB).toLowerCase();
+                if (currentSortOrder === 'asc') {
+                    return strA.localeCompare(strB);
+                } else {
+                    return strB.localeCompare(strA);
+                }
+            });
+
+            // 关键点：render 使用数组下标作为 data-index，后续行点击、勾选都通过 __getOrderByIndex 回查 currentOrderData。
+            // 因此排序后必须把 currentOrderData 也更新为排序后的数组，否则会出现"点了 A 行，回填的却是 B 行"的错位。
+            currentOrderData = sortedData;
+            renderOrdersTableBody(currentOrderData);
+            $('#ordersTableWrapper').scrollTop(0);
+        }
+
+        function parseDate(dateStr) {
+            if (!dateStr) return null;
+            var date = new Date(dateStr);
+            if (!isNaN(date.getTime())) return date;
+            var parts = dateStr.split(/[-/]/);
+            if (parts.length === 3) {
+                if (parts[0].length === 4) {
+                    return new Date(parts[0], parts[1] - 1, parts[2]);
+                } else {
+                    return new Date(parts[2], parts[0] - 1, parts[1]);
+                }
+            }
+            return null;
+        }
+
+        function updateSortHeaderStyle() {
+            $('#ordersTable thead th.sortable').removeClass('sort-asc sort-desc');
+            if (currentSortKey) {
+                var $th = $('#ordersTable thead th[data-sort-key="' + currentSortKey + '"]');
+                if (currentSortOrder === 'asc') {
+                    $th.addClass('sort-asc');
+                } else {
+                    $th.addClass('sort-desc');
+                }
+            }
+        }
+
+        // ============= 扫码发货公共辅助 =============
+        // trySplitPoRel 由 BarcodeParser.splitPoRel 静态方法提供（双页复用），本页直接调用。
+
+        /**
+         * 从原始扫码字符串判断属于哪种条码：
+         * - "PART:" + "PO:" → PART+PO 模式（PO 值拆三段 → PONum/OrderLine/OrderRelNum）
+         * 返回 { mode: 'po'|'poInvalid'|'none', payload:{...} }
+         */
+        function buildShippingSchedulePayload(rawInput, parsed) {
+            var d = (parsed && parsed.data) ? parsed.data : {};
+            var raw = (rawInput || '').toString();
+
+            // 键检测改用 BarcodeParser 键组常量构造（消除第三份手写键清单，与解析器单一事实来源）
+            var hasPartKey  = BarcodeParser.buildKeyPattern(BarcodeParser.PART_KEY_ALIASES).test(raw);
+            var hasPoKey    = BarcodeParser.buildKeyPattern(BarcodeParser.PO_KEY_ALIASES).test(raw);
+
+            var hasMaterial    = !!d.materialCode;
+            var hasWorkOrderNo = !!d.workOrderNo;
+
+            // 判定顺序：PART+PO → none
+            if (hasPartKey && hasPoKey && hasMaterial && hasWorkOrderNo) {
+                var split = BarcodeParser.splitPoRel(d.workOrderNo);
+                if (split.ok) {
+                    return {
+                        mode: 'po',
+                        payload: {
+                            PartNum: d.materialCode || '',
+                            PONum: split.poNum,
+                            OrderLine: split.orderLine,
+                            OrderRelNum: split.orderRelNum
+                        }
+                    };
+                }
+                // B4：PART+PO 条码但 PO 值不是"号-行-批"三段格式 → 明确失败，
+                // 不静默降级到非条码路径（否则用户扫码后无任何反馈）。
+                return { mode: 'poInvalid', payload: {} };
+            }
+
+            return { mode: 'none', payload: {} };
+        }
+
+        /** 把 QueryShippingSchedule 的成功响应回填到对应栏位 */
+        function applyShippingScheduleResponse(resp) {
+            if (!resp || !resp.success) return;
+            $('#salesOrderNo').val(resp.orderNum || '');
+            $('#salesOrderLineNo').val(resp.orderLine || '');
+            $('#orderRelNum').val(resp.orderRelNum || '');
+
+            // 批次号/库位填充逻辑：
+            // 1) 库存仅一条 → 自动填充批号/仓库/库位/单位；
+            // 2) 库存多条   → 不自动填充（清空批号/库位），全部以单选框显示，必须手工选择；
+            // 3) 无库存列表 → 回退为工单号，仓库/库位/单位用后端默认值
+            var lots = resp.lotList || [];
+            if (lots.length === 1) {
+                $('#batchNo').val(lots[0].lotNum || '');
+                if (lots[0].warehouseCode) $('#warehouseCode').val(lots[0].warehouseCode);
+                if (lots[0].binNum) $('#location').val(lots[0].binNum);
+                if (lots[0].unit) $('#unit').val(lots[0].unit);
+                $('#lotRadioList').empty().hide();
+            } else if (lots.length > 1) {
+                $('#batchNo').val('');
+                $('#location').val('');
+                renderLotRadioButtons(lots);
+            } else {
+                $('#batchNo').val(resp.jobNum || '');
+                if (resp.unit) $('#unit').val(resp.unit);
+                if (resp.warehouseCode) $('#warehouseCode').val(resp.warehouseCode);
+                if (resp.binNum) $('#location').val(resp.binNum);
+                $('#lotRadioList').empty().hide();
+            }
+            // 单位默认取后端返回值（多条库存选中批号后会被覆盖更新），避免扫码校验时单位为空
+            if (resp.unit) $('#unit').val(resp.unit);
+            // 记录计划出货数量与已发货数量，供后续校验与显示使用
+            currentPlanShipQty = parseFloat(resp.planShipQty) || 0;
+            currentShippedQty = parseFloat(resp.shippedQty) || 0;
+            currentStockQty = 0;  // 新发货计划意味着旧库存数失效，避免与下一单的计划/已发货混显
+        }
+
+        /** 统一封装 QueryShippingSchedule AJAX 调用 + 成功回填 + 失败清空订单字段
+         *  —— 相同 payload（JSON 排序后拼接为 key）的进行中请求复用，避免重复触发 Epicor。
+         */
+        async function queryShippingSchedule(payload) {
+            try {
+                // 将 payload 序列化为稳定字符串作为 key（对象键顺序不固定时 JSON.stringify 差异很小，此处按用户实际参数基本固定，不会错）
+                var key = 'qss:' + JSON.stringify(payload);
+                var resp = await __useInFlight(key, function () {
+                    return $.ajax({
+                        url: '/Outbound/QueryShippingSchedule',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        headers: __csrfHeader(),
+                        data: JSON.stringify(payload)
+                    });
+                });
+                if (resp && resp.success) {
+                    applyShippingScheduleResponse(resp);
+                    return true;
+                }
+                if (resp && handleSessionIfExpired(resp.message)) return false;
+                showMessage(resp?.message || localTexts.shippingScheduleNotFoundSimple, 'warning');
+                // 未找到发货计划 → 清空所有输入框（保留 packId），聚焦工单号/订单号输入框
+                if (resp && resp.code === 'ShippingScheduleNotFound') {
+                    clearAllFieldsExceptPackId();
+                    $('#salesOrderNo').focus().select();
+                } else {
+                    // 其他失败：清空物料编号与发货数量
+                    if (resp && resp.code === 'NoAvailableInventory') {
+                        $('#materialCode, #quantity').val('');
+                    }
+                    $('#salesOrderNo, #salesOrderLineNo, #orderRelNum').val('');
+                }
+                return false;
+            } catch (xhr) {
+                if (isSessionFailureXhr(xhr)) {
+                    handleSessionIfExpired(localTexts.sessionExpiredText);
+                } else {
+                    showMessage(localTexts.queryShippingScheduleFailed, 'error');
+                }
+                $('#salesOrderNo, #salesOrderLineNo, #orderRelNum').val('');
+                return false;
+            }
+        }
+
+        /** 将日期字符串格式化为 mm/dd/yyyy（避免 UTC 时区偏移） */
+        function formatLotDate(dateStr) {
+            if (!dateStr) return '';
+            // 匹配 yyyy-MM-dd 或 yyyy/MM/dd 格式，直接重组避免 new Date 时区问题
+            var m = dateStr.match(/(\d{4})[-\/](\d{1,2})[-\/](\d{1,2})/);
+            if (m) {
+                return m[2].padStart(2, '0') + '/' + m[3].padStart(2, '0') + '/' + m[1];
+            }
+            // 回退：尝试 Date 对象解析
+            var d = new Date(dateStr);
+            if (!isNaN(d.getTime())) {
+                return String(d.getMonth() + 1).padStart(2, '0') + '/' +
+                    String(d.getDate()).padStart(2, '0') + '/' + d.getFullYear();
+            }
+            return dateStr;
+        }
+
+        /** 渲染批号单选框（多条库存时不自动填充，全部列出供手工选择；格式：批号(库位;日期：mm/dd/yyyy)） */
+        function renderLotRadioButtons(lotList) {
+            var $container = $('#lotRadioList');
+            $container.empty();
+
+            if (!lotList || lotList.length <= 1) {
+                $container.hide();
+                return;
+            }
+
+            // 全部批号以单选框显示（格式：批号(库位;日期：mm/dd/yyyy)）
+            for (var i = 0; i < lotList.length; i++) {
+                var lot = lotList[i];
+                var formattedDate = formatLotDate(lot.firstRefDate);
+                var displayText = lot.lotNum + '(' + (lot.binNum || '') +
+                    (formattedDate ? ';' + localTexts.lotDateLabel + formattedDate : '') + ')';
+                var $label = $('<label class="lot-radio-label">' +
+                    '<input type="radio" name="lotSelect" value="' + i + '"> ' +
+                    '<span>' + displayText + '</span></label>');
+                $container.append($label);
+            }
+            $container.show();
+
+            // 选中某个批号时同步回填批号/仓库/库位/单位（格式：批号(库位;日期：mm/dd/yyyy)）
+            $container.find('input[name="lotSelect"]').on('change', function () {
+                $container.find('.lot-radio-label').removeClass('checked');
+                $(this).closest('.lot-radio-label').addClass('checked');
+                var idx = parseInt($(this).val());
+                var lot = lotList[idx];
+                if (lot) {
+                    // 点击批号：把该库存行的 仓库代码 / 库位 / 批次号 解析到对应文本框
+                    $('#batchNo').val(lot.lotNum || '');
+                    $('#warehouseCode').val(lot.warehouseCode || '');
+                    $('#location').val(lot.binNum || '');
+                    if (lot.unit) $('#unit').val(lot.unit);
+                }
+                // 按所选批号（物料+仓库+库位+批次）查询库存并刷新"库存数"显示
+                validateInventory();
+            });
+        }
+
+        /** 物料校验失败后的统一兜底：调 validateInventory → 按结果跳焦点或清空 */
+        async function focusAfterMaterialValidation() {
+            var valid = await validateInventory();
+            if (valid) {
+                var batchNo = $('#batchNo').val().trim();
+                setTimeout(function() {
+                    (batchNo ? $('#quantity') : $('#batchNo')).focus().select();
+                }, 100);
+            } else {
+                clearMaterialFields();
+                hideOrderQtyInfo();  // 重置计划出货/已发货/库存数，避免下次扫码使用旧值
+                $('#materialCode').focus();
+            }
+        }
+
+        async function handleSalesOrderEnter() {
+            var inputVal = $('#salesOrderNo').val().trim();
+            if (!inputVal) {
+                showMessage(localTexts.salesOrderRequired, 'warning');
+                $('#salesOrderNo').focus();
+                return;
+            }
+
+            if (barcodeParser) {
+                try {
+                    var result = barcodeParser.parse(inputVal);
+                    var d = result.data || {};
+                    var hasSalesOrder = !!d.salesOrder;
+                    var hasOrderLine = !!d.orderLine;
+
+                    // 需求 ①：扫码阶段只填物料编号 & 数量；单位与批次号不解析回填
+                    if (result.success) {
+                        if (d.materialCode)  $('#materialCode').val(d.materialCode);
+                        if (d.quantity)      $('#quantity').val(d.quantity);
+                        if (d.warehouseCode) $('#warehouseCode').val(d.warehouseCode);
+                        if (d.binNum)        $('#location').val(d.binNum);
+                    }
+
+                    // === PART+PO 条码 → 查发货计划 ===
+                    if (result.success && (d.workOrderNo || d.materialCode)) {
+                        var build = buildShippingSchedulePayload(inputVal, result);
+                        // B4：PART+PO 条码但 PO 值不是"号-行-批"三段格式 → 明确提示并终止降级链
+                        if (build.mode === 'poInvalid') {
+                            showToast(localTexts.poBarcodeFormatHint, 'warning');
+                            return;
+                        }
+                        if (build.mode === 'po') {
+                            $('#salesOrderNo').val(d.workOrderNo || '');
+                            showToast(localTexts.queryingShippingSchedule, 'info');
+                            var ok = await queryShippingSchedule(build.payload);
+                            if (ok) {
+                                var valid = await validateOrder();
+                                // validateOrder 返回 false 时不隐藏信息行：超量场景已弹窗并保留显示（未出货: 0），
+                                // 其余失败场景（订单无效/接口异常/缺单号）validateOrder 内部已自行 hideOrderQtyInfo
+                                if (valid) {
+                                    // 订单验证通过后，最后一步：料号库存验证（校验仓库/库位/批次库存是否充足）
+                                    var invValid = await validateInventory();
+                                    if (invValid) {
+                                        setTimeout(function() { $('#warehouseCode').focus().select(); }, 100);
+                                    } else {
+                                        clearMaterialFields();
+                                        hideOrderQtyInfo();
+                                        $('#materialCode').focus();
+                                    }
+                                }
+                            } else {
+                                $('#salesOrderNo').focus();
+                            }
+                            return;
+                        }
+                    }
+
+                    // === 销售订单条码 ===
+                    if (result.success && (result.type === 'order' || (hasSalesOrder && hasOrderLine))) {
+                        $('#salesOrderNo').val(d.salesOrder || '');
+                        $('#salesOrderLineNo').val(d.orderLine || '');
+                        if (d.orderRelNum) $('#orderRelNum').val(d.orderRelNum);
+                        var valid2 = await validateOrder();
+                        if (valid2) {
+                            $('#materialCode').focus().select();
+                        } else {
+                            $('#salesOrderNo, #salesOrderLineNo, #orderRelNum').val('');
+                            $('#salesOrderNo').focus();
+                        }
+                        return;
+                    }
+                } catch (e) { }
+            }
+
+            // 非条码格式，跳转到行号字段
+            $('#salesOrderLineNo').focus().select();
+        }
+
+        async function handleMaterialCodeEnter() {
+            var inputVal = $('#materialCode').val().trim();
+            if (!inputVal) {
+                showMessage(localTexts.materialCodeRequired, 'warning');
+                $('#materialCode').focus();
+                return;
+            }
+
+            if (barcodeParser) {
+                try {
+                    var result = barcodeParser.parse(inputVal);
+                    if (result.success && (result.type === 'material' || result.data.materialCode)) {
+                        var data = result.data;
+                        var hasWorkOrder = !!data.workOrderNo;
+                        var hasMaterial = !!data.materialCode;
+                        var hasSalesOrder = !!$('#salesOrderNo').val().trim();
+
+                        // 需求 ①：扫码阶段只填物料编号 & 数量；单位与批次号不解析回填
+                        $('#materialCode').val(data.materialCode || '');
+                        $('#quantity').val(data.quantity || '');
+                        $('#warehouseCode').val(data.warehouseCode || '');
+                        $('#location').val(data.binNum || '');
+
+                        // PART+PO 条码且销售订单未填 → 查发货计划
+                        if (hasWorkOrder && hasMaterial && !hasSalesOrder) {
+                            var build = buildShippingSchedulePayload(inputVal, result);
+                            // B4：PART+PO 条码但 PO 值不是"号-行-批"三段格式 → 明确提示并终止降级链
+                            if (build.mode === 'poInvalid') {
+                                showToast(localTexts.poBarcodeFormatHint, 'warning');
+                                return;
+                            }
+                            if (build.mode === 'po') {
+                                $('#salesOrderNo').val(data.workOrderNo || '');
+                                showToast(localTexts.queryingShippingSchedule, 'info');
+                                var ok = await queryShippingSchedule(build.payload);
+                                if (ok) {
+                                    var valid = await validateOrder();
+                                    // validateOrder 返回 false 时不隐藏信息行：超量场景已弹窗并保留显示（未出货: 0），
+                                    // 其余失败场景（订单无效/接口异常/缺单号）validateOrder 内部已自行 hideOrderQtyInfo
+                                    if (valid) {
+                                        // 订单验证通过后，最后一步：料号库存验证（校验仓库/库位/批次库存是否充足）
+                                        var invValid = await validateInventory();
+                                        if (invValid) {
+                                            setTimeout(function() { $('#warehouseCode').focus().select(); }, 100);
+                                        } else {
+                                            clearMaterialFields();
+                                            hideOrderQtyInfo();  // 重置计划/包装数量，避免下次扫码使用旧值
+                                            $('#materialCode').focus();
+                                        }
+                                    }
+                                } else {
+                                    // 查询失败 → 走库存校验兜底
+                                    await focusAfterMaterialValidation();
+                                }
+                                return;
+                            }
+                        }
+
+                        // 条码不含仓库/库位信息时（如 PartNum:xxx;Qty:1;UOM:PCS;LotNum:xxx），
+                        // 填充全部字段（含单位/批次），跳过库存校验，聚焦仓库字段供用户手动录入
+                        if (!data.warehouseCode && !data.binNum) {
+                            if (data.unit) $('#unit').val(data.unit);
+                            if (data.lotNum) $('#batchNo').val(data.lotNum);
+                            setTimeout(function() { $('#warehouseCode').focus().select(); }, 100);
+                            return;
+                        }
+
+                        // 普通物料条码 → 直接库存校验
+                        await focusAfterMaterialValidation();
+                        return;
+                    }
+                } catch (e) { }
+            }
+
+            // 非条码 → 直接库存校验
+            await focusAfterMaterialValidation();
+        }
+
+        // 隐藏并清空出货数量信息（红色单行显示）
+        function hideOrderQtyInfo() {
+            $('#dispOrderQtyInfoLine').text('');
+            currentPlanShipQty = 0;
+            currentShippedQty = 0;
+            currentStockQty = 0;
+            $('#orderQtyInfoDisplay').hide();
+        }
+
+        /** 数量格式化：去掉浮点尾巴（如 6.0000000001 → 6），最多保留 2 位小数 */
+        function fmtQty(v) {
+            var n = parseFloat(v) || 0;
+            return (Math.round(n * 100) / 100).toString();
+        }
+
+        /**
+         * 生成出货数量信息整行文案：模板取自语言资源 OrderQtyInfoFormat（中英文）
+         * 占位符：{0}=计划出货 {1}=已发货数量 {2}=未出货 {3}=库存数
+         */
+        function formatOrderQtyInfoLine(planShipQty, shippedQty, unshippedQty, stockQty) {
+            var fmt = $('#orderQtyInfoDisplay').data('format') || '';
+            if (!fmt) return '';
+
+            return fmt.replace('{0}', fmtQty(planShipQty)).replace('{1}', fmtQty(shippedQty))
+                .replace('{2}', fmtQty(unshippedQty)).replace('{3}', fmtQty(stockQty));
+        }
+
+        // 刷新出货数量信息显示：计划出货数量 / 已发货数量 / 未出货数量 / 库存数
+        // 扫码数量 = 前端发货数量(输入框)（DB 累计 ScanQty 已随本地 ShippingSchedule 表路径一并移除，恒为 0）
+        // 未出货数量 = 计划出货数量 - 已发货数量 - 扫码数量（小于 0 时取 0）
+        // 库存数 = 所选批号的库存数（ValidateInventory 返回）
+        function refreshOrderQtyInfo() {
+            var planShipQty = parseFloat(currentPlanShipQty) || 0;
+            var shippedQty = parseFloat(currentShippedQty) || 0;
+            var stockQty = parseFloat(currentStockQty) || 0;
+            var inputQty = parseFloat($('#quantity').val()) || 0;
+            var totalScanQty = inputQty;
+            var diff = planShipQty - shippedQty - totalScanQty;
+            var unshippedQty = diff > 0 ? diff : 0;
+            $('#dispOrderQtyInfoLine').text(formatOrderQtyInfoLine(planShipQty, shippedQty, unshippedQty, stockQty));
+            $('#orderQtyInfoDisplay').show();
+        }
+
+        async function validateOrder() {
+            var orderNo = $('#salesOrderNo').val().trim();
+            var orderLine = $('#salesOrderLineNo').val().trim();
+            var orderRelNum = $('#orderRelNum').val().trim();
+
+            if (!orderNo || !orderLine) {
+                hideOrderQtyInfo();
+                showMessage(localTexts.orderAndLineRequired, 'error');
+                return false;
+            }
+
+            if (!orderRelNum) {
+                showMessage(localTexts.orderRelNumRequired, 'warning');
+                $('#orderRelNum').focus();
+                return false;
+            }
+
+            try {
+                // —— 相同 (订单号,行号,发货行号) 正在进行中的验证，复用同一次 Promise（用户点击 checkbox + 跳转 focus 触发 2 次 validateOrder 的常见场景合并）
+                var key = __pKey('vo', [orderNo, orderLine, orderRelNum]);
+                var response = await __useInFlight(key, function () {
+                    return $.ajax({
+                        url: '/Outbound/ValidateOrder',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({
+                            orderNum: orderNo,
+                            orderLine: parseInt(orderLine),
+                            orderRelNum: parseInt(orderRelNum)
+                        }),
+                        headers: __csrfHeader()
+                    });
+                });
+                if (response.success) {
+                    // 红色单行显示统一由 refreshOrderQtyInfo 渲染，避免在此重复一套相同计算
+                    refreshOrderQtyInfo();
+
+                    // 验证：扫码数量超过「计划出货 − 已发货数量」（即未出货数量）时提示，
+                    // 与显示行的"未出货"口径保持一致
+                    // 不清空表单，仅将发货数量重置为 0，保留其他输入供用户调整后重新提交
+                    var planShipQty = parseFloat(currentPlanShipQty) || 0;
+                    var shippedQty = parseFloat(currentShippedQty) || 0;
+                    var inputQty = parseFloat($('#quantity').val()) || 0;
+                    var allowedQty = planShipQty - shippedQty;
+                    if (planShipQty > 0 && inputQty > allowedQty) {
+                        showMessage(localTexts.quantityExceedsUnshippedQty.replace('{0}', fmtQty(inputQty)).replace('{1}', fmtQty(allowedQty > 0 ? allowedQty : 0)), 'error');
+                        // 上面 response.success 时已用扫码数量渲染过信息行（未出货已被钳到 0），
+                        // 这里别再调 refreshOrderQtyInfo()：数量重置为 0 后再刷会把未出货刷回正数，与提示矛盾
+                        $('#quantity').val(0);
+                        $('#quantity').focus().select();
+                        return false;
+                    }
+                    return true;
+                } else {
+                    hideOrderQtyInfo();
+                    if (handleSessionIfExpired(response.message)) return false;
+                    showMessage(response.message || localTexts.orderValidationFailed, 'error');
+                    return false;
+                }
+            } catch (error) {
+                hideOrderQtyInfo();
+                if (isSessionFailureXhr(error)) {
+                    handleSessionIfExpired(localTexts.sessionExpiredText);
+                } else {
+                    showMessage(localTexts.networkError, 'error');
+                }
+                return false;
+            }
+        }
+
+        async function validateInventory() {
+            var orderNo = $('#salesOrderNo').val().trim();
+            var orderLine = $('#salesOrderLineNo').val().trim();
+            var orderRelNum = $('#orderRelNum').val().trim();
+            var partNum = $('#materialCode').val().trim();
+            var unit = $('#unit').val().trim();
+            var whseCode = $('#warehouseCode').val().trim();
+            var binNum = $('#location').val().trim();
+            var lotNum = $('#batchNo').val().trim();
+            var quantity = parseFloat($('#quantity').val()) || 0;
+
+            if (!orderNo || !orderLine) {
+                showMessage(localTexts.orderAndLineRequiredForInventory, 'error');
+                return false;
+            }
+            if (!orderRelNum) {
+                showMessage(localTexts.orderRelNumRequired, 'warning');
+                $('#orderRelNum').focus();
+                return false;
+            }
+            if (!partNum) {
+                showMessage(localTexts.materialCodeRequiredMsg, 'error');
+                return false;
+            }
+            try {
+                // —— 相同参数的库存校验进行中 Promise 去重
+                var key = __pKey('vi', [orderNo, orderLine, orderRelNum, partNum, unit, whseCode, binNum, lotNum, quantity]);
+                var response = await __useInFlight(key, function () {
+                    return $.ajax({
+                        url: '/Outbound/ValidateInventory',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({
+                            orderNum: orderNo,
+                            orderLine: parseInt(orderLine),
+                            orderRelNum: parseInt(orderRelNum),
+                            partNum: partNum,
+                            Unit: unit,
+                            whseCode: whseCode,
+                            binNum: binNum,
+                            lotNumber: lotNum
+                        }),
+                        headers: __csrfHeader()
+                    });
+                });
+                if (response.success) {
+                    // showMessage(response.message || localTexts.inventoryValidationPassed, 'success');
+                    // 记录所选批号的库存数，并刷新"计划出货/已发货数量/未出货/库存数"显示
+                    currentStockQty = parseFloat(response.availableQty) || 0;
+                    refreshOrderQtyInfo();
+                    return true;
+                } else {
+                    if (handleSessionIfExpired(response.message)) return false;
+                    showMessage(response.message || localTexts.inventoryValidationFailed, 'error');
+                    return false;
+                }
+            } catch (error) {
+                // AJAX 网络错误（含 session 完全失效导致 302/401，或防伪令牌失效导致的 400）
+                if (isSessionFailureXhr(error)) {
+                    handleSessionIfExpired(localTexts.sessionExpiredText);
+                } else {
+                    showMessage(localTexts.networkError, 'error');
+                }
+                return false;
+            }
+        }
+
+        function clearMaterialFields() {
+            $('#materialCode, #quantity, #unit, #warehouseCode, #location, #batchNo').val('');
+            $('#lotRadioList').empty().hide();
+        }
+
+        /**
+         * 清空前端页面所有输入值，仅保留 packId
+         * 同时清空错误提示、重置计划/已扫数量状态、隐藏出货数量信息
+         */
+        function clearAllFieldsExceptPackId() {
+            $('#salesOrderNo, #salesOrderLineNo, #orderRelNum, ' +
+            '#materialCode, #quantity, #unit, #warehouseCode, #location, #batchNo').val('');
+            $('#salesOrderError, #salesOrderLineError, #orderRelNumError, ' +
+            '#materialCodeError, #quantityError, #batchNoError').html('');
+            $('#lotRadioList').empty().hide();
+            hideOrderQtyInfo();
+        }
+
+        function validateForm() {
+            var packId = $('#packId').val().trim();
+            var salesOrder = $('#salesOrderNo').val().trim();
+            var orderLine = $('#salesOrderLineNo').val().trim();
+            var orderRelNum = $('#orderRelNum').val().trim();
+            var materialCode = $('#materialCode').val().trim();
+            var quantity = parseFloat($('#quantity').val());
+            var batchNo = $('#batchNo').val().trim();
+
+            // Pack ID 必填验证
+            if (!packId) {
+                $('#packIdError').html('<i class="fas fa-exclamation-circle"></i> ' + localTexts.packIdRequired);
+                $('#packId').focus();
+                return false;
+            }
+            $('#packIdError').html('');
+
+            if (!salesOrder) {
+                $('#salesOrderError').html('<i class="fas fa-exclamation-circle"></i> ' + localTexts.salesOrderRequired);
+                return false;
+            }
+            $('#salesOrderError').html('');
+
+            if (!orderLine) {
+                $('#salesOrderLineError').html('<i class="fas fa-exclamation-circle"></i> ' + localTexts.salesOrderLineRequired);
+                return false;
+            }
+            $('#salesOrderLineError').html('');
+
+            if (!orderRelNum) {
+                $('#orderRelNumError').html('<i class="fas fa-exclamation-circle"></i> ' + localTexts.orderRelNumRequired);
+                return false;
+            }
+            $('#orderRelNumError').html('');
+
+            if (!materialCode) {
+                $('#materialCodeError').html('<i class="fas fa-exclamation-circle"></i> ' + localTexts.materialCodeRequired);
+                return false;
+            }
+            $('#materialCodeError').html('');
+
+            if (!quantity || quantity <= 0) {
+                $('#quantityError').html('<i class="fas fa-exclamation-circle"></i> ' + localTexts.quantityRequired);
+                return false;
+            }
+            $('#quantityError').html('');
+
+            // 未出货数量 = 计划出货数量 - 已发货数量 - 已扫码数量（与红色显示行的未出货口径一致）
+            // 已扫码数量已随本地 ShippingSchedule 表路径移除，恒为 0
+            var planShipQty = parseFloat(currentPlanShipQty) || 0;
+            var shippedQty = parseFloat(currentShippedQty) || 0;
+            var unshippedQty = planShipQty - shippedQty;
+
+            // 当未出货数量为 0（或小于 0）时，提示该订单已全部发货完成
+            if (planShipQty > 0 && unshippedQty <= 0) {
+                showSubmitError(localTexts.orderFullyShipped.replace('{0}', materialCode));
+                return false;
+            }
+
+            // 扫码数量不能超过未出货数量（计划出货数量 - 已发货数量）
+            // 不清空表单，仅将发货数量重置为 0，保留其他输入供用户调整后重新提交
+            if (planShipQty > 0 && quantity > unshippedQty) {
+                $('#quantityError').html('<i class="fas fa-exclamation-circle"></i> ' +
+                    localTexts.quantityExceedsUnshippedQty.replace('{0}', fmtQty(quantity)).replace('{1}', fmtQty(unshippedQty)));
+                $('#quantity').val(0);
+                $('#quantity').focus().select();
+                return false;
+            }
+
+            // 批号字段验证
+            if (!batchNo) {
+                $('#batchNoError').html('<i class="fas fa-exclamation-circle"></i> ' + localTexts.batchNoRequired);
+                return false;
+            }
+            $('#batchNoError').html('');
+
+            return true;
+        }
+
+        function submitForm() {
+            if (!validateForm()) return;
+
+            // 本次是新的一次提交：清掉上一次的常驻错误提示，避免旧错误误导操作员
+            clearSubmitError();
+
+            var formData = $('#outboundForm').serialize();
+            showToast(localTexts.submitting, 'info');
+
+            $('#submitBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> ' + localTexts.submitting);
+
+            $.ajax({
+                url: $('#outboundForm').attr('action'),
+                type: 'POST',
+                data: formData,
+                headers: { 'X-CSRF-TOKEN': $('input[name="__RequestVerificationToken"]').val(), 'X-Request-ID': getRequestId() },
+                success: function (response) {
+                    if (response.success) {
+                        resetRequestId();
+                        clearSubmitError();
+                        if (response.data && response.data.quantityReduced) {
+                            // 发货数量超过库存数量，已由后端自动调整为库存数量：弹出提示框告知操作员
+                            Swal.fire({
+                                icon: 'warning',
+                                title: response.message || localTexts.submitSuccess,
+                                confirmButtonText: localTexts.okButton
+                            });
+                        } else {
+                            showToast(response.message || localTexts.submitSuccess, 'success');
+                        }
+                        // 清除物料相关字段
+                        $('#materialCode, #quantity, #unit, #warehouseCode, #batchNo, #location, #remarks').val('');
+                        $('#lotRadioList').empty().hide();
+                        // 清除订单信息字段（销售订单号、行号、发货批次号）
+                        $('#salesOrderNo, #salesOrderLineNo, #orderRelNum').val('');
+                        // 清除出货数量信息（计划出货/扫码/未出货），提交发货后应清空
+                        hideOrderQtyInfo();
+                        $('.error-message').html('');
+                        $('#salesOrderNo').focus();
+                    } else {
+                        // 后端业务失败：把后端产生的错误信息原样展示到页面
+                        // （如 Epicor「无效仓库和库位」、「库位 01/3-1153 无可用库存」、「物料不匹配」等）
+                        showSubmitError(response.message || localTexts.submitFailed);
+                    }
+                    resetSubmitButton();
+                },
+                error: function (xhr) {
+                    // HTTP 层失败（500 / 400 / 会话失效等）：尽可能取出后端返回的错误文案
+                    var errorMsg = extractServerError(xhr) || localTexts.submitFailed;
+                    if (handleSessionIfExpired(errorMsg)) { resetSubmitButton(); return; }
+                    // 会话/登录态失效（401/302，或防伪令牌失效时中间件返回的 errorCode）：
+                    // 统一跳登录页，不要把 "HTTP 400" 这类技术性状态码当业务错误丢给操作员
+                    if (isSessionFailureXhr(xhr)) {
+                        redirectToLoginWithNotice(localTexts.sessionExpiredText);
+                        resetSubmitButton();
+                        return;
+                    }
+                    showSubmitError(errorMsg);
+                    resetSubmitButton();
+                }
+            });
+        }
+
+        function resetSubmitButton() {
+            setTimeout(function() {
+                $('#submitBtn').prop('disabled', false).html('<i class="fas fa-check-circle"></i> @GetText("Outbound", "SubmitButton")');
+            }, 1000);
+        }
+
+        function resetForm() {
+            var savedPackId = $('#packId').val();
+            $('#outboundForm')[0].reset();
+            $('#packId').val(savedPackId);
+            $('.error-message').html('');
+            clearSubmitError();
+            $('#salesOrderNo, #salesOrderLineNo, #orderRelNum').val('');
+            // 重置时同步清空批号信息（批号输入框 + 批号单选列表，单选列表为动态 DOM，form.reset() 不会清除）
+            $('#batchNo').val('');
+            $('#lotRadioList').empty().hide();
+            hideOrderQtyInfo();
+            // 注意：不清除 Pack ID，保留最后一次的值
+            $('#salesOrderNo').focus();
+            showMessage(localTexts.formReset, 'info');
+        }
+
+        function searchOrders(custID, custName, orderNum, poNum) {
+            // —— 防抖：回车 + 点击双重触发合并为一次；同时取消上次未完成的 AJAX，避免返回乱序覆盖
+            if (__searchDebounceTimer) { clearTimeout(__searchDebounceTimer); __searchDebounceTimer = null; }
+            __searchDebounceTimer = setTimeout(function () {
+                if (__searchXhr) { try { __searchXhr.abort(); } catch (e) { /* ignore */ } __searchXhr = null; }
+
+                showToast(localTexts.searching, 'info');
+                __searchXhr = $.ajax({
+                    url: '/Outbound/SearchOrders',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ CustID: custID || '', CustName: custName || '', OrderNum: orderNum || '', PONum: poNum || '' }),
+                    headers: { 'X-CSRF-TOKEN': $('input[name="__RequestVerificationToken"]').val() },
+                    success: function (response) {
+                        __searchXhr = null;
+                        if (response.success) {
+                            currentOrderData = response.data || [];
+                            renderOrdersTableBody(currentOrderData);
+                            currentSortKey = null;
+                            currentSortOrder = null;
+                            updateSortHeaderStyle();
+                            $('.orders-table-container').show();
+                            showToast(localTexts.searchSuccess, 'success');
+                        } else {
+                            showMessage(response.message || localTexts.searchFailed, 'error');
+                            $('.orders-table-container').hide();
+                        }
+                    },
+                    error: function (xhr, status) {
+                        __searchXhr = null;
+                        if (status === 'abort') return; // 主动取消：不提示
+                        showMessage(localTexts.searchFailed, 'error');
+                        $('.orders-table-container').hide();
+                    }
+                });
+            }, 250);
+        }
+
+        // 库存查询缓存：partNum -> { items: [...], ts: 写入时间戳 } / { loading: true, ts: ... }
+        // 增加 30s TTL：与后端 QueryInventoryDetailBatch 缓存保持一致，避免用户长时间停留在页面看到过旧库存。
+        var __outInvCache = {};
+        var __outInvCacheTtlMs = 30 * 1000;
+
+        /** 读取库存缓存；过期或不存在返回 null；loading 状态返回字符串 'loading'（保持与原逻辑兼容） */
+        function __getInvCache(pn) {
+            var e = __outInvCache[pn];
+            if (!e) return null;
+            if (Date.now() - e.ts > __outInvCacheTtlMs) {
+                delete __outInvCache[pn];
+                return null;
+            }
+            return e.loading ? 'loading' : e.items;
+        }
+        /** 写入库存缓存 */
+        function __setInvCache(pn, items) {
+            __outInvCache[pn] = { items: items, ts: Date.now() };
+        }
+        /** 标记正在加载 */
+        function __setInvLoading(pn) {
+            __outInvCache[pn] = { loading: true, ts: Date.now() };
+        }
+        /** 清除库存缓存 */
+        function __clearInvCache(pn) {
+            delete __outInvCache[pn];
+        }
+
+        /** 渲染销售发货订单列表
+         *  —— 单段 HTML 字符串拼接 + 一次 innerHTML，避免 $.each 内每次 $.append 导致的 O(N) 次重排。
+         *  —— 事件绑定统一提升到 document 级事件委托（见 $(document).ready），本函数不随每次 render 做 off/on。
+         *  —— 动态字段使用 __htmlEscape() 防止特殊字符破坏 DOM，且保持排序/勾选交互数据通过 data-index 从 currentOrderData 读取。
+         */
+        function renderOrdersTableBody(data) {
+            var tbody = document.querySelector('#ordersTable tbody');
+            if (!tbody) return;
+
+            if (!data || data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="14" style="text-align:center; padding: 20px;">' + __htmlEscape(localTexts.noData) + '</td></tr>';
+                return;
+            }
+
+            // 取本地文本默认值一次，避免循环内重复访问对象
+            var tCustCode  = __htmlEscape(localTexts.customerCode    || '');
+            var tCustName  = __htmlEscape(localTexts.customerName    || '');
+            var tReqDate   = __htmlEscape(localTexts.reqDate         || '');
+            var tPo        = __htmlEscape(localTexts.po              || '');
+            var tOrder     = __htmlEscape(localTexts.order           || '');
+            var tLine      = __htmlEscape(localTexts.line            || '');
+            var tRelease   = __htmlEscape(localTexts.release         || '');
+            var tPart      = __htmlEscape(localTexts.part            || '');
+            var tPartDesc  = __htmlEscape(localTexts.partDescription || '');
+            var tReqQty    = __htmlEscape(localTexts.requiredQty     || '');
+            var tOnHand    = __htmlEscape(localTexts.onHandQty       || '');
+            var tComments  = __htmlEscape(localTexts.comments        || '');
+            var tInvTitle  = __htmlEscape(localTexts.detailInventory || 'Detail Inventory');
+            var tInvAction = __htmlEscape(localTexts.detailInventoryAction || 'Stock Info');
+            var tInvEmpty  = __htmlEscape(localTexts.invEmpty        || '-');
+
+            var rowsHtml = [];
+            rowsHtml.reserveHint = data.length; // 逻辑提示：每行只生成 1 个 tr（抽屉方案不预渲染隐藏展开行）
+
+            for (var i = 0; i < data.length; i++) {
+                var it = data[i];
+                var idx = String(i);
+                rowsHtml.push(
+                    '<tr data-index="', idx, '">',
+                      '<td class="col-fix-1"><input type="checkbox" class="order-select"></td>',
+                      '<td class="col-fix-2" data-label="', tCustCode, '">', __htmlEscape(it.custNum || ''), '</td>',
+                      '<td class="col-fix-3" data-label="', tCustName, '">', __htmlEscape(it.custName || ''), '</td>',
+                      '<td class="col-fix-4" data-label="', tReqDate,  '">', __htmlEscape(it.customerReqDate || ''), '</td>',
+                      '<td class="col-po"    data-label="', tPo,       '">', __htmlEscape(it.po || ''), '</td>',
+                      '<td data-label="', tOrder,   '">', __htmlEscape(it.order || ''), '</td>',
+                      '<td data-label="', tLine,    '">', __htmlEscape(it.line  || ''), '</td>',
+                      '<td data-label="', tRelease, '">', __htmlEscape(it.rel   || ''), '</td>',
+                      '<td class="col-part" data-label="', tPart,     '">', __htmlEscape(it.part || ''), '</td>',
+                      '<td class="col-part" data-label="', tPartDesc, '">', __htmlEscape(it.partDescription || ''), '</td>',
+                      '<td data-label="', tReqQty,  '">', __htmlEscape(it.ourReqQty != null ? it.ourReqQty : 0), '</td>',
+                      '<td data-label="', tOnHand,  '">', __htmlEscape(it.onHandQty != null ? it.onHandQty : 0), '</td>',
+                      '<td data-label="', tComments,'">', __htmlEscape(it.comments || ''), '</td>',
+                      '<td class="col-expander">',
+                        '<span class="inv-arrow" role="button" tabindex="0" title="', tInvTitle, '" data-part="', __htmlEscape(it.part || ''), '">',
+                          '<span class="arr">▼</span>', tInvAction,
+                        '</span>',
+                      '</td>',
+                    '</tr>'
+                );
+            }
+
+            // —— 性能关键点：一次 innerHTML，浏览器做 1 次 DOM 重建 + 1 次 reflow（而不是 2N 次）
+            tbody.innerHTML = rowsHtml.join('');
+            void rowsHtml.reserveHint; // 消除未使用变量提示
+            void tInvEmpty; // 保留本地文本变量（后续可扩展空占位）
+        }
+
+        /** 根据 data-index 从 currentOrderData 取对应行对象（事件委托统一入口） */
+        function __getOrderByIndex(index) {
+            var i = parseInt(index, 10);
+            if (isNaN(i) || i < 0 || !currentOrderData || i >= currentOrderData.length) return null;
+            return currentOrderData[i];
+        }
+
+        /** 解析 order/line/rel：优先从当前行的 data-index 对应的 currentOrderData 读取（避免 DOM data-attr 转义问题） */
+        function __extractOrderRelFromRow($tr) {
+            var d = __getOrderByIndex($tr.data('index'));
+            if (d) return { order: d.order || '', line: d.line || '', rel: d.rel || '' };
+            return { order: '', line: '', rel: '' };
+        }
+
+        /** 订单选中/取消选中逻辑（原 render 中的 .order-select change 事件，现由文档级委托调用） */
+        function __handleOrderSelectChange($checkbox, runValidate) {
+            var $row = $checkbox.closest('tr');
+            if ($checkbox.prop('checked')) {
+                $('#ordersTable tbody tr').removeClass('selected');
+                $row.addClass('selected');
+                // 保证其它 checkbox 状态一致（单选约束）
+                $('#ordersTable .order-select').not($checkbox).prop('checked', false);
+                var data = __extractOrderRelFromRow($row);
+                $('#salesOrderNo').val(data.order || '');
+                $('#salesOrderLineNo').val(data.line  || '');
+                $('#orderRelNum').val(data.rel       || '');
+                if (runValidate) {
+                    validateOrder().then(function (valid) { if (valid) $('#materialCode').focus().select(); });
+                } else {
+                    $('#materialCode').focus().select();
+                }
+            } else {
+                $row.removeClass('selected');
+            }
+        }
+
+        /** 整行点击：区分"点击 Stock Info 按钮/列" vs "点击其它区域选中订单" */
+        function __handleOrderRowClick(tr, evt) {
+            var $tr = $(tr);
+            var $t  = $(evt.target);
+            if ($t.closest('.col-expander, .inv-arrow').length > 0) {
+                evt.stopPropagation();
+                // 点击展开列任意位置都打开库存抽屉（兼容按钮和列空白区点击）
+                var item = __getOrderByIndex($tr.data('index'));
+                __openInventoryDrawer(item ? item.part : null, $tr);
+                return false;
+            }
+            if (evt.target && evt.target.type === 'checkbox') return true; // checkbox 自身处理
+            var $cb = $tr.find('input.order-select');
+            // 翻转 + 触发 change 逻辑（不 dispatch DOM event，避免再次冒泡到文档）
+            var next = !$cb.prop('checked');
+            $cb.prop('checked', next);
+            __handleOrderSelectChange($cb, true);
+            return false;
+        }
+
+            // 当前打开的库存抽屉对应的 partNum 和触发行（用于关闭时清除高亮）
+            var __currentDrawerPart = null;
+            var __currentDrawerRow  = null;
+
+            /** 打开库存抽屉 / 手机底部弹层
+             * 业务逻辑：根据 partNum 显示 Warehouse/Bin/Lot/Qty 卡片；
+             * 优先读 30s TTL 前端缓存，未命中再调 QueryInventoryDetailBatch（后端本身也有 30s 缓存）。
+             */
+            function __openInventoryDrawer(pn, $tr) {
+                __currentDrawerPart = pn;
+                __currentDrawerRow  = $tr && $tr.length ? $tr : null;
+                __highlightDrawerRow(true);
+
+                $('#invDrawerTitle').text(localTexts.detailInventory || 'Stock Info');
+                if (pn) {
+                    $('#invDrawerSubtitle').text((localTexts.part || 'Part') + ': ' + pn).show();
+                } else {
+                    $('#invDrawerSubtitle').hide();
+                }
+                $('#invDrawerContent').empty();
+                $('#invDrawerEmpty').hide();
+                $('#invDrawerLoading').show();
+                __toggleDrawerPanel(true);
+
+                if (!pn) {
+                    __showDrawerEmpty(localTexts.invEmpty || '-');
+                    return;
+                }
+
+                var cached = __getInvCache(pn);
+                if (Array.isArray(cached)) {
+                    __fillDrawerContent(cached);
+                } else if (cached === 'loading') {
+                    // 已有进行中的请求，其回调会按 __currentDrawerPart === pn 自动刷新当前抽屉
+                } else {
+                    __loadInventoryForDrawer(pn);
+                }
+            }
+
+            /** 关闭抽屉并清除行高亮 */
+            function __closeInventoryDrawer() {
+                __toggleDrawerPanel(false);
+                __highlightDrawerRow(false);
+                __currentDrawerPart = null;
+                __currentDrawerRow  = null;
+            }
+
+            function __toggleDrawerPanel(open) {
+                if (open) {
+                    $('#invDrawerOverlay, #invDrawerPanel').addClass('open');
+                    $('body').addClass('inv-drawer-open');
+                } else {
+                    $('#invDrawerOverlay, #invDrawerPanel').removeClass('open');
+                    $('body').removeClass('inv-drawer-open');
+                }
+            }
+
+            function __highlightDrawerRow(active) {
+                if (__currentDrawerRow && __currentDrawerRow.length) {
+                    if (active) {
+                        $('#ordersTable tbody tr').removeClass('inv-row-active');
+                        __currentDrawerRow.addClass('inv-row-active').find('.inv-arrow .arr').text('▲');
+                    } else {
+                        __currentDrawerRow.removeClass('inv-row-active').find('.inv-arrow .arr').text('▼');
+                    }
+                }
+            }
+
+            /** 从后端拉取库存并填入抽屉（并发去重与后端缓存共用同一机制） */
+            function __loadInventoryForDrawer(pn) {
+                __setInvLoading(pn);
+                __useInFlight('inv:' + pn, function () {
+                    return $.ajax({
+                        url: '/Outbound/QueryInventoryDetailBatch',
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify({ PartNums: [pn] }),
+                        headers: __csrfHeader()
+                    }).then(
+                        function (res) {
+                            var items = (res && res.success && res.results && res.results[pn]) ? res.results[pn] : [];
+                            __setInvCache(pn, items);
+                            if (__currentDrawerPart === pn) __fillDrawerContent(items);
+                        },
+                        function () {
+                            __clearInvCache(pn);
+                            if (__currentDrawerPart === pn) __showDrawerEmpty(localTexts.invFailed || localTexts.invEmpty || '-');
+                        }
+                    );
+                });
+            }
+
+            function __fillDrawerContent(items) {
+                $('#invDrawerLoading').hide();
+                if (!items || items.length === 0) {
+                    __showDrawerEmpty(localTexts.invEmpty || '-');
+                } else {
+                    $('#invDrawerEmpty').hide();
+                    $('#invDrawerContent').html(renderInvCardsHtml(items));
+                }
+            }
+
+            function __showDrawerEmpty(msg) {
+                $('#invDrawerLoading').hide();
+                $('#invDrawerEmpty').text(msg || '-').show();
+                $('#invDrawerContent').empty();
+            }
+
+            /** 组装 Warehouse/Bin/Lot/Qty 卡片网格 HTML */
+            function renderInvCardsHtml(items) {
+                if (!items || items.length === 0) {
+                    return '<div class="inv-empty-hint">' + (localTexts.invEmpty || '-') + '</div>';
+                }
+                var tplWhse = localTexts.invWhse || 'Warehouse';
+                var tplBin  = localTexts.invBin  || 'Bin';
+                var tplLot  = localTexts.invLot  || 'Lot';
+                var tplQty  = localTexts.invQty  || 'Qty';
+                var cards = '';
+                for (var i = 0; i < items.length; i++) {
+                    var it = items[i];
+                    // —— 后端优化后字段采用短名以减少序列化带宽（wh/bin/lot/qty/u），同时兼容旧字段（whseCode/binNum/lotNumber/qtyOnHand/ium）。
+                    var unit = (it.u != null ? it.u : it.ium) ? (' ' + (it.u != null ? it.u : it.ium)) : '';
+                    var lot  = (it.lot != null ? it.lot : it.lotNumber) || '-';
+                    var wh   = (it.wh  != null ? it.wh  : it.whseCode) || '-';
+                    var bin  = (it.bin != null ? it.bin : it.binNum)   || '-';
+                    var qty  = (it.qty != null ? it.qty : it.qtyOnHand);
+                    qty = qty != null ? qty : 0;
+                    cards += '<div class="inv-card">'
+                          +   '<div class="inv-card-row"><span class="lbl">' + tplWhse + '</span><span class="val">' + __htmlEscape(wh) + '</span></div>'
+                          +   '<div class="inv-card-row"><span class="lbl">' + tplBin  + '</span><span class="val">' + __htmlEscape(bin) + '</span></div>'
+                          +   '<div class="inv-card-row"><span class="lbl">' + tplLot  + '</span><span class="val">' + __htmlEscape(lot) + '</span></div>'
+                          +   '<div class="inv-card-row"><span class="lbl">' + tplQty  + '</span><span class="qty">' + qty + __htmlEscape(unit) + '</span></div>'
+                          + '</div>';
+                }
+                return '<div class="inv-card-grid">' + cards + '</div>';
+            }
+
+    </script>
+</body>
+</html>

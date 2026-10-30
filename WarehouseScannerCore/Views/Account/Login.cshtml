@@ -1,0 +1,768 @@
+@using WarehouseScannerCore.Services
+@using System.Net
+
+@{
+    ViewData["Title"] = ViewData["Title"] ?? "Login";
+
+    // 从ViewData获取语言
+    var currentLanguage = ViewData["CurrentLanguage"] as string ?? "zh-CN";
+
+    // 获取语言资源
+    var languageResources = ViewData["LanguageResources"] as Dictionary<string, Dictionary<string, string>>;
+
+    // 获取支持的語言
+    var supportedLanguages = ViewData["SupportedLanguages"] as List<LanguageInfo>;
+
+    // 定义便捷函数获取资源
+    string GetResource(string category, string key)
+    {
+        if (languageResources != null &&
+            languageResources.TryGetValue(category, out var categoryResources) &&
+            categoryResources.TryGetValue(key, out var value))
+        {
+            return value;
+        }
+        return $"[{category}.{key}]";
+    }
+
+    // 获取常用资源
+    var loginResources = languageResources?.ContainsKey("Login") == true ? languageResources["Login"] : new Dictionary<string, string>();
+    var commonResources = languageResources?.ContainsKey("Common") == true ? languageResources["Common"] : new Dictionary<string, string>();
+
+    // 创建验证消息字典（根据当前语言，取自语言资源）
+    var validationMessages = new Dictionary<string, string>
+    {
+        ["UsernameRequired"] = GetResource("Login", "UsernameRequired"),
+        ["PasswordRequired"] = GetResource("Login", "PasswordRequired"),
+        ["SiteRequired"] = GetResource("Login", "SiteRequired"),
+        ["ShowPassword"] = GetResource("Login", "ShowPassword"),
+        ["HidePassword"] = GetResource("Login", "HidePassword")
+    };
+
+    // 获取工厂列表（轻量视图，仅 Code/Name，不含 ApiKey）
+    var factories = ViewData["Factories"] as List<WarehouseScannerCore.Models.FactoryOption>;
+    var factoryList = factories ?? new List<WarehouseScannerCore.Models.FactoryOption>();
+
+    // 获取已保存的站点
+    var savedSite = Context.Request.Cookies["LastSelectedSite"];
+
+    // 获取客户端IP地址
+    var ipAddress = Context.Connection.RemoteIpAddress?.ToString();
+
+    // 获取用户代理信息
+    var userAgent = Context.Request.Headers["User-Agent"].ToString();
+
+    // 提取设备名称
+    var deviceName = "Unknown";
+    if (!string.IsNullOrEmpty(userAgent))
+    {
+        if (userAgent.Contains("Windows NT"))
+        {
+            deviceName = "Windows PC";
+            if (userAgent.Contains("Windows NT 11.0"))
+            {
+                deviceName = "Windows 10";
+            }
+            else if (userAgent.Contains("Windows NT 6.3"))
+            {
+                deviceName = "Windows 8.1";
+            }
+            else if (userAgent.Contains("Windows NT 6.2"))
+            {
+                deviceName = "Windows 8";
+            }
+            else if (userAgent.Contains("Windows NT 6.1"))
+            {
+                deviceName = "Windows 7";
+            }
+        }
+        else if (userAgent.Contains("Mac OS X"))
+        {
+            deviceName = "Mac";
+        }
+        else if (userAgent.Contains("Linux"))
+        {
+            deviceName = "Linux";
+        }
+        else if (userAgent.Contains("Android"))
+        {
+            deviceName = "Android Device";
+        }
+        else if (userAgent.Contains("iPhone") || userAgent.Contains("iPad"))
+        {
+            deviceName = "iOS Device";
+        }
+    }
+}
+
+<!DOCTYPE html>
+<html lang="@currentLanguage" data-lang="@currentLanguage">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>@GetResource("Login", "Title") - @GetResource("Common", "AppName")</title>
+    <link rel="stylesheet" href="~/css/login.css" asp-append-version="true">
+    <link rel="stylesheet" href="~/css/fontawesome/all.min.css" asp-append-version="true">
+    <style>
+        /* ===== 原有样式 ===== */
+        .language-switcher {
+            margin-bottom: 22px;
+            text-align: center;
+        }
+
+        .lang-buttons {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .lang-btn {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 10px 20px;
+            background: #f5f5f5;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: #333;
+        }
+
+            .lang-btn:hover {
+                background: #e0e0e0;
+                transform: translateY(-1px);
+            }
+
+            .lang-btn.active {
+                background: #007bff;
+                color: white;
+            }
+
+        .lang-icon {
+            font-size: 16px;
+        }
+
+        /* 密码框样式 - 移除浏览器默认的密码显示图标 */
+        .password-wrapper {
+            position: relative;
+            width: 100%;
+        }
+
+        /* 移除密码框的默认显示/隐藏图标（针对Webkit浏览器） */
+        input[type="password"]::-webkit-credentials-auto-fill-button,
+        input[type="password"]::-webkit-caps-lock-indicator,
+        input[type="password"]::-webkit-outer-spin-button,
+        input[type="password"]::-webkit-inner-spin-button,
+        input[type="password"]::-webkit-textfield-decoration-container,
+        input[type="password"]::-webkit-credential-auto-fill-button,
+        input[type="password"]::-webkit-reveal {
+            display: none !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
+            -webkit-appearance: none !important;
+        }
+
+        /* 移除Edge浏览器密码显示图标 */
+        input[type="password"]::-ms-reveal {
+            display: none !important;
+        }
+
+        /* 移除Firefox浏览器密码显示图标 */
+        input[type="password"]::-moz-reveal {
+            display: none !important;
+        }
+
+        /* 自定义密码切换按钮样式 */
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: #9ca3af;
+            cursor: pointer;
+            padding: 6px 8px;
+            z-index: 10;
+            transition: color 0.25s ease, transform 0.2s ease;
+            font-size: 20px;
+            line-height: 1;
+            border-radius: 6px;
+        }
+
+            .password-toggle:hover {
+                color: #007bff;
+                background: rgba(0, 123, 255, 0.06);
+            }
+
+            .password-toggle:active {
+                transform: translateY(-50%) scale(0.92);
+            }
+
+            .password-toggle i {
+                transition: opacity 0.25s ease;
+            }
+
+        /* 验证错误样式 */
+        .error-message {
+            color: #dc3545;
+            font-size: 12px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .has-error .form-control {
+            border-color: #dc3545;
+        }
+
+        .has-error .error-message {
+            display: block;
+        }
+
+        /* 临时调试样式 */
+        .debug-info {
+            display: none; /* 生产环境设为 none */
+            background: #f8f9fa;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* 表单组间距 */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        /* 提交按钮加载状态 */
+        .btn-loading {
+            opacity: 0.7;
+            cursor: not-allowed;
+        }
+
+        /* 设备信息提示 */
+        .device-info {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+            text-align: center;
+        }
+
+        /* ===== 新增大按钮/大输入框样式 ===== */
+        .form-control {
+            min-height: 50px !important; /* 高度≥50px */
+            font-size: 18px !important; /* 字体18px */
+            padding: 12px 16px !important; /* 增加内边距 */
+            border: 2px solid #ddd; /* 保持原有边框 */
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn {
+            min-height: 60px !important; /* 按钮高度≥60px */
+            font-size: 18px !important; /* 字体18px */
+            padding: 12px 24px !important; /* 增加内边距 */
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+            .btn i {
+                font-size: 18px; /* 图标与文字大小匹配 */
+            }
+
+        /* 标签适当放大（可选） */
+        .form-label {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        /* 响应式调整：小屏幕下适当缩小，但仍满足高度要求 */
+        @@media (max-width: 480px) {
+            .form-control {
+                min-height: 50px;
+                font-size: 16px;
+                padding: 10px 14px;
+            }
+
+            .btn {
+                min-height: 56px;
+                font-size: 16px;
+                padding: 10px 20px;
+            }
+        }
+
+        /* ========== LOGO 样式 ========== */
+        .login-logo {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+            .login-logo img {
+                max-width: 180px;
+                height: auto;
+                display: inline-block;
+            }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-card">
+
+            <!-- ==========  LOGO ========== -->
+            <div class="login-logo">
+                <img src="~/images/gcmlogo.png" alt="Logo">
+            </div>
+
+            <!-- 调试信息 -->
+            <div class="debug-info">
+                <div>@GetResource("Login", "DebugCurrentLanguage"): @currentLanguage</div>
+                <div>@GetResource("Login", "DebugFactoryCount"): @factoryList.Count</div>
+                <div>@GetResource("Login", "DebugSavedSite"): @(savedSite ?? GetResource("Login", "DebugNone"))</div>
+                <div>@GetResource("Login", "DebugClientIP"): @ipAddress</div>
+                <div>@GetResource("Login", "DebugDeviceName"): @deviceName</div>
+                <div>@GetResource("Login", "DebugUserAgent"): @userAgent</div>
+            </div>
+
+            <div class="login-header">
+                <h1><i class="fas fa-warehouse"></i> @GetResource("Common", "AppName")</h1>
+                <h2 class="welcome-text">@GetResource("Login", "WelcomeText")</h2>
+            </div>
+
+            <!-- 语言切换 -->
+            @if (supportedLanguages != null && supportedLanguages.Count > 0)
+            {
+                <div class="language-switcher">
+                    <div class="lang-buttons">
+                        @foreach (var lang in supportedLanguages)
+                        {
+                            <a href="@Url.Action("ChangeLanguage", "Account", new { language = lang.Code, returnUrl = Context.Request.Path })"
+                               class="lang-btn @(currentLanguage == lang.Code ? "active" : "")"
+                               title="@lang.NativeName">
+                                <span>@lang.NativeName</span>
+                            </a>
+                        }
+                    </div>
+                </div>
+            }
+
+            <!-- 登录表单 -->
+            <form method="post" action="@Url.Action("Login", "Account")" id="loginForm" novalidate>
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="language" id="languageInput" value="@currentLanguage" />
+                <input type="hidden" name="deviceName" id="deviceName" value="@deviceName" />
+                <input type="hidden" name="ipAddress" id="ipAddress" value="@ipAddress" />
+                <input type="hidden" name="userAgent" id="userAgent" value="@userAgent" />
+
+                <!-- 工厂选择 -->
+                <div class="form-group" id="siteGroup">
+                    <label class="form-label" for="site">
+                        <i class="fas fa-industry"></i> @GetResource("Login", "SiteSelect")
+                    </label>
+                    <div>
+                        <select name="site" class="form-control factory-select" id="site" required>
+                            <option value="" selected disabled>@GetResource("Login", "SelectPlaceholder")</option>
+                            @if (factoryList.Count > 0)
+                            {
+                                foreach (var factory in factoryList)
+                                {
+                                    var isSelected = factory.Code == savedSite;
+                                    <option value="@factory.Code" selected="@isSelected">
+                                        @factory.Code
+                                    </option>
+                                }
+                            }
+                            else
+                            {
+                                <option value="DG">@GetResource("Login", "SiteOptionDG")</option>
+                                <option value="US1">San Francisco@GetResource("Login", "DefaultSuffix")</option>
+                                <option value="US2">Chicago@GetResource("Login", "DefaultSuffix")</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="error-message" id="siteError"></div>
+                </div>
+
+                <div class="form-group" id="usernameGroup">
+                    <label class="form-label" for="username">
+                        <i class="fas fa-user"></i> @GetResource("Login", "Username")
+                    </label>
+                    <input type="text" name="username" class="form-control" id="username"
+                           placeholder="@GetResource("Login", "Username")" required
+                           value="@(ViewData["Username"] as string ?? "")">
+                    <div class="error-message" id="usernameError"></div>
+                </div>
+
+                <div class="form-group" id="passwordGroup">
+                    <label class="form-label" for="password">
+                        <i class="fas fa-lock"></i> @GetResource("Login", "Password")
+                    </label>
+                    <div class="password-wrapper">
+                        <input type="password" name="password" class="form-control" id="password"
+                               placeholder="@GetResource("Login", "Password")" required>
+                        <button type="button" class="password-toggle" id="passwordToggle" aria-label="@validationMessages["ShowPassword"]">
+                            <i class="far fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="error-message" id="passwordError"></div>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary" id="loginBtn">
+                        <i class="fas fa-sign-in-alt"></i> @GetResource("Login", "LoginButton")
+                    </button>
+                </div>
+
+                <!-- 设备信息提示 -->
+                <div class="device-info">
+                    <i class="fas fa-desktop"></i>
+                    <span id="deviceInfoText">
+                        @string.Format(GetResource("Login", "DeviceInfoFormat"), deviceName, ipAddress)
+                    </span>
+                </div>
+            </form>
+
+            <!-- 服务器消息 -->
+            @{
+                var errorMessage = TempData["ErrorMessage"] as string ?? ViewData["ErrorMessage"] as string;
+                var successMessage = TempData["SuccessMessage"] as string;
+                var logoutMessage = ViewData["LogoutMessage"] as string;
+            }
+
+            @if (!string.IsNullOrEmpty(logoutMessage))
+            {
+                <div class="alert alert-info" role="alert">
+                    <i class="fas fa-info-circle"></i> @logoutMessage
+                </div>
+            }
+
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="alert alert-error" role="alert" style="color: red;">
+                    <i class="fas fa-exclamation-circle"></i> @errorMessage
+                </div>
+            }
+
+            @if (!string.IsNullOrEmpty(successMessage))
+            {
+                <div class="alert alert-success" role="alert">
+                    <i class="fas fa-check-circle"></i> @successMessage
+                </div>
+            }
+        </div>
+    </div>
+
+    <script>
+        // 从服务器获取当前语言
+        const currentLanguage = '@currentLanguage';
+
+        // 定义多语言验证消息字典（当前语言取自语言资源）
+        const validationMessages = {};
+        validationMessages[currentLanguage] = {
+            UsernameRequired: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetResource("Login", "UsernameRequired"))),
+            PasswordRequired: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetResource("Login", "PasswordRequired"))),
+            SiteRequired: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetResource("Login", "SiteRequired"))),
+            ShowPassword: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetResource("Login", "ShowPassword"))),
+            HidePassword: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetResource("Login", "HidePassword")))
+        };
+
+        // 设备信息字典（当前语言取自语言资源）
+        const deviceInfoMessages = {};
+        deviceInfoMessages[currentLanguage] = {
+            WindowsPC: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetResource("Login", "DeviceWindowsPC"))),
+            Windows11: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetResource("Login", "DeviceWindows11"))),
+            Windows10: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetResource("Login", "DeviceWindows10"))),
+            Windows8: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetResource("Login", "DeviceWindows8"))),
+            Windows7: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetResource("Login", "DeviceWindows7"))),
+            Mac: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetResource("Login", "DeviceMac"))),
+            Linux: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetResource("Login", "DeviceLinux"))),
+            Android: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetResource("Login", "DeviceAndroid"))),
+            iOS: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetResource("Login", "DeviceIOS"))),
+            Unknown: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetResource("Login", "DeviceUnknown"))),
+            DetectedPrefix: @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetResource("Login", "DeviceDetectedPrefix"))),
+            IPPrefix: 'IP'
+        };
+
+        // 获取当前语言的验证消息
+        function getValidationMessage(key) {
+            if (validationMessages[currentLanguage] && validationMessages[currentLanguage][key]) {
+                return validationMessages[currentLanguage][key];
+            }
+            const languagePrefix = currentLanguage.split('-')[0];
+            for (const lang in validationMessages) {
+                if (lang.startsWith(languagePrefix)) {
+                    if (validationMessages[lang][key]) {
+                        return validationMessages[lang][key];
+                    }
+                }
+            }
+            if (validationMessages['en-US'] && validationMessages['en-US'][key]) {
+                return validationMessages['en-US'][key];
+            }
+            return key;
+        }
+
+        // 获取设备信息消息
+        function getDeviceInfoMessage(key) {
+            if (deviceInfoMessages[currentLanguage] && deviceInfoMessages[currentLanguage][key]) {
+                return deviceInfoMessages[currentLanguage][key];
+            }
+            const languagePrefix = currentLanguage.split('-')[0];
+            for (const lang in deviceInfoMessages) {
+                if (lang.startsWith(languagePrefix)) {
+                    if (deviceInfoMessages[lang][key]) {
+                        return deviceInfoMessages[lang][key];
+                    }
+                }
+            }
+            if (deviceInfoMessages['en-US'] && deviceInfoMessages['en-US'][key]) {
+                return deviceInfoMessages['en-US'][key];
+            }
+            return key;
+        }
+
+        // 密码显示/隐藏功能
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('password');
+            const toggleButton = document.getElementById('passwordToggle');
+            const icon = toggleButton.querySelector('i');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.className = 'fas fa-eye-slash';
+                toggleButton.setAttribute('aria-label', getValidationMessage('HidePassword'));
+            } else {
+                passwordInput.type = 'password';
+                icon.className = 'far fa-eye';
+                toggleButton.setAttribute('aria-label', getValidationMessage('ShowPassword'));
+            }
+        }
+
+        // 清除所有错误状态
+        function clearAllErrors() {
+            const errorGroups = ['usernameGroup', 'passwordGroup', 'siteGroup'];
+            errorGroups.forEach(groupId => {
+                const group = document.getElementById(groupId);
+                if (group) group.classList.remove('has-error');
+            });
+            const errorMessages = ['usernameError', 'passwordError', 'siteError'];
+            errorMessages.forEach(errorId => {
+                const errorElement = document.getElementById(errorId);
+                if (errorElement) errorElement.textContent = '';
+            });
+        }
+
+        // 输入验证函数
+        function validateField(fieldId, errorId, groupId, errorMessageKey) {
+            const field = document.getElementById(fieldId);
+            const errorElement = document.getElementById(errorId);
+            const group = document.getElementById(groupId);
+            let value = field.tagName === 'SELECT' ? field.options[field.selectedIndex].value : field.value.trim();
+
+            if (!value) {
+                group.classList.add('has-error');
+                errorElement.textContent = getValidationMessage(errorMessageKey);
+                return false;
+            } else {
+                group.classList.remove('has-error');
+                errorElement.textContent = '';
+                return true;
+            }
+        }
+
+        // 获取客户端更详细的设备信息（通过JavaScript）
+        function getClientDeviceInfo() {
+            const userAgent = navigator.userAgent;
+            let deviceType = 'Unknown';
+            let os = 'Unknown';
+            let browser = 'Unknown';
+
+            if (userAgent.indexOf('Win') !== -1) {
+                os = 'Windows';
+                if (userAgent.indexOf('Windows NT 11.0') !== -1) deviceType = getDeviceInfoMessage('Windows11');
+                else if (userAgent.indexOf('Windows NT 10.0') !== -1) deviceType = getDeviceInfoMessage('Windows10');
+                else if (userAgent.indexOf('Windows NT 6.3') !== -1) deviceType = getDeviceInfoMessage('Windows8');
+                else if (userAgent.indexOf('Windows NT 6.2') !== -1) deviceType = getDeviceInfoMessage('Windows8');
+                else if (userAgent.indexOf('Windows NT 6.1') !== -1) deviceType = getDeviceInfoMessage('Windows7');
+                else deviceType = getDeviceInfoMessage('WindowsPC');
+            } else if (userAgent.indexOf('Mac') !== -1) {
+                os = 'macOS';
+                deviceType = getDeviceInfoMessage('Mac');
+            } else if (userAgent.indexOf('Linux') !== -1) {
+                os = 'Linux';
+                deviceType = getDeviceInfoMessage('Linux');
+            } else if (userAgent.indexOf('Android') !== -1) {
+                os = 'Android';
+                deviceType = getDeviceInfoMessage('Android');
+            } else if (userAgent.indexOf('iPhone') !== -1 || userAgent.indexOf('iPad') !== -1) {
+                os = 'iOS';
+                deviceType = getDeviceInfoMessage('iOS');
+            }
+
+            if (userAgent.indexOf('Chrome') !== -1 && userAgent.indexOf('Edg') === -1) browser = 'Chrome';
+            else if (userAgent.indexOf('Firefox') !== -1) browser = 'Firefox';
+            else if (userAgent.indexOf('Safari') !== -1 && userAgent.indexOf('Chrome') === -1) browser = 'Safari';
+            else if (userAgent.indexOf('Edg') !== -1) browser = 'Edge';
+
+            return {
+                deviceType: deviceType,
+                os: os,
+                browser: browser,
+                userAgent: userAgent,
+                screenWidth: window.screen.width,
+                screenHeight: window.screen.height,
+                language: navigator.language,
+                platform: navigator.platform
+            };
+        }
+
+        // 更新设备信息显示
+        function updateDeviceInfoDisplay() {
+            const deviceInfo = getClientDeviceInfo();
+            const ipAddress = document.getElementById('ipAddress').value;
+            const deviceInfoText = document.getElementById('deviceInfoText');
+
+            if (currentLanguage.startsWith('zh')) {
+                deviceInfoText.textContent = `${getDeviceInfoMessage('DetectedPrefix')} ${deviceInfo.deviceType}，${getDeviceInfoMessage('IPPrefix')}: ${ipAddress}`;
+            } else {
+                deviceInfoText.textContent = `${getDeviceInfoMessage('DetectedPrefix')} ${deviceInfo.deviceType}, ${getDeviceInfoMessage('IPPrefix')}: ${ipAddress}`;
+            }
+
+            document.getElementById('deviceName').value = deviceInfo.deviceType;
+            document.getElementById('userAgent').value = deviceInfo.userAgent;
+        }
+
+        // 表单验证
+        function validateForm() {
+            clearAllErrors();
+            const isUsernameValid = validateField('username', 'usernameError', 'usernameGroup', 'UsernameRequired');
+            const isPasswordValid = validateField('password', 'passwordError', 'passwordGroup', 'PasswordRequired');
+            const isSiteValid = validateField('site', 'siteError', 'siteGroup', 'SiteRequired');
+            return isUsernameValid && isPasswordValid && isSiteValid;
+        }
+
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('loginForm');
+            const loginBtn = document.getElementById('loginBtn');
+            const passwordToggle = document.getElementById('passwordToggle');
+
+            if (passwordToggle) {
+                passwordToggle.addEventListener('click', togglePasswordVisibility);
+            }
+
+            updateDeviceInfoDisplay();
+
+            // 检测浏览器前进/后退导航导致的缓存页面加载
+            // 原因：登录成功后 AntiForgery Token 已被消费，缓存页面提交时会因 Token 校验失败返回 400
+            // 检测方式：pageshow 的 persisted 属性 + Performance API（兼容 bfcache 和 HTTP 缓存）
+            window.addEventListener('pageshow', function(event) {
+                var isCached = event.persisted;
+
+                // 备用检测：通过 Performance Navigation API 判断是否为后退/前进导航
+                if (!isCached && performance && performance.getEntriesByType) {
+                    try {
+                        var nav = performance.getEntriesByType('navigation')[0];
+                        if (nav && (nav.type === 'back_forward' || nav.type === 'reload')) {
+                            // transferSize 为 0 表示页面来自缓存（无网络请求）
+                            if (nav.transferSize === 0 && nav.decodedBodySize > 0) {
+                                isCached = true;
+                            }
+                        }
+                    } catch (e) { }
+                }
+
+                if (isCached) {
+                    // 刷新页面以获取新的 AntiForgery Token（保留完整 URL，不产生新的历史记录）
+                    window.location.replace(window.location.pathname + window.location.search);
+                }
+            });
+
+            if (loginForm && loginBtn) {
+                loginForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+
+                    if (!validateForm()) {
+                        const firstErrorGroup = document.querySelector('.has-error');
+                        if (firstErrorGroup) {
+                            firstErrorGroup.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            const errorFieldId = firstErrorGroup.id.replace('Group', '');
+                            const errorField = document.getElementById(errorFieldId);
+                            if (errorField) errorField.focus();
+                        }
+                        return false;
+                    }
+
+                    const deviceInfo = getClientDeviceInfo();
+                    document.getElementById('deviceName').value = deviceInfo.deviceType;
+                    document.getElementById('userAgent').value = deviceInfo.userAgent;
+
+                    const loginTime = new Date().toISOString();
+                    const timeInput = document.createElement('input');
+                    timeInput.type = 'hidden';
+                    timeInput.name = 'loginTime';
+                    timeInput.value = loginTime;
+                    this.appendChild(timeInput);
+
+                    loginBtn.disabled = true;
+                    loginBtn.classList.add('btn-loading');
+                    const loggingInText = @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetResource("Login", "LoggingIn")));
+                    loginBtn.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${loggingInText}`;
+
+                    setTimeout(() => {
+                        this.submit();
+                    }, 300);
+
+                    return true;
+                });
+            }
+
+            const usernameInput = document.getElementById('username');
+            if (usernameInput && !usernameInput.value.trim()) {
+                usernameInput.focus();
+            }
+
+            const langButtons = document.querySelectorAll('.lang-btn');
+            langButtons.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    clearAllErrors();
+                    if (!this.classList.contains('active')) {
+                        const loadingText = @Html.Raw(Newtonsoft.Json.JsonConvert.ToString(GetResource("Common", "Loading")));
+                        this.innerHTML = `<i class="fas fa-spinner fa-spin"></i> ${loadingText}`;
+                    }
+                });
+            });
+
+            const formInputs = document.querySelectorAll('#username, #password, #site');
+            formInputs.forEach(input => {
+                input.addEventListener('input', function() {
+                    const groupId = this.id + 'Group';
+                    const group = document.getElementById(groupId);
+                    if (group && group.classList.contains('has-error')) {
+                        group.classList.remove('has-error');
+                        const errorId = this.id + 'Error';
+                        const errorElement = document.getElementById(errorId);
+                        if (errorElement) errorElement.textContent = '';
+                    }
+                });
+            });
+
+            window.addEventListener('resize', updateDeviceInfoDisplay);
+        });
+    </script>
+</body>
+</html>

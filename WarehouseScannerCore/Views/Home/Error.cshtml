@@ -1,0 +1,31 @@
+@{
+    var languageResources = ViewData["LanguageResources"] as Dictionary<string, Dictionary<string, string>>;
+    var getText = ViewBag.GetText as Func<string, string, string>;
+
+    string GetText(string section, string key)
+    {
+        if (getText != null)
+        {
+            var text = getText(section, key);
+            if (!string.IsNullOrEmpty(text) && !text.StartsWith("[") && !text.EndsWith("]"))
+                return text;
+        }
+
+        // 语言资源不可用时的兜底文案（与 XML 中的 zh-CN 文案一致）
+        if (section == "Errors" && key == "GenericErrorTitle") return "系统提示";
+        if (section == "Errors" && key == "GenericErrorMessage") return "系统处理请求时出现异常，请稍后重试。若问题持续，请联系管理员。";
+        if (section == "Errors" && key == "BackToHome") return "返回首页";
+        return $"[{section}.{key}]";
+    }
+
+    ViewData["Title"] = GetText("Errors", "GenericErrorTitle");
+}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-md-8 col-lg-6 text-center">
+            <h1 class="mb-3">@GetText("Errors", "GenericErrorTitle")</h1>
+            <p class="text-muted mb-4">@GetText("Errors", "GenericErrorMessage")</p>
+            <a class="btn btn-primary" href="@Url.Action("Index", "Home")">@GetText("Errors", "BackToHome")</a>
+        </div>
+    </div>
+</div>

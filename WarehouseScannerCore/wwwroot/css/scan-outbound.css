@@ -1,0 +1,22 @@
+/* 扫描出库页面样式 - 核心样式已在视图中内联，此文件为扩展样式 */
+.scan-focus {
+    border-color: #07c160 !important;
+    box-shadow: 0 0 0 3px rgba(7,193,96,0.1);
+}
+
+.scan-animation {
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.7; }
+    100% { opacity: 1; }
+}
+
+/* 打印样式 */
+@media print {
+    .no-print {
+        display: none;
+    }
+}

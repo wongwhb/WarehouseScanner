@@ -1,0 +1,412 @@
+@model List<WarehouseScannerCore.Models.LanguageItem>
+@{
+    // 从ViewBag获取数据
+    var getText = ViewBag.GetText as Func<string, string, string>;
+    var currentCulture = ViewBag.CurrentCulture as string ?? "zh-CN";
+    var currentUICulture = ViewBag.CurrentUICulture as string ?? "zh-CN";
+
+    // 分页参数
+    var currentPage = ViewBag.CurrentPage as int? ?? 1;
+    var pageSize = ViewBag.PageSize as int? ?? 20;
+    var totalItems = ViewBag.TotalItems as int? ?? 0;
+    var totalPages = ViewBag.TotalPages as int? ?? 1;
+    var searchTerm = ViewBag.SearchTerm as string ?? "";
+    var searchType = ViewBag.SearchType as string ?? "all";
+
+    // 定义本地辅助函数
+    string GetText(string section, string key)
+    {
+        return getText?.Invoke(section, key) ?? $"[{section}.{key}]";
+    }
+
+    // 设置页面标题
+    ViewData["Title"] = GetText("LanguageIndex", "Title");
+    Layout = "_MenuLayout";
+}
+
+<div class="container-fluid">
+    <!-- 页面标题 -->
+    <div class="row mb-3">
+        <div class="col-md-8">
+            <h2 class="text-primary">
+                <i class="fas fa-language me-2"></i>@GetText("LanguageIndex", "Title")
+            </h2>
+            <p class="text-muted">@GetText("LanguageIndex", "Subtitle")</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a asp-action="Create" class="btn btn-success">
+                <i class="fas fa-plus me-1"></i>@GetText("LanguageIndex", "AddLanguageItem")
+            </a>
+        </div>
+    </div>
+
+    <!-- 搜索表单 -->
+    <div class="card menu-card mb-4">
+        <div class="card-header menu-card-header">
+            <h5 class="mb-0">
+                <i class="fas fa-search me-2"></i>@GetText("LanguageIndex", "SearchLanguage")
+            </h5>
+        </div>
+        <div class="card-body">
+            <form method="get" id="searchForm" class="row g-3">
+                <div class="col-md-6">
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fas fa-search"></i>
+                        </span>
+                        <input type="text" id="searchInput" name="search" class="form-control"
+                               placeholder="@GetText("LanguageIndex", "SearchPlaceholder")"
+                               value="@searchTerm">
+                        <input type="hidden" id="pageInput" name="page" value="1" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <select id="searchTypeSelect" name="searchType" class="form-control" onchange="document.getElementById('searchForm').submit()">
+                        @{
+                            var options = new Dictionary<string, string>
+                            {
+                                ["all"] = GetText("LanguageIndex", "AllFields"),
+                                ["page"] = GetText("LanguageIndex", "Page"),
+                                ["key"] = GetText("LanguageIndex", "Key"),
+                                ["chinese"] = GetText("LanguageIndex", "ChineseValue"),
+                                ["english"] = GetText("LanguageIndex", "EnglishValue")
+                            };
+                        }
+                        @foreach (var option in options)
+                        {
+                            if (searchType == option.Key)
+                            {
+                                <option value="@option.Key" selected>@option.Value</option>
+                            }
+                            else
+                            {
+                                <option value="@option.Key">@option.Value</option>
+                            }
+                        }
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-search me-1"></i>@GetText("Common", "Search")
+                        </button>
+                        @if (!string.IsNullOrEmpty(searchTerm))
+                        {
+                            <a href="@Url.Action("Index")" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-1"></i>@GetText("LanguageIndex", "Clear")
+                            </a>
+                        }
+                    </div>
+                </div>
+            </form>
+            <small class="form-text text-muted mt-2">
+                @GetText("LanguageIndex", "SearchHint")
+            </small>
+        </div>
+    </div>
+
+    <!-- 语言项列表 -->
+    <div class="card menu-card">
+        <div class="card-header menu-card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">
+                <i class="fas fa-list me-2"></i>@GetText("LanguageIndex", "LanguageList")
+            </h5>
+            <div class="d-flex align-items-center">
+                <div class="me-3">
+                    @{
+                        var startItem = (currentPage - 1) * pageSize + 1;
+                        var endItem = Math.Min(currentPage * pageSize, totalItems);
+                    }
+                    <span class="text-muted">
+                        @if (totalItems > 0)
+                        {
+                            @($"{startItem}-{endItem} / {totalItems}")
+                        }
+                        else
+                        {
+                            @("0 / 0")
+                        }
+                    </span>
+                </div>
+                <div class="me-3">
+                    <select id="pageSizeSelect" class="form-control form-control-sm" onchange="changePageSize(this.value)">
+                        @{
+                            var pageSizes = new List<int> { 10, 20, 50, 100 };
+                        }
+                        @foreach (var size in pageSizes)
+                        {
+                            if (pageSize == size)
+                            {
+                                <option value="@size" selected>@size</option>
+                            }
+                            else
+                            {
+                                <option value="@size">@size</option>
+                            }
+                        }
+                    </select>
+                </div>
+                @if (!string.IsNullOrEmpty(searchTerm))
+                {
+                    <div class="search-results-badge">
+                        <span class="badge bg-primary">@totalItems @GetText("LanguageIndex", "MatchedResults")</span>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="card-body">
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>@TempData["SuccessMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i>@TempData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            @if (Model.Any())
+            {
+                <div class="table-responsive">
+                    <table class="table table-hover menu-table" id="languageTable">
+                        <thead>
+                            <tr>
+                                <th>@GetText("LanguageIndex", "Page")</th>
+                                <th>@GetText("LanguageIndex", "Key")</th>
+                                <th>@GetText("LanguageIndex", "ChineseValue")</th>
+                                <th>@GetText("LanguageIndex", "EnglishValue")</th>
+                                <th>@GetText("LanguageIndex", "Actions")</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <span class="badge bg-success">@item.Page</span>
+                                    </td>
+                                    <td>
+                                        <code class="language-key">@item.Key</code>
+                                    </td>
+                                    <td>@item.ChineseValue</td>
+                                    <td>@item.EnglishValue</td>
+                                    <td>
+                                        <div class="btn-group btn-group-sm">
+                                            <a asp-action="Edit"
+                                               asp-route-page="@item.Page"
+                                               asp-route-key="@item.Key"
+                                               class="btn btn-outline-primary"
+                                               title="@GetText("LanguageIndex", "Edit")">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <form asp-action="Delete" method="post" class="d-inline delete-form">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden" name="page" value="@item.Page" />
+                                                <input type="hidden" name="key" value="@item.Key" />
+                                                <button type="submit" class="btn btn-outline-danger"
+                                                        title="@GetText("LanguageIndex", "Delete")"
+                                                        onclick="return confirm('@GetText("LanguageIndex", "ConfirmDelete")');">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- 分页控件 -->
+                @if (totalPages > 1)
+                {
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination justify-content-center">
+                            <!-- 上一页 -->
+                            <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                                @{
+                                    var prevPage = currentPage - 1;
+                                    var prevUrl = Url.Action("Index", new { search = searchTerm, searchType = searchType, page = prevPage, pageSize = pageSize });
+                                }
+                                <a class="page-link" href="@prevUrl">
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                            </li>
+
+                            @{
+                                // 计算页码范围
+                                var startPage = Math.Max(1, currentPage - 2);
+                                var endPage = Math.Min(totalPages, startPage + 4);
+
+                                // 调整起始页码，确保显示5个页码
+                                if (endPage - startPage < 4)
+                                {
+                                    startPage = Math.Max(1, endPage - 4);
+                                }
+                            }
+
+                            <!-- 第一页 -->
+                            @if (startPage > 1)
+                            {
+                                <li class="page-item">
+                                    @{
+                                        var firstUrl = Url.Action("Index", new { search = searchTerm, searchType = searchType, page = 1, pageSize = pageSize });
+                                    }
+                                    <a class="page-link" href="@firstUrl">1</a>
+                                </li>
+                                @if (startPage > 2)
+                                {
+                                    <li class="page-item disabled">
+                                        <span class="page-link">...</span>
+                                    </li>
+                                }
+                            }
+
+                            <!-- 页码 -->
+                            @for (int i = startPage; i <= endPage; i++)
+                            {
+                                <li class="page-item @(i == currentPage ? "active" : "")">
+                                    @{
+                                        var pageUrl = Url.Action("Index", new { search = searchTerm, searchType = searchType, page = i, pageSize = pageSize });
+                                    }
+                                    <a class="page-link" href="@pageUrl">@i</a>
+                                </li>
+                            }
+
+                            <!-- 最后一页 -->
+                            @if (endPage < totalPages)
+                            {
+                                @if (endPage < totalPages - 1)
+                                {
+                                    <li class="page-item disabled">
+                                        <span class="page-link">...</span>
+                                    </li>
+                                }
+                                <li class="page-item">
+                                    @{
+                                        var lastUrl = Url.Action("Index", new { search = searchTerm, searchType = searchType, page = totalPages, pageSize = pageSize });
+                                    }
+                                    <a class="page-link" href="@lastUrl">@totalPages</a>
+                                </li>
+                            }
+
+                            <!-- 下一页 -->
+                            <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                                @{
+                                    var nextPage = currentPage + 1;
+                                    var nextUrl = Url.Action("Index", new { search = searchTerm, searchType = searchType, page = nextPage, pageSize = pageSize });
+                                }
+                                <a class="page-link" href="@nextUrl">
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+
+                    <div class="text-center text-muted mt-2">
+                        <small>@Html.Raw(GetText("LanguageIndex", "TotalRecordsFormat")?.Replace("{0}", totalItems.ToString()).Replace("{1}", totalItems.ToString()))</small>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    @if (!string.IsNullOrEmpty(searchTerm))
+                    {
+                        <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">@GetText("LanguageIndex", "NoSearchResults")</p>
+                        <a asp-action="Index" class="btn btn-outline-primary">
+                            <i class="fas fa-times me-1"></i>@GetText("LanguageIndex", "Clear")
+                        </a>
+                    }
+                    else
+                    {
+                        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                        <p class="text-muted">@GetText("LanguageIndex", "NoLanguageRecords")</p>
+                        <a asp-action="Create" class="btn btn-primary">
+                            <i class="fas fa-plus me-1"></i>@GetText("LanguageIndex", "CreateFirstLanguageItem")
+                        </a>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化工具提示
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[title]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+
+            // 表单提交时重置页码为1
+            document.getElementById('searchForm').addEventListener('submit', function(e) {
+                document.getElementById('pageInput').value = '1';
+            });
+
+            // 搜索输入框回车提交
+            document.getElementById('searchInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    document.getElementById('searchForm').submit();
+                }
+            });
+        });
+
+        // 更改每页显示数量
+        function changePageSize(pageSize) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('pageSize', pageSize);
+            url.searchParams.set('page', '1'); // 重置到第一页
+            window.location.href = url.toString();
+        }
+
+        // 快捷页码跳转
+        function goToPage(page) {
+            const url = new URL(window.location.href);
+            url.searchParams.set('page', page);
+            window.location.href = url.toString();
+        }
+    </script>
+
+    <style>
+        .language-key {
+            background-color: #f8f9fa;
+            padding: 0.2em 0.4em;
+            border-radius: 3px;
+            font-size: 0.9em;
+            color: #e83e8c;
+            font-family: 'Consolas', monospace;
+        }
+
+        .search-results-badge {
+            margin-left: 10px;
+        }
+
+        .page-item.active .page-link {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+
+        .page-link {
+            color: #0d6efd;
+        }
+
+            .page-link:hover {
+                color: #0a58ca;
+            }
+
+        .pagination {
+            margin-bottom: 0;
+        }
+    </style>
+}
